@@ -12,7 +12,7 @@ Item {
     property date currentDate: new Date()
 
     readonly property color accentColor: "#4CAF50"
-    readonly property color backgroundColor: "#F5F5F5"
+    readonly property color backgroundColor: "#f0f0f0"
     readonly property color cardColor: "#FFFFFF"
     readonly property color textColor: "#333333"
     readonly property color secondaryTextColor: "#666666"
@@ -21,20 +21,17 @@ Item {
         anchors.fill: parent
         color: backgroundColor
 
-        ScrollView {
+        // Главный вертикальный layout на весь экран
+        ColumnLayout {
             anchors.fill: parent
-            clip: true
-            contentWidth: parent.width
+            spacing: 0
 
-            ScrollBar.vertical: ScrollBar {
-                width: 4
-                policy: ScrollBar.AsNeeded
-            }
-
+            // ВЕРХНЯЯ ЧАСТЬ (фиксированная, прижата к верху)
             ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 8
+                Layout.fillWidth: true
                 spacing: 8
+                Layout.margins: 8
+                Layout.bottomMargin: 8
 
                 // Заголовок
                 Label {
@@ -46,7 +43,7 @@ Item {
                     Layout.bottomMargin: 4
                 }
 
-                // Тип события
+                // Тип события (TabBar)
                 TabBar {
                     id: eventType
                     Layout.fillWidth: true
@@ -121,12 +118,11 @@ Item {
                     }
                 }
 
-                // Статус события
+                // Статус события (тоже в верхней части)
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.preferredHeight: children[0].implicitHeight + 24
-                    color: cardColor
-                    radius: 12
+                    //color: cardColor
 
                     ColumnLayout {
                         anchors.fill: parent
@@ -134,7 +130,7 @@ Item {
                         spacing: 8
 
                         Label {
-                            text: "Статус события:"
+                            text: "Статус:"
                             font.pixelSize: 12
                             color: secondaryTextColor
                         }
@@ -150,306 +146,262 @@ Item {
                                 indicator: null
 
                                 contentItem: Text {
-                                    text: eventStatus.checked ? "✅ Выполнено" : "🔔 Запланировано"
+                                    text: eventStatus.checked ? "✅ <b>Выполнено</b> / Запланировано" : "🔔 Выполнено / <b>Запланировано</b>"
+                                    textFormat: Text.RichText
                                     font.pixelSize: 14
-                                    font.bold: eventStatus.checked
                                     color: textColor
-                                    leftPadding: eventStatus.indicator.width + eventStatus.spacing
                                 }
                             }
                         }
                     }
                 }
+            }
 
-                // Название события
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 70
-                    color: cardColor
-                    radius: 12
+            // СРЕДНЯЯ ЧАСТЬ (прокручиваемая, занимает всё оставшееся место)
+            ScrollView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.leftMargin: 8
+                Layout.rightMargin: 8
+                clip: true
 
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Название:"
-                            font.pixelSize: 12
-                            color: secondaryTextColor
-                        }
-
-                        TextField {
-                            Layout.preferredHeight: 30
-                            Layout.fillWidth: true
-                            //placeholderText: "Замена масла, фильтров..."
-                            font.pixelSize: 14
-                            /*
-                            background: Rectangle {
-                                color: "transparent"
-                                implicitHeight: 30
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: secondaryTextColor
-                                    anchors.bottom: parent.bottom
-                                }
-                            }*/
-                        }
-                    }
+                ScrollBar.vertical: ScrollBar {
+                    width: 4
+                    policy: ScrollBar.AsNeeded
                 }
 
-                // Стоимость
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: children[0].implicitHeight + 24
-                    color: cardColor
-                    radius: 12
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Стоимость:"
-                        }
-
-                        TextField {
-                            Layout.preferredHeight: 30
-                            Layout.fillWidth: true
-                            placeholderText: ""
-                            validator: IntValidator {
-                                bottom: 0
-                            }
-
-                            font.pixelSize: 14
-                            /*
-                            background: Rectangle {
-                                color: "transparent"
-                                implicitHeight: 30
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: secondaryTextColor
-                                    anchors.bottom: parent.bottom
-                                }
-                            }*/
-
-                        }
-                    }
-                }
-
-                // Выполнено на пробеге
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: children[0].implicitHeight + 24
-                    color: cardColor
-                    radius: 12
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Пробег (км):"
-                            font.pixelSize: 12
-                            color: secondaryTextColor
-                        }
-
-                        TextField {
-                            Layout.preferredHeight: 30
-                            Layout.fillWidth: true
-                            text: String(currentMileage)
-                            font.pixelSize: 14
-                            /*
-                            background: Rectangle {
-                                color: "transparent"
-                                implicitHeight: 30
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: secondaryTextColor
-                                    anchors.bottom: parent.bottom
-                                }
-                            }*/
-                        }
-
-                        Label {
-                            text: "Дата события: "
-                            font.pixelSize: 12
-                            color: secondaryTextColor
-                        }
-
-                        TextField {
-                            Layout.preferredHeight: 30
-                            Layout.fillWidth: true
-                            text: Qt.formatDateTime(currentDate, "dd.MM.yyyy")
-                            inputMethodHints: Qt.ImhDate
-                            font.pixelSize: 14
-                            cursorVisible: true
-
-                            inputMask: "00\\.00\\.0000;_"
-
-                            validator: RegularExpressionValidator {
-                                regularExpression: /\d{2}.\d{2}\.\d{4}/
-                            }
-                            /*
-                            background: Rectangle {
-                                color: "transparent"
-                                implicitHeight: 30
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: secondaryTextColor
-                                    anchors.bottom: parent.bottom
-                                }
-                            }
-                            */
-                        }
-                    }
-                }
-
-                // Комментарий
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 120
-                    color: cardColor
-                    radius: 12
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Комментарий:"
-                        }
-
-                        TextArea {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true  // Занимает всю доступную высоту
-                            //placeholderText: "Комментарий"
-                            horizontalAlignment: TextInput.AlignLeft
-                            verticalAlignment: TextInput.AlignTop
-                            wrapMode: TextArea.Wrap  // Перенос текста
-
-                            // Устанавливаем минимальную высоту для 3 строк
-                            implicitHeight: 70  // Примерно 3 строки текста
-                            font.pixelSize: 14
-                            /*
-                            background: Rectangle {
-                                color: "transparent"
-                                implicitHeight: 30
-                                Rectangle {
-                                    width: parent.width
-                                    height: 1
-                                    color: secondaryTextColor
-                                    anchors.bottom: parent.bottom
-                                }
-                            }
-*/
-                        }
-                    }
-                }
-
-                // Повторить ТО
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: children[0].implicitHeight + 24
-                    color: cardColor
-                    radius: 12
-                    visible: eventStatus.checked && eventType.currentIndex === 1
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Следующее ТО:"
-                            font.pixelSize: 12
-                            color: secondaryTextColor
-                        }
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 4
-
-                            CheckBox {
-                                id: intervalMileageBox
-                                Layout.preferredWidth: 20
-                            }
-                            Label {
-                                text: "каждые"
-                                enabled: intervalMileageBox.checked
-                            }
-                            TextField {
-                                text: "15000"
-                                enabled: intervalMileageBox.checked
-                                horizontalAlignment: TextInput.AlignRight
-                                implicitWidth: 60
-                                font.pixelSize: 14
-                            }
-                            Label {
-                                enabled: intervalMileageBox.checked
-                                text: "км"
-                                font.pixelSize: 14
-                            }
-                            Item { Layout.fillWidth: true }
-                        }
-                        Label {
-                            text: "или (что наступит раньше)"
-                        }
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 4
-
-                            CheckBox {
-                                id: intervalTimeBox
-                                Layout.preferredWidth: 20
-                            }
-                            Label {
-                                text: "каждые"
-                                enabled: intervalTimeBox.checked
-                            }
-                            TextField {
-                                text: "12"
-                                implicitWidth: 40
-                                horizontalAlignment: TextInput.AlignRight
-                                font.pixelSize: 14
-                                enabled: intervalTimeBox.checked
-                            }
-                            Label {
-                                font.pixelSize: 14
-                                text: "месяцев"
-                                enabled: intervalTimeBox.checked
-                            }
-                            Item { Layout.fillWidth: true }
-                        }
-                    }
-                }
-
-                // Кнопки
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.topMargin: 8
-                    Layout.bottomMargin: 8
+                ColumnLayout {
+                    width: parent.width
                     spacing: 8
 
-                    Button {
+                    // Название события
+                    Rectangle {
                         Layout.fillWidth: true
-                        text: eventStatus.checked ? "Добавить" : "Запланировать"
+                        Layout.preferredHeight: 70
+                        color: cardColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Label {
+                                text: "Название:"
+                                font.pixelSize: 12
+                                color: secondaryTextColor
+                            }
+
+                            TextField {
+                                Layout.preferredHeight: 30
+                                Layout.fillWidth: true
+                                font.pixelSize: 14
+                            }
+                        }
                     }
 
-                    Button {
+                    // Стоимость
+                    Rectangle {
                         Layout.fillWidth: true
-                        text: "Закрыть"
+                        Layout.preferredHeight: children[0].implicitHeight + 24
+                        color: cardColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Label {
+                                text: "Стоимость (₽):"
+                                font.pixelSize: 12
+                                color: secondaryTextColor
+                            }
+
+                            TextField {
+                                Layout.preferredHeight: 30
+                                Layout.fillWidth: true
+                                text: "0"
+                                validator: IntValidator {
+                                    bottom: 0
+                                }
+                                font.pixelSize: 14
+                            }
+                        }
+                    }
+
+                    // Пробег и дата
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: children[0].implicitHeight + 24
+                        color: cardColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            RowLayout {
+
+                                Label {
+                                    text: "Пробег (км):"
+                                    font.pixelSize: 12
+                                    color: secondaryTextColor
+                                }
+
+                                TextField {
+                                    Layout.preferredHeight: 30
+                                    Layout.fillWidth: true
+                                    text: String(currentMileage)
+                                    font.pixelSize: 14
+                                }
+                            }
+
+                            RowLayout {
+
+                                Label {
+                                    text: "Дата события:"
+                                    font.pixelSize: 12
+                                    color: secondaryTextColor
+                                }
+
+                                TextField {
+                                    Layout.preferredHeight: 30
+                                    Layout.fillWidth: true
+                                    text: Qt.formatDateTime(currentDate, "dd.MM.yyyy")
+                                    inputMethodHints: Qt.ImhDate
+                                    font.pixelSize: 14
+                                    inputMask: "00\\.00\\.0000;_"
+
+                                    validator: RegularExpressionValidator {
+                                        regularExpression: /\d{2}.\d{2}\.\d{4}/
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Комментарий
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 70
+                        color: cardColor
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Label {
+                                text: "Комментарий:"
+                                font.pixelSize: 12
+                                color: secondaryTextColor
+                            }
+
+                            TextField {
+                                Layout.preferredHeight: 30
+                                Layout.fillWidth: true
+                                font.pixelSize: 14
+                            }
+                        }
+                    }
+
+                    // Повторить ТО (условно видимый блок)
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: children[0].implicitHeight + 24
+                        color: cardColor
+                        visible: eventStatus.checked && eventType.currentIndex === 1
+
+                        ColumnLayout {
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Label {
+                                text: "Следующее ТО:"
+                                font.pixelSize: 12
+                                color: secondaryTextColor
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+
+                                CheckBox {
+                                    id: intervalMileageBox
+                                    Layout.preferredWidth: 20
+                                }
+                                Label {
+                                    text: "каждые"
+                                    enabled: intervalMileageBox.checked
+                                }
+                                TextField {
+                                    text: "15000"
+                                    enabled: intervalMileageBox.checked
+                                    horizontalAlignment: TextInput.AlignRight
+                                    implicitWidth: 60
+                                    font.pixelSize: 14
+                                }
+                                Label {
+                                    enabled: intervalMileageBox.checked
+                                    text: "км"
+                                    font.pixelSize: 14
+                                }
+                                Item { Layout.fillWidth: true }
+                            }
+                            Label {
+                                text: "или (что наступит раньше)"
+                                font.pixelSize: 12
+                                color: secondaryTextColor
+                            }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+
+                                CheckBox {
+                                    id: intervalTimeBox
+                                    Layout.preferredWidth: 20
+                                }
+                                Label {
+                                    text: "каждые"
+                                    enabled: intervalTimeBox.checked
+                                }
+                                TextField {
+                                    text: "12"
+                                    implicitWidth: 40
+                                    horizontalAlignment: TextInput.AlignRight
+                                    font.pixelSize: 14
+                                    enabled: intervalTimeBox.checked
+                                }
+                                Label {
+                                    text: "месяцев"
+                                    font.pixelSize: 14
+                                    enabled: intervalTimeBox.checked
+                                }
+                                Item { Layout.fillWidth: true }
+                            }
+                        }
+                    }
+
+                    // Дополнительный отступ внизу для красоты
+                    Item {
+                        Layout.preferredHeight: 8
                     }
                 }
+            }
 
-                Item {
-                    Layout.preferredHeight: 10
+            // НИЖНЯЯ ЧАСТЬ (фиксированная, прижата к низу)
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.margins: 8
+                spacing: 8
+
+                Button {
+                    Layout.fillWidth: true
+                    text: eventStatus.checked ? "Добавить" : "Запланировать"
+                }
+
+                Button {
+                    Layout.fillWidth: true
+                    text: "Закрыть"
                 }
             }
         }
