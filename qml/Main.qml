@@ -9,9 +9,9 @@ ApplicationWindow {
     width: Style.width
     height: Style.height
     minimumWidth: width
-    //    maximumWidth: width
+    maximumWidth: width
     minimumHeight: height
-    //    maximumHeight: height
+    maximumHeight: height
     visible: true
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal
@@ -19,16 +19,7 @@ ApplicationWindow {
     StackView {
         id: stackView
         anchors.fill: parent
-        initialItem: {
-            let c1 = CarInfoBuilder.fromJSON('{"brandName":"SEAT","lastMileage":232000,"lastMileageDate":"2026-03-06","modelName":"Altea Freetrack"}')
-            let c2 = CarInfoBuilder.fromJSON('{"brandName":"BMW","lastMileage":0,"modelName":"X5"}')
-
-            console.log(c1.toJSON())
-            console.log(c2.toJSON())
-
-
-            return AppSettings.carInfo.isValid ? dashboardScreen : welcomeScreen;
-        }
+        initialItem: AppSettings.showWelcomeScreen ? welcomeScreen : dashboardScreen;
     }
 
     Component {
@@ -38,9 +29,14 @@ ApplicationWindow {
 
             onAccepted: function(newCarInfo) {
                 AppSettings.updateCarInfo(newCarInfo)
-                stackView.push(dashboardScreen)
+                AppSettings.showWelcomeScreen = false
+                stackView.replace(dashboardScreen)
             }
         }
+    }
+
+    UpdateMilestoneDialog {
+        id: updateMilestoneDialog
     }
 
     Component {
@@ -51,8 +47,16 @@ ApplicationWindow {
                 stackView.push(serviceRecordScreen, {"currentMileage": AppSettings.carInfo.lastMileage})
             }
 
-            onOpenSettingsDialog: console.log("open settings")
-            onOpenMileageDialog: console.log("open mileage dialog")
+            onOpenSettingsDialog: {
+
+                console.log("open settings")
+                stackView.push(settingsScreen)
+            }
+            onOpenMileageDialog: {
+
+                console.log("open mileage dialog")
+                updateMilestoneDialog.open()
+            }
 
             onOpenEditRecordDialog: function(index) {
                 console.log("open edit dialog for item " + index)
@@ -69,7 +73,9 @@ ApplicationWindow {
 
     Component {
         id: settingsScreen
-        SettingsScreen {}
+        SettingsScreen {
+            onClicked: stackView.pop()
+        }
     }
 
     Component {

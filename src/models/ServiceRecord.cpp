@@ -7,6 +7,27 @@
 
 ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
 {
+  connect(this, &ServiceRecord::repeatAfterDistanceChanged, this, &ServiceRecord::isRepeatDistanceValidChanged);
+  connect(this, &ServiceRecord::hasRepeatAfterDistanceChanged, this, &ServiceRecord::isRepeatDistanceValidChanged);
+  connect(this, &ServiceRecord::eventTypeChanged, this, &ServiceRecord::isRepeatDistanceValidChanged);
+  connect(this, &ServiceRecord::isRepeatDistanceValidChanged, this, &ServiceRecord::isValidChanged);
+
+  connect(this, &ServiceRecord::repeatAfterMonthsChanged, this, &ServiceRecord::isRepeatMonthsValidChanged);
+  connect(this, &ServiceRecord::hasRepeatAfterMonthsChanged, this, &ServiceRecord::isRepeatMonthsValidChanged);
+  connect(this, &ServiceRecord::eventTypeChanged, this, &ServiceRecord::isRepeatMonthsValidChanged);
+  connect(this, &ServiceRecord::isRepeatMonthsValidChanged, this, &ServiceRecord::isValidChanged);
+
+  connect(this, &ServiceRecord::nameChanged, this, &ServiceRecord::isNameValidChanged);
+  connect(this, &ServiceRecord::isNameValidChanged, this, &ServiceRecord::isValidChanged);
+
+  connect(this, &ServiceRecord::notesChanged, this, &ServiceRecord::isValidChanged);
+  connect(this, &ServiceRecord::priceChanged, this, &ServiceRecord::isValidChanged);
+  connect(this, &ServiceRecord::mileageChanged, this, &ServiceRecord::isValidChanged);
+  connect(this, &ServiceRecord::serviceDateChanged, this, &ServiceRecord::isValidChanged);
+
+  connect(this, &ServiceRecord::isValidChanged, [this]() {
+    qDebug() << "isValidChanged signal\n";
+  });
 }
 
 QString ServiceRecord::toJSON() const
@@ -44,8 +65,6 @@ void ServiceRecord::setName(const QString &newName)
     return;
   m_name = newName;
   emit nameChanged();
-  emit isNameValidChanged();
-  emit isValidChanged();
 }
 
 QString ServiceRecord::notes() const
@@ -59,7 +78,6 @@ void ServiceRecord::setNotes(const QString &newNotes)
     return;
   m_notes = newNotes;
   emit notesChanged();
-  emit isValidChanged();
 }
 
 int ServiceRecord::price() const
@@ -73,7 +91,6 @@ void ServiceRecord::setPrice(int newPrice)
     return;
   m_price = newPrice;
   emit priceChanged();
-  emit isValidChanged();
 }
 
 int ServiceRecord::mileage() const
@@ -87,7 +104,6 @@ void ServiceRecord::setMileage(int newMileage)
     return;
   m_mileage = newMileage;
   emit mileageChanged();
-  emit isValidChanged();
 }
 
 QDate ServiceRecord::serviceDate() const
@@ -101,7 +117,6 @@ void ServiceRecord::setServiceDate(const QDate &newServiceDate)
     return;
   m_serviceDate = newServiceDate;
   emit serviceDateChanged();
-  emit isValidChanged();
 }
 
 int ServiceRecord::repeatAfterDistance() const
@@ -116,8 +131,6 @@ void ServiceRecord::setRepeatAfterDistance(int newRepeatAfterDistance)
 
   m_repeatAfterDistance = newRepeatAfterDistance;
   emit repeatAfterDistanceChanged();
-  emit isRepeatDistanceValidChanged();
-  emit isValidChanged();
 }
 
 bool ServiceRecord::hasRepeatAfterDistance() const
@@ -131,8 +144,6 @@ void ServiceRecord::setHasRepeatAfterDistance(bool newHasRepeatAfterDistance)
     return;
   m_hasRepeatAfterDistance = newHasRepeatAfterDistance;
   emit hasRepeatAfterDistanceChanged();
-  emit isRepeatDistanceValidChanged();
-  emit isValidChanged();
 }
 
 int ServiceRecord::repeatAfterMonths() const
@@ -161,8 +172,6 @@ void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
     return;
   m_hasRepeatAfterMonths = newHasRepeatAfterMonths;
   emit hasRepeatAfterMonthsChanged();
-  emit isRepeatMonthsValidChanged();
-  emit isValidChanged();
 }
 
 void ServiceRecord::fromJSONString(const QString &jsonString)
@@ -195,7 +204,7 @@ bool ServiceRecord::isNameValid() const
 
 bool ServiceRecord::isValid() const
 {
-  return isNameValid();
+  return isRepeatDistanceValid() && isRepeatDistanceValid() && isNameValid();
 }
 
 ServiceRecord::EventType ServiceRecord::eventType() const
@@ -209,9 +218,6 @@ void ServiceRecord::setEventType(const EventType &newEventType)
     return;
   m_eventType = newEventType;
   emit eventTypeChanged();
-  emit isRepeatDistanceValidChanged();
-  emit isRepeatMonthsValidChanged();
-  emit isValidChanged();
 }
 
 bool ServiceRecord::isRepeatDistanceValid() const

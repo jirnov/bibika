@@ -5,17 +5,20 @@ project(BibikaService VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Qml)
+find_package(Qt6 REQUIRED COMPONENTS
+    Quick
+    QuickControls2
+    Core
+    Qml
+    LinguistTools)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models
 )
 
-qt_standard_project_setup(REQUIRES 6.8)
+qt_standard_project_setup(
+    I18N_TRANSLATED_LANGUAGES ru)
 
 set(QML_FILES
     qml/Main.qml
@@ -30,8 +33,18 @@ set(QML_FILES
 
 )
 
+qt_add_translations(appBibikaService
+    RESOURCE_PREFIX /lang
+    TS_FILE_DIR lang
+)
+
 qt6_add_executable(appBibikaService
     src/main.cpp
+)
+
+qt6_add_resources(appBibikaService "tranlations"
+    PREFIX "/lang"
+        lang/BibikaService_ru.ts
 )
 
 set_source_files_properties(qml/style/Style.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
@@ -42,13 +55,12 @@ qt6_add_qml_module(appBibikaService
     VERSION 1.0
     QML_FILES
         ${QML_FILES}
-    RESOURCE_PREFIX /
     RESOURCES
         ${QML_FILES}
         res/icons/calendar.svg
         res/icons/chart.svg
         res/icons/history.svg
-        QML_FILES
+        lang/BibikaService_ru.ts
     SOURCES
         src/models/CarInfo.cpp
         src/models/CarInfo.h

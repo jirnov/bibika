@@ -7,11 +7,12 @@ Dialog {
     standardButtons: Dialog.Cancel | Dialog.Ok
     modal: true
 
-    onOpened: {
-        standardButton(Dialog.Ok).enabled = false
-    }
+    property int currentMileage: 0
+
+    signal mileageChanged(int newMileage)
 
     onAccepted: {
+
         //settings.mileage = parseInt(milestoneField.text)
         //settings.lastMileageUpdate = new Date()
     }

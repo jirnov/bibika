@@ -24,10 +24,10 @@ Page {
             _editCopy = ServiceRecordBuilder.fromJSON(editRecord.toJSON(), root)
         }
         else {
-            _editCopy.mileage = currentMileage
-            _editCopy.serviceDate = new Date()
             _editCopy.eventType = ServiceRecord.Maintenance
         }
+        _editCopy.mileage = currentMileage
+        _editCopy.serviceDate = new Date()
     }
 
     readonly property color accentColor: "#000000"
@@ -55,7 +55,7 @@ Page {
 
             Button {
                 Layout.fillWidth: true
-                text: "Добавить"
+                text: qsTr("Ok")
                 highlighted: true
 
                 onClicked: {
@@ -68,7 +68,7 @@ Page {
 
             Button {
                 Layout.fillWidth: true
-                text: "Закрыть"
+                text: qsTr("Cancel")
 
                 onClicked: {
                     root.rejected()

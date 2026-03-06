@@ -11,13 +11,13 @@ Page {
 
     signal accepted(CarInfo carInfo)
 
-    required property CarInfo carInfo
+    property CarInfo carInfo:CarInfo{}
 
     header: ToolBar {
         ColumnLayout {
             anchors.fill: parent
             Label {
-                text: "Добро пожаловать!"
+                text: qsTr("Welcome!")
                 font.pixelSize: Style.fontSizeTitle
                 font.bold: true
                 color: Style.titleColor
@@ -35,6 +35,8 @@ Page {
         }
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 60
         anchors.margins: Style.defaultMargin
         contentWidth: availableWidth
 
@@ -45,7 +47,7 @@ Page {
 
             Label {
                 Layout.fillWidth: true
-                text: "Введите данные своего автомобиля:"
+                text: qsTr("Enter your vehicle information:")
                 horizontalAlignment: Text.AlignHCenter
             }
 
@@ -53,7 +55,7 @@ Page {
                 Layout.fillWidth: true
                 spacing: Style.defaultMargin / 2
                 Label {
-                    text: "Марка автомобиля:"
+                    text: qsTr("Car brand:")
                     font.pixelSize: Style.fontSizeLabel
                 }
 
@@ -72,7 +74,7 @@ Page {
                     color: Style.hintColor
                     font.pixelSize: Style.fontSizeHint
                     visible: false
-                    text: "Поле не может быть пустым, введите название бренда"
+                    text: qsTr("Please fil in the car brand (required filed)")
                     opacity: visible ? 1 : 0
                     Behavior on opacity {
                         NumberAnimation{duration: 200}
@@ -84,7 +86,7 @@ Page {
                 Layout.fillWidth: true
                 spacing: Style.defaultMargin / 2
                 Label {
-                    text: "Модель автомобиля:"
+                    text: qsTr("Car model: ")
                     font.pixelSize: Style.fontSizeLabel
                 }
                 TextField {
@@ -101,7 +103,7 @@ Page {
                     Layout.fillWidth: true
                     color: Style.hintColor
                     font.pixelSize: Style.fontSizeHint
-                    text: "Поле не может быть пустым, введите название модели"
+                    text: qsTr("Please fill in the car model (required field)")
                     visible: false
                     opacity: visible ? 1 : 0
                     Behavior on opacity {
@@ -113,7 +115,7 @@ Page {
             ColumnLayout {
                 spacing: Style.defaultMargin / 2
                 Label {
-                    text: "Пробег в км:"
+                    text: qsTr("Mileage (kilometers):")
                     font.pixelSize: Style.fontSizeLabel
                 }
                 TextField {
@@ -128,7 +130,7 @@ Page {
             }
 
             Button {
-                text: "продолжить"
+                text: qsTr("Start!")
                 highlighted: true
                 Layout.alignment: Qt.AlignCenter
                 Layout.bottomMargin: Style.defaultMargin * 2

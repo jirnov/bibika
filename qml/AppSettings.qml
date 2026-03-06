@@ -9,8 +9,10 @@ QtObject
 
     property Settings _persistent : Settings {
         property string carInfoJson: ""
+        property alias showWelcomeScreen: root.showWelcomeScreen
     }
 
+    property bool showWelcomeScreen: true
     readonly property CarInfo carInfo: CarInfoBuilder.fromJSON(root._persistent.value("carInfoJson"), root)
 
     readonly property string carName: {
