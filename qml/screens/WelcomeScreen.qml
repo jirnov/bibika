@@ -13,40 +13,39 @@ Page {
 
     property CarInfo carInfo:CarInfo{}
 
-    header: ToolBar {
-        ColumnLayout {
-            anchors.fill: parent
-            Label {
-                text: qsTr("Welcome!")
-                font.pixelSize: Style.fontSizeTitle
-                font.bold: true
-                color: Style.titleColor
-                Layout.alignment: Qt.AlignHCenter
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-            }
-        }
+    Label {
+        text: qsTr("Welcome!")
+        font.pixelSize: Style.fontSizeTitle
+        font.bold: true
+        color: Style.titleColor
+        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: scrollView.top
+        anchors.bottomMargin: Style.fontSizeTitle
     }
 
     ScrollView {
+        id: scrollView
         background: Rectangle {
             anchors.fill: parent
             color: Style.cardColor
         }
+        y: parent.height / 3 - height / 2
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 60
         anchors.margins: Style.defaultMargin
         contentWidth: availableWidth
+        contentHeight: columnLayout.implicitHeight
 
         ColumnLayout {
+            id: columnLayout
             anchors.fill: parent
             anchors.margins: Style.defaultMargin
             spacing: Style.defaultMargin * 2
 
             Label {
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Enter your vehicle information:")
                 horizontalAlignment: Text.AlignHCenter
             }
