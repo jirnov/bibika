@@ -8,10 +8,11 @@ int main(int argc, char *argv[])
   QGuiApplication app(argc, argv);
 
   QQuickStyle::setStyle("FluentWinUI3");
-  app.setOrganizationName("Evgenii Zhirnov");
-  app.setOrganizationDomain("blog2k.ru");
+  app.setOrganizationDomain("ru.blog2k.bibikaservice");
+  app.setOrganizationName("Personal");
 
   QQmlApplicationEngine engine;
+
   QObject::connect(
     &engine,
     &QQmlApplicationEngine::objectCreationFailed,

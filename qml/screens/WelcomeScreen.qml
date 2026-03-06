@@ -1,127 +1,146 @@
-﻿import QtQuick
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-Item {
-    id: welcomeScreen
-    width: 288
-    height: 640
+import BibikaService
 
-    ColumnLayout {
-        width: parent.width
-        Layout.fillWidth: true
-        spacing: 4
+Page {
+    id: root
+    width: Style.width
+    height: Style.height
 
-        Label {
-            Layout.alignment: Qt.AlignHCenter
-            text: "Добро пожаловать!"
-            font.pixelSize: 22
-            font.bold: true
-            color: "#000000"
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Text.AlignHCenter
-            Layout.maximumWidth: parent.width - 20
-            Layout.leftMargin: 10
-            Layout.rightMargin: 10
+    signal accepted(CarInfo carInfo)
+
+    required property CarInfo carInfo
+
+    header: ToolBar {
+        ColumnLayout {
+            anchors.fill: parent
+            Label {
+                text: "Добро пожаловать!"
+                font.pixelSize: Style.fontSizeTitle
+                font.bold: true
+                color: Style.titleColor
+                Layout.alignment: Qt.AlignHCenter
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
+    }
 
-        Label {
-            text: "Введите данные своего автомобиля:"
-            Layout.alignment: Qt.AlignHCenter
-            font.pixelSize: 14
-            color: "#000000"
-            opacity: 0.9
-            wrapMode: Text.WordWrap
-            horizontalAlignment: Text.AlignHCenter
-            Layout.maximumWidth: parent.width - 20
-            Layout.leftMargin: 10
-            Layout.rightMargin: 10
+    ScrollView {
+        background: Rectangle {
+            anchors.fill: parent
+            color: Style.cardColor
         }
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: Style.defaultMargin
+        contentWidth: availableWidth
 
-        Rectangle {
-            height: 200
-            Layout.fillWidth: true
-            Layout.preferredHeight: 200
-            //color: "#f9f9fb"
-            border.color: "#e9e9e9"
-            radius: 16
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: Style.defaultMargin
+            spacing: Style.defaultMargin * 2
+
+            Label {
+                Layout.fillWidth: true
+                text: "Введите данные своего автомобиля:"
+                horizontalAlignment: Text.AlignHCenter
+            }
 
             ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 16
-                uniformCellSizes: false
-                spacing: 0
-
-                ColumnLayout {
-
-                    Label {
-                        text: "Марка автомобиля:"
-                    }
-
-                    TextField {
-                        id: brandField
-                        placeholderText: "Seat, Toyota, Bmw..."
-
-                        Binding on text {
-                            value: settings.brand
-                            when: settings.brand.length > 0
-                        }
-                    }
+                Layout.fillWidth: true
+                spacing: Style.defaultMargin / 2
+                Label {
+                    text: "Марка автомобиля:"
+                    font.pixelSize: Style.fontSizeLabel
                 }
 
-                ColumnLayout {
-                    Label {
-                        text: "Модель автомобиля:"
-                    }
-                    TextField {
-                        id: modelField
-                        placeholderText: "Ateca, Camry, X3..."
-
-                        Binding on text {
-                            value: settings.model
-                            when: settings.model.length > 0
-                        }
-                    }
+                TextField {
+                    Layout.fillWidth: true
+                    id: carBrandInput
+                    text: root.carInfo.brandName
+                    placeholderText: "Лада, Toyota, Cupra..."
+                    font.pixelSize: Style.fontSizeDefault
+                    onTextEdited: root.carInfo.brandName = text
+                    onEditingFinished: carBrandInputHint.visible = !root.carInfo.isBrandNameValid
                 }
-
-                ColumnLayout {
-                    Label {
-                        text: "Пробег в км:"
-                    }
-                    TextField {
-                        id: milestoneField
-
-                        Binding on text {
-                            value: String(settings.mileage)
-                            when: settings.mileage > 0
-                        }
-
-                        validator: IntValidator {
-                            bottom: 0
-                        }
+                Label {
+                    id: carBrandInputHint
+                    Layout.fillWidth: true
+                    color: Style.hintColor
+                    font.pixelSize: Style.fontSizeHint
+                    visible: false
+                    text: "Поле не может быть пустым, введите название бренда"
+                    opacity: visible ? 1 : 0
+                    Behavior on opacity {
+                        NumberAnimation{duration: 200}
                     }
                 }
             }
-        }
-        Button {
-            Layout.alignment: Qt.AlignHCenter
-            text: "Продолжить"
-            enabled: brandField.text.length > 0 && modelField.text.length > 0
-                     && milestoneField.text.length > 0
-            onClicked: {
-                settings.brand = brandField.text
-                settings.model = modelField.text
-                settings.mileage = parseInt(milestoneField.text)
-                settings.useWelcomeScreen = useWelcomeScreenCheckbox.checked
-                rootScreen.replaceCurrentItem(dashboardScreen)
-            }
-        }
 
-        CheckBox {
-            Layout.alignment: Qt.AlignHCenter
-            id: useWelcomeScreenCheckbox
-            text: "Показывать при запуске"
-            checked: settings.useWelcomeScreen
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: Style.defaultMargin / 2
+                Label {
+                    text: "Модель автомобиля:"
+                    font.pixelSize: Style.fontSizeLabel
+                }
+                TextField {
+                    Layout.fillWidth: true
+                    id: carModelInput
+                    text: root.carInfo.modelName
+                    placeholderText: "Гранта, Camry, Leon..."
+                    font.pixelSize: Style.fontSizeDefault
+                    onTextEdited: root.carInfo.modelName = text
+                    onEditingFinished: carModelInputHint.visible = !root.carInfo.isModelNameValid
+                }
+                Label {
+                    id: carModelInputHint
+                    Layout.fillWidth: true
+                    color: Style.hintColor
+                    font.pixelSize: Style.fontSizeHint
+                    text: "Поле не может быть пустым, введите название модели"
+                    visible: false
+                    opacity: visible ? 1 : 0
+                    Behavior on opacity {
+                        NumberAnimation{duration: 200}
+                    }
+                }
+            }
+
+            ColumnLayout {
+                spacing: Style.defaultMargin / 2
+                Label {
+                    text: "Пробег в км:"
+                    font.pixelSize: Style.fontSizeLabel
+                }
+                TextField {
+                    id: milestoneField
+                    font.pixelSize: Style.fontSizeDefault
+                    text: String(root.carInfo.lastMileage)
+                    onTextEdited: root.carInfo.lastMileage = Number(text) || 0
+                    validator: IntValidator {
+                        bottom: 0
+                    }
+                }
+            }
+
+            Button {
+                text: "продолжить"
+                highlighted: true
+                Layout.alignment: Qt.AlignCenter
+                Layout.bottomMargin: Style.defaultMargin * 2
+                enabled: root.carInfo.isValid
+                onClicked: {
+                    if (root.carInfo.isValid) {
+                        root.accepted(root.carInfo)
+                        root.visible = false
+                        console.log(root.carInfo.toJSON())
+                    }
+                }
+            }
         }
     }
 }

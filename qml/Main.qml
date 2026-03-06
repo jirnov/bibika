@@ -1,50 +1,70 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
-import QtCore
 
-import "screens"
-import "dialogs"
+import BibikaService
 
 ApplicationWindow {
-    id: mainWindow
-    width: 288
-    height: 640
+    id: root
+    width: Style.width
+    height: Style.height
     minimumWidth: width
-    maximumWidth: width
+    //    maximumWidth: width
     minimumHeight: height
-    maximumHeight: height
+    //    maximumHeight: height
     visible: true
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal
 
-    Settings {
-        id: settings
-        property string brand: "SEAT"
-        property string model: "Altea Freetrack"
-        property int mileage: 232000
-        property date mileageDate: new Date()
-        property bool useWelcomeScreen: true
-    }
-
-    UpdateMilestoneDialog {
-        id: updateMilestoneDialog
-    }
-
     StackView {
-        id: rootScreen
+        id: stackView
         anchors.fill: parent
-        initialItem: settings.useWelcomeScreen ? welcomeScreen : dashboardScreen
+        initialItem: {
+            let c1 = CarInfoBuilder.fromJSON('{"brandName":"SEAT","lastMileage":232000,"lastMileageDate":"2026-03-06","modelName":"Altea Freetrack"}')
+            let c2 = CarInfoBuilder.fromJSON('{"brandName":"BMW","lastMileage":0,"modelName":"X5"}')
+
+            console.log(c1.toJSON())
+            console.log(c2.toJSON())
+
+
+            return AppSettings.carInfo.isValid ? dashboardScreen : welcomeScreen;
+        }
     }
 
     Component {
         id: welcomeScreen
-        WelcomeScreen {}
+        WelcomeScreen {
+            carInfo: AppSettings.carInfo
+
+            onAccepted: function(newCarInfo) {
+                AppSettings.updateCarInfo(newCarInfo)
+                stackView.push(dashboardScreen)
+            }
+        }
     }
 
     Component {
         id: dashboardScreen
-        DashboardScreen {}
+        DashboardScreen {
+            onOpenAddRecordDialog: {
+                console.log("open new record dialog")
+                stackView.push(serviceRecordScreen, {"currentMileage": AppSettings.carInfo.lastMileage})
+            }
+
+            onOpenSettingsDialog: console.log("open settings")
+            onOpenMileageDialog: console.log("open mileage dialog")
+
+            onOpenEditRecordDialog: function(index) {
+                console.log("open edit dialog for item " + index)
+
+                let editRecord = ServiceRecordBuilder.fromJSON("");
+                editRecord.name = "Номер записи: " + index
+
+                stackView.push(serviceRecordScreen, {
+                                   "currentMileage": AppSettings.carInfo.lastMileage,
+                                   "editRecord": editRecord })
+            }
+        }
     }
 
     Component {
@@ -53,7 +73,16 @@ ApplicationWindow {
     }
 
     Component {
-        id: editServiceRecordScreen
-        EditServiceRecordScreen {}
+        id: serviceRecordScreen
+        ServiceRecordScreen{
+            onAccepted: function(serviceRecord) {
+                console.log("Запись: " + serviceRecord.toJSON())
+                stackView.pop()
+            }
+
+            onRejected: {
+                stackView.pop()
+            }
+        }
     }
 }

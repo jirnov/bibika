@@ -1,0 +1,235 @@
+#include "ServiceRecord.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMetaEnum>
+
+
+ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
+{
+}
+
+QString ServiceRecord::toJSON() const
+{
+  QJsonObject json{
+    {"eventType", m_eventType},
+    {"name", m_name},
+    {"notes", m_notes},
+    {"price", m_price},
+    {"mileage", m_mileage},
+    {"serviceData", m_serviceDate.toString(Qt::ISODate)},
+    {"repeatAfterDistance", m_repeatAfterDistance},
+    {"hasRepeatAfterDistance", m_hasRepeatAfterDistance},
+    {"repeatAfterMonths", m_repeatAfterMonths},
+    {"hasRepeatAfterMonths", m_hasRepeatAfterMonths}
+  };
+  return QJsonDocument(json).toJson(QJsonDocument::Compact);
+}
+
+ServiceRecord *ServiceRecord::fromJSON(const QString &jsonString, QObject *parent)
+{
+  ServiceRecord *serviceRecord = new ServiceRecord(parent);
+  serviceRecord->fromJSONString(jsonString);
+  return serviceRecord;
+}
+
+QString ServiceRecord::name() const
+{
+  return m_name;
+}
+
+void ServiceRecord::setName(const QString &newName)
+{
+  if (m_name == newName)
+    return;
+  m_name = newName;
+  emit nameChanged();
+  emit isNameValidChanged();
+  emit isValidChanged();
+}
+
+QString ServiceRecord::notes() const
+{
+  return m_notes;
+}
+
+void ServiceRecord::setNotes(const QString &newNotes)
+{
+  if (m_notes == newNotes)
+    return;
+  m_notes = newNotes;
+  emit notesChanged();
+  emit isValidChanged();
+}
+
+int ServiceRecord::price() const
+{
+  return m_price;
+}
+
+void ServiceRecord::setPrice(int newPrice)
+{
+  if (m_price == newPrice)
+    return;
+  m_price = newPrice;
+  emit priceChanged();
+  emit isValidChanged();
+}
+
+int ServiceRecord::mileage() const
+{
+  return m_mileage;
+}
+
+void ServiceRecord::setMileage(int newMileage)
+{
+  if (m_mileage == newMileage)
+    return;
+  m_mileage = newMileage;
+  emit mileageChanged();
+  emit isValidChanged();
+}
+
+QDate ServiceRecord::serviceDate() const
+{
+  return m_serviceDate;
+}
+
+void ServiceRecord::setServiceDate(const QDate &newServiceDate)
+{
+  if (m_serviceDate == newServiceDate)
+    return;
+  m_serviceDate = newServiceDate;
+  emit serviceDateChanged();
+  emit isValidChanged();
+}
+
+int ServiceRecord::repeatAfterDistance() const
+{
+  return m_repeatAfterDistance;
+}
+
+void ServiceRecord::setRepeatAfterDistance(int newRepeatAfterDistance)
+{
+  if (m_repeatAfterDistance == newRepeatAfterDistance)
+    return;
+
+  m_repeatAfterDistance = newRepeatAfterDistance;
+  emit repeatAfterDistanceChanged();
+  emit isRepeatDistanceValidChanged();
+  emit isValidChanged();
+}
+
+bool ServiceRecord::hasRepeatAfterDistance() const
+{
+  return m_hasRepeatAfterDistance;
+}
+
+void ServiceRecord::setHasRepeatAfterDistance(bool newHasRepeatAfterDistance)
+{
+  if (m_hasRepeatAfterDistance == newHasRepeatAfterDistance)
+    return;
+  m_hasRepeatAfterDistance = newHasRepeatAfterDistance;
+  emit hasRepeatAfterDistanceChanged();
+  emit isRepeatDistanceValidChanged();
+  emit isValidChanged();
+}
+
+int ServiceRecord::repeatAfterMonths() const
+{
+  return m_repeatAfterMonths;
+}
+
+void ServiceRecord::setRepeatAfterMonths(int newRepeatAfterMonths)
+{
+  if (m_repeatAfterMonths == newRepeatAfterMonths)
+    return;
+  m_repeatAfterMonths = newRepeatAfterMonths;
+  emit repeatAfterMonthsChanged();
+  emit isRepeatMonthsValidChanged();
+  emit isValidChanged();
+}
+
+bool ServiceRecord::hasRepeatAfterMonths() const
+{
+  return m_hasRepeatAfterMonths;
+}
+
+void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
+{
+  if (m_hasRepeatAfterMonths == newHasRepeatAfterMonths)
+    return;
+  m_hasRepeatAfterMonths = newHasRepeatAfterMonths;
+  emit hasRepeatAfterMonthsChanged();
+  emit isRepeatMonthsValidChanged();
+  emit isValidChanged();
+}
+
+void ServiceRecord::fromJSONString(const QString &jsonString)
+{
+  QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
+  if (!doc.isNull() && doc.isObject()) {
+    QJsonObject json = doc.object();
+    if (json.contains("eventType")) {
+      QMetaEnum metaEnum = QMetaEnum::fromType<EventType>();
+      const char *key = json["eventType"].toString().toLocal8Bit().constData();
+      setEventType(static_cast<EventType>(metaEnum.keyToValue(key)));
+    }
+    setName(json["name"].toString());
+    setNotes(json["notes"].toString());
+    setPrice(json["price"].toInt());
+    setMileage(json["mileage"].toInt());
+    setServiceDate(QDate::fromString(json["serviceDate"].toString()));
+
+    setRepeatAfterDistance(json["repeatAfterDistance"].toInt());
+    setRepeatAfterMonths(json["repeatAfterMonths"].toInt());
+    setHasRepeatAfterDistance(json["hasRepeatAfterDistance"].toBool());
+    setHasRepeatAfterMonths(json["hasRepeatAfterMonths"].toBool());
+  }
+}
+
+bool ServiceRecord::isNameValid() const
+{
+  return !m_name.isEmpty();
+}
+
+bool ServiceRecord::isValid() const
+{
+  return isNameValid();
+}
+
+ServiceRecord::EventType ServiceRecord::eventType() const
+{
+  return m_eventType;
+}
+
+void ServiceRecord::setEventType(const EventType &newEventType)
+{
+  if (m_eventType == newEventType)
+    return;
+  m_eventType = newEventType;
+  emit eventTypeChanged();
+  emit isRepeatDistanceValidChanged();
+  emit isRepeatMonthsValidChanged();
+  emit isValidChanged();
+}
+
+bool ServiceRecord::isRepeatDistanceValid() const
+{
+  if (m_eventType == EventType::Maintenance) {
+    if (m_hasRepeatAfterDistance) {
+      return m_repeatAfterDistance > 0;
+    }
+  }
+  return true;
+}
+
+bool ServiceRecord::isRepeatMonthsValid() const
+{
+  if (m_eventType == EventType::Maintenance) {
+    if (m_hasRepeatAfterMonths) {
+      return m_repeatAfterMonths > 0;
+    }
+  }
+  return true;
+}

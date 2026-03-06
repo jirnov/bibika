@@ -1,10 +1,9 @@
 ﻿import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 
 ColumnLayout {
     id: root
-
+/*
     property int initialMileage: 0
     property string initialLabel: "Текущий пробег: %1 км"
     property string successLabel: "Пробег %1 км"
@@ -54,5 +53,5 @@ ColumnLayout {
         id: labelItem
         font.pixelSize: 10
         wrapMode: Text.Wrap
-    }
+    }*/
 }

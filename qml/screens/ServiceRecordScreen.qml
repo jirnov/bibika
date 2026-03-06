@@ -2,65 +2,113 @@
 import QtQuick.Controls
 import QtQuick.Layouts
 
-Item {
-    id: editServiceRecordScreen
-    width: 288
-    height: 640
+import BibikaService
+
+Page {
+    id: root
+    width: Style.width
+    height: Style.height
     visible: true
 
-    property int currentMileage: 232000
-    property date currentDate: new Date()
+    property int currentMileage: 0
 
-    readonly property color accentColor: "#4CAF50"
-    readonly property color backgroundColor: "#f0f0f0"
-    readonly property color cardColor: "#FFFFFF"
+    property ServiceRecord editRecord: null
+
+    property ServiceRecord _editCopy: ServiceRecord{}
+
+    signal accepted(ServiceRecord record)
+    signal rejected()
+
+    Component.onCompleted: {
+        if (editRecord) {
+            _editCopy = ServiceRecordBuilder.fromJSON(editRecord.toJSON(), root)
+        }
+        else {
+            _editCopy.mileage = currentMileage
+            _editCopy.serviceDate = new Date()
+            _editCopy.eventType = ServiceRecord.Maintenance
+        }
+    }
+
+    readonly property color accentColor: "#000000"
     readonly property color textColor: "#333333"
     readonly property color secondaryTextColor: "#666666"
 
+    header: ToolBar {
+        background: Rectangle {
+            color: "white"
+        }
+
+        Label {
+            text: "Редактирование события"
+            anchors.centerIn: parent
+            font.pixelSize: Style.fontSizeTitle
+            font.bold: true
+        }
+    }
+
+    footer: ToolBar {
+
+        RowLayout {
+            anchors.fill: parent
+            spacing: Style.defaultMargin
+
+            Button {
+                Layout.fillWidth: true
+                text: "Добавить"
+                highlighted: true
+
+                onClicked: {
+                    // TODO: Добавить валидацию данных
+                    console.log(JSON.stringify(root._editCopy))
+                    console.log(root._editCopy.toJSON())
+                    root.accepted(root._editCopy)
+                }
+            }
+
+            Button {
+                Layout.fillWidth: true
+                text: "Закрыть"
+
+                onClicked: {
+                    root.rejected()
+                }
+            }
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
-        color: backgroundColor
+        color: Style.backgroundColor
 
-        // Главный вертикальный layout на весь экран
         ColumnLayout {
             anchors.fill: parent
             spacing: 0
 
-            // ВЕРХНЯЯ ЧАСТЬ (фиксированная, прижата к верху)
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 8
-                Layout.margins: 8
-                Layout.bottomMargin: 8
+                spacing: Style.defaultMargin
+                Layout.margins: Style.defaultMargin
+                Layout.bottomMargin: Style.defaultMargin
 
-                // Заголовок
-                Label {
-                    text: "Редактирование события"
-                    font.pixelSize: 20
-                    font.bold: true
-                    color: textColor
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.bottomMargin: 4
-                }
-
-                // Тип события (TabBar)
+                // Тип события
                 TabBar {
                     id: eventType
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 40
-                    currentIndex: 0
+                    currentIndex: root._editCopy.eventType
 
                     background: Rectangle {
                         color: "transparent"
                     }
 
                     TabButton {
+                        id: repairTabButton
                         text: "🔧 Ремонт"
                         font.pixelSize: 12
                         contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: eventType.currentIndex === 0 ? accentColor : secondaryTextColor
+                            text: repairTabButton.text
+                            font: repairTabButton.font
+                            color: eventType.currentIndex === 0 ? root.accentColor : root.secondaryTextColor
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -69,19 +117,20 @@ Item {
                             Rectangle {
                                 width: parent.width
                                 height: 2
-                                color: eventType.currentIndex === 0 ? accentColor : "transparent"
+                                color: eventType.currentIndex === 0 ? root.accentColor : "transparent"
                                 anchors.bottom: parent.bottom
                             }
                         }
                     }
 
                     TabButton {
+                        id: maintenanceTabButton
                         text: "📅 ТО"
                         font.pixelSize: 12
                         contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: eventType.currentIndex === 1 ? accentColor : secondaryTextColor
+                            text: maintenanceTabButton.text
+                            font: maintenanceTabButton.font
+                            color: eventType.currentIndex === 1 ? root.accentColor : root.secondaryTextColor
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -90,19 +139,20 @@ Item {
                             Rectangle {
                                 width: parent.width
                                 height: 2
-                                color: eventType.currentIndex === 1 ? accentColor : "transparent"
+                                color: eventType.currentIndex === 1 ? root.accentColor : "transparent"
                                 anchors.bottom: parent.bottom
                             }
                         }
                     }
 
                     TabButton {
+                        id: serviceTabButton
                         text: "🧼 Услуга"
                         font.pixelSize: 12
                         contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: eventType.currentIndex === 2 ? accentColor : secondaryTextColor
+                            text: serviceTabButton.text
+                            font: serviceTabButton.font
+                            color: eventType.currentIndex === 2 ? root.accentColor : root.secondaryTextColor
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
                         }
@@ -111,48 +161,14 @@ Item {
                             Rectangle {
                                 width: parent.width
                                 height: 2
-                                color: eventType.currentIndex === 2 ? accentColor : "transparent"
+                                color: eventType.currentIndex === 2 ? root.accentColor : "transparent"
                                 anchors.bottom: parent.bottom
                             }
                         }
                     }
-                }
 
-                // Статус события (тоже в верхней части)
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: children[0].implicitHeight + 24
-                    //color: cardColor
-
-                    ColumnLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        spacing: 8
-
-                        Label {
-                            text: "Статус:"
-                            font.pixelSize: 12
-                            color: secondaryTextColor
-                        }
-
-                        RowLayout {
-                            Layout.fillWidth: true
-                            spacing: 8
-
-                            CheckBox {
-                                id: eventStatus
-                                checked: true
-
-                                indicator: null
-
-                                contentItem: Text {
-                                    text: eventStatus.checked ? "✅ <b>Выполнено</b> / Запланировано" : "🔔 Выполнено / <b>Запланировано</b>"
-                                    textFormat: Text.RichText
-                                    font.pixelSize: 14
-                                    color: textColor
-                                }
-                            }
-                        }
+                    onCurrentIndexChanged: {
+                        root._editCopy.eventType = currentIndex
                     }
                 }
             }
@@ -161,8 +177,8 @@ Item {
             ScrollView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.leftMargin: 8
-                Layout.rightMargin: 8
+                Layout.leftMargin: Style.defaultMargin
+                Layout.rightMargin: Style.defaultMargin
                 clip: true
 
                 ScrollBar.vertical: ScrollBar {
@@ -172,29 +188,42 @@ Item {
 
                 ColumnLayout {
                     width: parent.width
-                    spacing: 8
+                    spacing: Style.defaultMargin
 
                     // Название события
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 70
-                        color: cardColor
+                        implicitHeight: children[0].implicitHeight + 24
+                        color: Style.cardColor
+                        radius: 8
 
                         ColumnLayout {
+                            id: nameColumn
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: Style.defaultMargin
 
                             Label {
                                 text: "Название:"
                                 font.pixelSize: 12
-                                color: secondaryTextColor
+                                color: root.secondaryTextColor
                             }
 
                             TextField {
+                                id: nameInput
                                 Layout.preferredHeight: 30
                                 Layout.fillWidth: true
                                 font.pixelSize: 14
+                                text: root._editCopy.name
+                                onTextEdited: root._editCopy.name = text
+                            }
+                            Label {
+                                id: nameHint
+                                Layout.fillWidth: true
+                                color: "#ff5252"
+                                font.pixelSize: 10
+                                //visible: text !== ""
+                                text: "Обязательное поле"
                             }
                         }
                     }
@@ -203,27 +232,29 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: children[0].implicitHeight + 24
-                        color: cardColor
+                        color: Style.cardColor
+                        radius: 8
 
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: Style.defaultMargin
 
                             Label {
                                 text: "Стоимость (₽):"
                                 font.pixelSize: 12
-                                color: secondaryTextColor
+                                color: root.secondaryTextColor
                             }
 
                             TextField {
                                 Layout.preferredHeight: 30
                                 Layout.fillWidth: true
-                                text: "0"
+                                text: String(root._editCopy.price)
                                 validator: IntValidator {
                                     bottom: 0
                                 }
                                 font.pixelSize: 14
+                                onTextEdited: root._editCopy.price = Number(text) || 0
                             }
                         }
                     }
@@ -232,41 +263,45 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: children[0].implicitHeight + 24
-                        color: cardColor
+                        color: Style.cardColor
+                        radius: 8
 
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: Style.defaultMargin
 
                             RowLayout {
-
                                 Label {
                                     text: "Пробег (км):"
                                     font.pixelSize: 12
-                                    color: secondaryTextColor
+                                    color: root.secondaryTextColor
                                 }
 
                                 TextField {
+                                    id: mileageField
                                     Layout.preferredHeight: 30
                                     Layout.fillWidth: true
-                                    text: String(currentMileage)
+                                    text: String(root._editCopy.mileage)
                                     font.pixelSize: 14
+                                    validator: IntValidator {
+                                        bottom: 0
+                                    }
+                                    onTextEdited: root._editCopy.mileage = Number(text) || 0
                                 }
                             }
 
                             RowLayout {
-
                                 Label {
                                     text: "Дата события:"
                                     font.pixelSize: 12
-                                    color: secondaryTextColor
+                                    color: root.secondaryTextColor
                                 }
 
                                 TextField {
                                     Layout.preferredHeight: 30
                                     Layout.fillWidth: true
-                                    text: Qt.formatDateTime(currentDate, "dd.MM.yyyy")
+                                    text: Qt.formatDateTime(root._editCopy.serviceDate, "dd.MM.yyyy")
                                     inputMethodHints: Qt.ImhDate
                                     font.pixelSize: 14
                                     inputMask: "00\\.00\\.0000;_"
@@ -274,74 +309,100 @@ Item {
                                     validator: RegularExpressionValidator {
                                         regularExpression: /\d{2}.\d{2}\.\d{4}/
                                     }
+
+                                    onEditingFinished: {
+                                        var parts = text.split('.')
+                                        if (parts.length === 3) {
+                                            var day = parseInt(parts[0])
+                                            var month = parseInt(parts[1]) - 1 // Месяцы с 0
+                                            var year = parseInt(parts[2])
+
+                                            var newDate = new Date(year, month, day)
+
+                                            // Проверяем валидность даты
+                                            if (!isNaN(newDate.getDate())) {
+                                                root._editCopy.serviceDate = newDate
+                                            } else {
+                                                // Если дата невалидна, возвращаем старое значение
+                                                text = Qt.formatDateTime(root._editCopy.serviceDate, "dd.MM.yyyy")
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
 
-                    // Комментарий
+                    // Заметка
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 70
-                        color: cardColor
+                        color: Style.cardColor
+                        radius: 8
 
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: Style.defaultMargin
 
                             Label {
-                                text: "Комментарий:"
-                                font.pixelSize: 12
-                                color: secondaryTextColor
+                                text: "Заметка:"
+                                font.pixelSize: 10
+                                color: root.secondaryTextColor
                             }
 
                             TextField {
                                 Layout.preferredHeight: 30
                                 Layout.fillWidth: true
                                 font.pixelSize: 14
+                                text: root._editCopy.notes
+                                onTextEdited: root._editCopy.notes = text
                             }
                         }
                     }
 
-                    // Повторить ТО (условно видимый блок)
+                    // Повторить через ТО (условно видимый блок)
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.preferredHeight: children[0].implicitHeight + 24
-                        color: cardColor
-                        visible: eventStatus.checked && eventType.currentIndex === 1
+                        color: Style.cardColor
+                        visible: eventType.currentIndex === 1
+                        radius: 8
 
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: Style.defaultMargin
 
                             Label {
-                                text: "Следующее ТО:"
+                                text: "Повторить через"
                                 font.pixelSize: 12
-                                color: secondaryTextColor
+                                color: root.secondaryTextColor
                             }
                             RowLayout {
                                 Layout.fillWidth: true
                                 spacing: 2
 
                                 CheckBox {
-                                    id: intervalMileageBox
+                                    id: useRepeatAfterDistance
                                     Layout.preferredWidth: 20
-                                }
-                                Label {
-                                    text: "каждые"
-                                    enabled: intervalMileageBox.checked
+                                    checked: root._editCopy.hasRepeatAfterDistance
+                                    onCheckedChanged: root._editCopy.hasRepeatAfterDistance = checked
                                 }
                                 TextField {
-                                    text: "15000"
-                                    enabled: intervalMileageBox.checked
+                                    id: repeatDistanceInput
+                                    text: String(root._editCopy.repeatAfterDistance)
+                                    enabled: useRepeatAfterDistance.checked
                                     horizontalAlignment: TextInput.AlignRight
-                                    implicitWidth: 60
+                                    validator: IntValidator {
+                                        bottom: 0
+                                    }
+                                    implicitWidth: 80
                                     font.pixelSize: 14
+                                    onTextEdited: root._editCopy.repeatAfterDistance = Number(text) || 0
                                 }
                                 Label {
-                                    enabled: intervalMileageBox.checked
+                                    enabled: useRepeatAfterDistance.checked
                                     text: "км"
                                     font.pixelSize: 14
                                 }
@@ -350,31 +411,34 @@ Item {
                             Label {
                                 text: "или (что наступит раньше)"
                                 font.pixelSize: 12
-                                color: secondaryTextColor
+                                color: root.secondaryTextColor
                             }
                             RowLayout {
                                 Layout.fillWidth: true
                                 spacing: 2
 
                                 CheckBox {
-                                    id: intervalTimeBox
+                                    id: useRepeatAfterMonths
                                     Layout.preferredWidth: 20
-                                }
-                                Label {
-                                    text: "каждые"
-                                    enabled: intervalTimeBox.checked
+                                    checked: root._editCopy.hasRepeatAfterMonths
+                                    onCheckedChanged: root._editCopy.hasRepeatAfterMonths = checked
                                 }
                                 TextField {
-                                    text: "12"
+                                    id: repeatMonthsInput
+                                    text: String(root._editCopy.repeatAfterMonths)
                                     implicitWidth: 40
                                     horizontalAlignment: TextInput.AlignRight
                                     font.pixelSize: 14
-                                    enabled: intervalTimeBox.checked
+                                    enabled: useRepeatAfterMonths.checked
+                                    validator: IntValidator {
+                                        bottom: 0
+                                    }
+                                    onTextEdited: root._editCopy.repeatAfterMonths = Number(text) || 0
                                 }
                                 Label {
                                     text: "месяцев"
                                     font.pixelSize: 14
-                                    enabled: intervalTimeBox.checked
+                                    enabled: useRepeatAfterMonths.checked
                                 }
                                 Item { Layout.fillWidth: true }
                             }
@@ -383,27 +447,13 @@ Item {
 
                     // Дополнительный отступ внизу для красоты
                     Item {
-                        Layout.preferredHeight: 8
+                        Layout.preferredHeight: Style.defaultMargin
                     }
-                }
-            }
 
-            // НИЖНЯЯ ЧАСТЬ (фиксированная, прижата к низу)
-            RowLayout {
-                Layout.fillWidth: true
-                Layout.margins: 8
-                spacing: 8
-
-                Button {
-                    Layout.fillWidth: true
-                    text: eventStatus.checked ? "Добавить" : "Запланировать"
-                }
-
-                Button {
-                    Layout.fillWidth: true
-                    text: "Закрыть"
                 }
             }
         }
+
     }
+
 }
