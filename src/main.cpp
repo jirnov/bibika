@@ -1,15 +1,25 @@
+#include <QDirIterator>
+#include <QFontDatabase>
 #include <QGuiApplication>
 #include <QIcon>
 #include <QLoggingCategory>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
 #include <QTranslator>
+#include <QQmlContext>
 
 int main(int argc, char *argv[])
 {
   QGuiApplication app(argc, argv);
 
   QLoggingCategory::setFilterRules(QStringLiteral("qt.translator.debug=true"));
+
+/*
+  QDirIterator it(":", QDirIterator::Subdirectories);
+  while (it.hasNext()) {
+    qDebug() << "Ресурс:" << it.next();
+  }
+*/
 
   QTranslator translator;
   if (translator.load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang")) {
@@ -20,7 +30,7 @@ int main(int argc, char *argv[])
     qDebug() << "Load translations failed";
   }
 
-  QQuickStyle::setStyle("FluentWinUI3");
+  QQuickStyle::setStyle("Material");
   app.setOrganizationDomain("ru.blog2k.bibikaservice");
   app.setOrganizationName("Personal");
 
@@ -32,7 +42,12 @@ int main(int argc, char *argv[])
     &app,
     []() { QCoreApplication::exit(-1); },
     Qt::QueuedConnection);
+  engine.addImportPath(":/");
   engine.loadFromModule("BibikaService", "Main");
+
+  if (engine.rootObjects().isEmpty()) {
+    engine.load(QUrl("qrc:/qml/Main.qml"));
+  }
 
   return app.exec();
 }

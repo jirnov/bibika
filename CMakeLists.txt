@@ -11,14 +11,17 @@ find_package(Qt6 REQUIRED COMPONENTS
     Core
     Qml
     LinguistTools)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/service
 )
 
 qt_standard_project_setup(
-    I18N_TRANSLATED_LANGUAGES ru)
+    I18N_TRANSLATED_LANGUAGES en)
 
 set(QML_FILES
     qml/Main.qml
@@ -30,7 +33,7 @@ set(QML_FILES
     qml/components/MileageTextField.qml
     qml/dialogs/UpdateMilestoneDialog.qml
     qml/AppSettings.qml
-
+    qml/components/SmartTextField.qml
 )
 
 qt_add_translations(appBibikaService
@@ -42,32 +45,51 @@ qt6_add_executable(appBibikaService
     src/main.cpp
 )
 
-qt6_add_resources(appBibikaService "tranlations"
-    PREFIX "/lang"
-        lang/BibikaService_ru.ts
+qt_add_resources(appBibikaService "data"
+    BASE "res"
+    FILES
+        res/cars.json)
+
+qt_add_resources(appBibikaService "qml"
+    PREFIX "/"
+    FILES
+        ${QML_FILES})
+
+qt_add_resources(appBibikaService "icons"
+    BASE "res"
+    FILES
+        res/icons/calendar.svg
+        res/icons/chart.svg
+        res/icons/history.svg
 )
+
+qt_add_resources(appBibikaService "lang"
+    PREFIX "/lang"
+    BASE "lang/"
+    FILES
+        lang/BibikaService_en.ts)
 
 set_source_files_properties(qml/style/Style.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(qml/AppSettings.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
+
+set_property(TARGET appBibikaService APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
 
 qt6_add_qml_module(appBibikaService
     URI BibikaService
     VERSION 1.0
     QML_FILES
         ${QML_FILES}
-    RESOURCES
-        ${QML_FILES}
-        res/icons/calendar.svg
-        res/icons/chart.svg
-        res/icons/history.svg
-        lang/BibikaService_ru.ts
     SOURCES
         src/models/CarInfo.cpp
         src/models/CarInfo.h
         src/models/ServiceRecord.cpp
         src/models/ServiceRecord.h
-        src/models/ServiceRecordBuilder.h src/models/ServiceRecordBuilder.cpp
-        src/models/CarInfoBuilder.h src/models/CarInfoBuilder.cpp
+        src/models/ServiceRecordBuilder.h
+        src/models/ServiceRecordBuilder.cpp
+        src/models/CarInfoBuilder.h
+        src/models/CarInfoBuilder.cpp
+        src/service/CarModelIndex.h
+        src/service/CarModelIndex.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

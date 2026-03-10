@@ -6,8 +6,8 @@ import BibikaService
 
 Page {
     id: root
-    width: Style.width
-    height: Style.height
+    width: AppSettings.width
+    height: AppSettings.height
 
     signal clicked
 

@@ -1,0 +1,343 @@
+﻿{
+  "brands": [
+    {
+      "name": "Lada",
+      "aliases": ["Лада", "ВАЗ", "Vaz", "Жигули"],
+      "models": [
+        "Granta", "Гранта",
+        "Vesta", "Веста",
+        "Largus", "Ларгус",
+        "Niva Legend", "Нива Легенд", "4x4", "2121",
+        "Niva Travel", "Нива Тревел", "Шевроле Нива", "Chevrolet Niva", "2123",
+        "XRAY", "Иксрей", "Х-Рей",
+        "Kalina", "Калина",
+        "Priora", "Приора",
+        "2107", "Семерка", "Lada 2107", "Жигули 2107",
+        "2106", "Шестерка", "Lada 2106", "Жигули 2106",
+        "2114", "Самара", "Lada 2114",
+        "2110", "Десятка", "Lada 2110",
+        "1111 Oka", "Ока", "1111"
+      ]
+    },
+    {
+      "name": "SEAT",
+      "aliases": ["Сеат" ],
+      "models": [
+        "Altea", "Альтеа",
+        "Altea Freetrack", "Альтеа Фритрек", "Фритрек",
+        "Leon", "Леон",
+        "Ibiza", "Ибица",
+        "Arona", "Арона",
+        "Alhambra", "Альхамбра",
+        "Toledo", "Толедо",
+        "Tarraco", "Таррако",
+        "Ateca", "Атека"
+      ]
+    },
+    {
+      "name": "Cupra",
+      "aliases": ["Купра"],
+      "models": [
+        "Ateca", "Атека",
+        "Leon", "Леон",
+        "Leon Sportstourer", "Леон Спортстурер",
+        "Formentor", "Форментор",
+        "Born", "Борн",
+        "Tavascan", "Таваскан",
+        "Terramar", "Террамар",
+        "Raval", "Раваль",
+        "DarkRebel", "ДаркРебел",
+        "e-Racer", "и-Рейсер"
+      ]
+    },
+    {
+      "name": "Toyota",
+      "aliases": ["Тойота"],
+      "models": [
+        "Camry", "Камри",
+        "RAV4", "Рав 4", "Рав4",
+        "Corolla", "Королла",
+        "Land Cruiser 300", "Ленд Крузер 300", "Тойота 300",
+        "Land Cruiser Prado", "Ленд Крузер Прадо", "Прадо",
+        "Highlander", "Хайлендер",
+        "Hilux", "Хайлюкс",
+        "Fortuner", "Фортуна",
+        "C-HR", "Ц-ХР",
+        "Yaris", "Ярис"
+      ]
+    },
+    {
+      "name": "Kia",
+      "aliases": ["Киа"],
+      "models": [
+        "Rio", "Рио",
+        "Sportage", "Спортейдж",
+        "Sorento", "Соренто",
+        "Optima", "Оптима", "K5",
+        "Ceed", "Сид",
+        "Seltos", "Селтос",
+        "Mohave", "Мохав",
+        "Carnival", "Карнивал",
+        "Picanto", "Пиканто",
+        "Rio X", "Рио Икс", "Rio X-Line"
+      ]
+    },
+    {
+      "name": "Hyundai",
+      "aliases": ["Хендай", "Хёндэ"],
+      "models": [
+        "Solaris", "Солярис",
+        "Creta", "Крета",
+        "Tucson", "Туссан",
+        "Santa Fe", "Санта Фе",
+        "Palisade", "Палисад",
+        "Elantra", "Элантра",
+        "Sonata", "Соната",
+        "Accent", "Акцент",
+        "Ioniq 5", "Айоник 5",
+        "Staria", "Стария"
+      ]
+    },
+    {
+      "name": "Renault",
+      "aliases": ["Рено"],
+      "models": [
+        "Logan", "Логан",
+        "Sandero", "Сандеро",
+        "Duster", "Дастер",
+        "Kaptur", "Каптур",
+        "Arkana", "Аркана",
+        "Megane", "Меган",
+        "Kangoo", "Кангу"
+      ]
+    },
+    {
+      "name": "Nissan",
+      "aliases": ["Ниссан"],
+      "models": [
+        "Qashqai", "Кашкай",
+        "X-Trail", "Икс-Трейл",
+        "Murano", "Мурано",
+        "Pathfinder", "Пасфайндер",
+        "Patrol", "Патруль",
+        "Terrano", "Террано",
+        "Juke", "Джук",
+        "Almera", "Альмера",
+        "Teana", "Теана"
+      ]
+    },
+    {
+      "name": "Mitsubishi",
+      "aliases": ["Митсубиси", "Мицубиси"],
+      "models": [
+        "Outlander", "Аутлендер",
+        "Pajero", "Паджеро",
+        "Pajero Sport", "Паджеро Спорт",
+        "L200", "Эль 200",
+        "ASX", "А-Эс-Икс",
+        "Lancer", "Лансер",
+        "Eclipse Cross", "Эклипс Кросс"
+      ]
+    },
+    {
+      "name": "Mazda",
+      "aliases": ["Мазда"],
+      "models": [
+        "Mazda6", "Мазда 6",
+        "Mazda3", "Мазда 3",
+        "CX-5", "Си-Икс 5", "СХ-5",
+        "CX-9", "Си-Икс 9", "СХ-9",
+        "MX-5", "Эм-Икс 5"
+      ]
+    },
+    {
+      "name": "Haval",
+      "aliases": ["Хавал"],
+      "models": [
+        "Jolion", "Джолион",
+        "F7", "Эф 7",
+        "F7x", "Эф 7 Икс",
+        "H9", "Аш 9",
+        "Dargo", "Дарго",
+        "M6", "Эм 6",
+        "H6", "Аш 6"
+      ]
+    },
+    {
+      "name": "Chery",
+      "aliases": ["Чери"],
+      "models": [
+        "Tiggo 4 Pro", "Тигго 4 Про",
+        "Tiggo 7 Pro", "Тигго 7 Про",
+        "Tiggo 8 Pro", "Тигго 8 Про",
+        "Tiggo 8 Pro Max", "Тигго 8 Про Макс",
+        "Arrizo 8", "Арризо 8",
+        "Tiggo 5x", "Тигго 5"
+      ]
+    },
+    {
+      "name": "Geely",
+      "aliases": ["Джили"],
+      "models": [
+        "Monjaro", "Монжаро",
+        "Coolray", "Кулрей", "Кулрэй",
+        "Atlas Pro", "Атлас Про",
+        "Tugella", "Тугелла",
+        "Emgrand", "Эмгранд",
+        "Okavango", "Окаванго"
+      ]
+    },
+    {
+      "name": "BMW",
+      "aliases": ["БМВ", "Бэха"],
+      "models": [
+        "3 Series", "3 серия", "БМВ 3",
+        "5 Series", "5 серия", "БМВ 5",
+        "7 Series", "7 серия", "БМВ 7",
+        "X3", "Икс 3",
+        "X5", "Икс 5",
+        "X6", "Икс 6",
+        "X1", "Икс 1"
+      ]
+    },
+    {
+      "name": "Mercedes-Benz",
+      "aliases": ["Мерседес", "Мерс", "Бенц"],
+      "models": [
+        "E-Class", "Е класс", "Ешка",
+        "S-Class", "Эс класс", "Эска",
+        "GLC", "Гэ-Эль-Це",
+        "GLE", "Гэ-Эль-Е",
+        "G-Class", "Гелик", "Гелендваген",
+        "C-Class", "Це класс", "Цешка",
+        "V-Class", "Виано", "Вито",
+        "Sprinter", "Спринтер"
+      ]
+    },
+    {
+      "name": "Audi",
+      "aliases": ["Ауди"],
+      "models": [
+        "A4", "А 4",
+        "A6", "А 6",
+        "Q5", "Ку 5",
+        "Q7", "Ку 7",
+        "Q3", "Ку 3",
+        "A3", "А 3",
+        "A8", "А 8"
+      ]
+    },
+    {
+      "name": "Volkswagen",
+      "aliases": ["Фольксваген", "VW"],
+      "models": [
+        "Polo", "Поло",
+        "Tiguan", "Тигуан",
+        "Passat", "Пассат",
+        "Golf", "Гольф",
+        "Tuareg", "Туарег",
+        "Jetta", "Джетта",
+        "Teramont", "Терамонт"
+      ]
+    },
+    {
+      "name": "Skoda",
+      "aliases": ["Шкода"],
+      "models": [
+        "Rapid", "Рапид",
+        "Octavia", "Октавия",
+        "Kodiaq", "Кодиак",
+        "Karoq", "Карок",
+        "Superb", "Суперб",
+        "Yeti", "Йети"
+      ]
+    },
+    {
+      "name": "Ford",
+      "aliases": ["Форд"],
+      "models": [
+        "Focus", "Фокус",
+        "Mondeo", "Мондео",
+        "Kuga", "Куга",
+        "EcoSport", "Экоспорт",
+        "Explorer", "Эксплорер",
+        "Fiesta", "Фиеста",
+        "Transit", "Транзит"
+      ]
+    },
+    {
+      "name": "Chevrolet",
+      "aliases": ["Шевроле", "Шеви"],
+      "models": [
+        "Cruze", "Круз",
+        "Lacetti", "Лачетти",
+        "Captiva", "Кэптива",
+        "Aveo", "Авео",
+        "Cobalt", "Кобальт",
+        "Niva", "Нива",
+        "Tahoe", "Тахо",
+        "Camaro", "Камаро",
+        "Corvette", "Корвет"
+      ]
+    },
+    {
+      "name": "UAZ",
+      "aliases": ["УАЗ", "Уазик"],
+      "models": [
+        "Patriot", "Патриот",
+        "Hunter", "Хантер",
+        "Pickup", "Пикап",
+        "452", "Буханка", "УАЗ 452",
+        "469", "УАЗ 469", "Козлик",
+        "Профи", "Profi"
+      ]
+    },
+    {
+      "name": "GAZ",
+      "aliases": ["ГАЗ"],
+      "models": [
+        "Gazelle", "Газель",
+        "Sobol", "Соболь",
+        "21 Volga", "21 Волга", "Волга 21",
+        "24 Volga", "24 Волга", "Волга 24",
+        "3102 Volga", "3102 Волга", "Волга 3102"
+      ]
+    },
+    {
+      "name": "Moskvich",
+      "aliases": ["Москвич"],
+      "models": [
+        "Moskvich 3", "Москвич 3",
+        "Moskvich 6", "Москвич 6",
+        "Moskvich 412", "Москвич 412",
+        "Moskvich 2140", "Москвич 2140",
+        "Moskvich 2141", "Москвич 2141"
+      ]
+    },
+    {
+      "name": "Exeed",
+      "aliases": ["Эксид"],
+      "models": [
+        "LX", "Эль-Икс",
+        "TXL", "Тэ-Икс-Эль",
+        "VX", "Вэ-Икс"
+      ]
+    },
+    {
+      "name": "Omoda",
+      "aliases": ["Омода"],
+      "models": [
+        "C5", "Це 5",
+        "S5", "Эс 5"
+      ]
+    },
+    {
+      "name": "Jaecoo",
+      "aliases": ["Джику"],
+      "models": [
+        "J7", "Джей 7",
+        "J8", "Джей 8"
+      ]
+    }
+  ]
+}

@@ -6,8 +6,8 @@ import BibikaService
 
 ApplicationWindow {
     id: root
-    width: Style.width
-    height: Style.height
+    width: AppSettings.width
+    height: AppSettings.height
     minimumWidth: width
     maximumWidth: width
     minimumHeight: height

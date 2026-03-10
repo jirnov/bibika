@@ -6,12 +6,8 @@
 
 CarInfo::CarInfo(QObject* parent) : QObject{ parent }
 {
-  connect(this, &CarInfo::brandNameChanged, this, &CarInfo::isBrandNameValidChanged);
-  connect(this, &CarInfo::isBrandNameValidChanged, this, &CarInfo::isValidChanged);
-
-  connect(this, &CarInfo::modelNameChanged, this, &CarInfo::isModelNameValidChanged);
-  connect(this, &CarInfo::isModelNameValidChanged, this, &CarInfo::isValidChanged);
-
+  connect(this, &CarInfo::brandNameChanged, this, &CarInfo::isValidChanged);
+  connect(this, &CarInfo::modelNameChanged, this, &CarInfo::isValidChanged);
   connect(this, &CarInfo::lastMileageChanged, this, &CarInfo::lastMileageDateChanged);
 }
 
@@ -42,7 +38,7 @@ void CarInfo::fromJSONString(const QString &jsonString)
     setModelName(json["modelName"].toString());
     setLastMileage(json["lastMileage"].toInt());
 
-    const auto date = QDate::fromString(json["lastMileageDate"].toString());
+    const auto date = QDate::fromString(json["lastMileageDate"].toString(), Qt::ISODate);
     if (date.isValid()) {
       m_lastMileageDate = date;
     }
@@ -96,24 +92,46 @@ void CarInfo::setLastMileage(const int newLastMileage)
   emit lastMileageChanged();
 }
 
-bool CarInfo::isBrandNameValid() const
-{
-  return !m_brandName.isEmpty();
-}
-
-bool CarInfo::isModelNameValid() const
-{
-  return !m_modelName.isEmpty();
-}
-
 bool CarInfo::isValid() const
 {
-  return isBrandNameValid() && isModelNameValid();
+  return validateAll().empty();
 }
 
 QDate CarInfo::lastMileageDate() const
 {
   return m_lastMileageDate;
+}
+
+QMap<QString, QString> CarInfo::validateAll() const {
+  QMap<QString, QString> errors;
+
+  const auto brandError = validateBrand();
+  if (!brandError.isEmpty()) {
+    errors["brandName"] = brandError;
+  }
+
+  const auto modelError = validateModel();
+  if (modelError.isEmpty()) {
+    errors["modelName"] = modelError;
+  }
+
+  return errors;
+}
+
+QString CarInfo::validateBrand() const
+{
+  if (m_brandName.isEmpty()) {
+    return tr("Пожалуйста, укажите марку (обязательное поле)");
+  }
+  return {};
+}
+
+QString CarInfo::validateModel() const
+{
+  if (m_modelName.isEmpty()) {
+    return tr("Пожалуйста, укажите модель (обязательное поле)");
+  }
+  return {};
 }
 
 

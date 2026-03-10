@@ -10,12 +10,10 @@ class CarInfo : public QObject
   Q_OBJECT
   QML_ELEMENT
   Q_PROPERTY(QString brandName READ brandName WRITE setBrandName NOTIFY brandNameChanged FINAL)
-  Q_PROPERTY(bool isBrandNameValid READ isBrandNameValid NOTIFY isBrandNameValidChanged FINAL)
   Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelNameChanged FINAL)
-  Q_PROPERTY(bool isModelNameValid READ isModelNameValid NOTIFY isModelNameValidChanged FINAL)
   Q_PROPERTY(int lastMileage READ lastMileage WRITE setLastMileage NOTIFY lastMileageChanged FINAL)
-  Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
   Q_PROPERTY(QDate lastMileageDate READ lastMileageDate NOTIFY lastMileageDateChanged FINAL)
+  Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
 
  public:
   explicit CarInfo(QObject* parent = nullptr);
@@ -33,11 +31,13 @@ class CarInfo : public QObject
   int lastMileage() const;
   void setLastMileage(const int lastMileage);
 
-  bool isBrandNameValid() const;
-  bool isModelNameValid() const;
   bool isValid() const;
 
   QDate lastMileageDate() const;
+
+  Q_INVOKABLE QMap<QString, QString> validateAll() const;
+  Q_INVOKABLE QString validateBrand() const;
+  Q_INVOKABLE QString validateModel() const;
 
  signals:
   void brandNameChanged();
@@ -45,8 +45,6 @@ class CarInfo : public QObject
   void lastMileageChanged();
   void lastMileageDateChanged();
 
-  void isBrandNameValidChanged();
-  void isModelNameValidChanged();
   void isValidChanged();
 
  private:

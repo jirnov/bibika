@@ -7,6 +7,22 @@ QtObject
 {
     id: root
 
+    readonly property int width: 576
+    readonly property int height: 1280
+
+    property int keyboardHeight: 0
+
+    function keyboardRectangleChanged(rootHeight) {
+        var y = Qt.inputMethod.keyboardRectangle.y / Screen.devicePixelRatio;
+        var newHeight = rootHeight - y;
+        if (newHeight > 0 && y > 0) {
+            keyboardHeight = newHeight;
+        }
+        else {
+            keyboardHeight = 0;
+        }
+    }
+
     property Settings _persistent : Settings {
         property string carInfoJson: ""
         property alias showWelcomeScreen: root.showWelcomeScreen

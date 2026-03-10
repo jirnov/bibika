@@ -6,8 +6,8 @@ import BibikaService
 
 Page {
     id: root
-    width: Style.width
-    height: Style.height
+    width: AppSettings.width
+    height: AppSettings.height
     visible: true
 
     property int currentMileage: 0
@@ -55,7 +55,7 @@ Page {
 
             Button {
                 Layout.fillWidth: true
-                text: qsTr("Ok")
+                text: qsTr("Сохранить")
                 highlighted: true
 
                 onClicked: {
@@ -68,7 +68,7 @@ Page {
 
             Button {
                 Layout.fillWidth: true
-                text: qsTr("Cancel")
+                text: qsTr("Отмена")
 
                 onClicked: {
                     root.rejected()

@@ -2,9 +2,6 @@
 import QtQuick
 
 QtObject {
-    readonly property int width: 360
-    readonly property int height: 800
-
     readonly property color backgroundColor: "#f0f0f0"
     readonly property color cardColor: "#FFFFFF"
     readonly property color titleColor: "#333333"
