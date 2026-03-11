@@ -9,10 +9,9 @@ QtObject {
 
     readonly property int defaultMargin: 8
 
-    readonly property int fontSizeTitle: 22
-    readonly property int fontSizeHint: 10
-    readonly property int fontSizeDefault: 14
-    readonly property int fontSizeLabel: 12
+    readonly property int fontSizeTitle: 20
+    readonly property int fontSizeHint: 12
+    readonly property int fontSizeDefault: 16
 }
 
 

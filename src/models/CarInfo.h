@@ -11,6 +11,7 @@ class CarInfo : public QObject
   QML_ELEMENT
   Q_PROPERTY(QString brandName READ brandName WRITE setBrandName NOTIFY brandNameChanged FINAL)
   Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelNameChanged FINAL)
+  Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL)
   Q_PROPERTY(int lastMileage READ lastMileage WRITE setLastMileage NOTIFY lastMileageChanged FINAL)
   Q_PROPERTY(QDate lastMileageDate READ lastMileageDate NOTIFY lastMileageDateChanged FINAL)
   Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
@@ -39,6 +40,8 @@ class CarInfo : public QObject
   Q_INVOKABLE QString validateBrand() const;
   Q_INVOKABLE QString validateModel() const;
 
+  QString name() const;
+
  signals:
   void brandNameChanged();
   void modelNameChanged();
@@ -46,6 +49,8 @@ class CarInfo : public QObject
   void lastMileageDateChanged();
 
   void isValidChanged();
+
+  void nameChanged();
 
  private:
   void fromJSONString(const QString &jsonString);

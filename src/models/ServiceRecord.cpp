@@ -38,7 +38,7 @@ QString ServiceRecord::toJSON() const
     {"notes", m_notes},
     {"price", m_price},
     {"mileage", m_mileage},
-    {"serviceData", m_serviceDate.toString(Qt::ISODate)},
+    {"serviceDate", m_serviceDate.toString(Qt::ISODate)},
     {"repeatAfterDistance", m_repeatAfterDistance},
     {"hasRepeatAfterDistance", m_hasRepeatAfterDistance},
     {"repeatAfterMonths", m_repeatAfterMonths},
@@ -121,7 +121,10 @@ void ServiceRecord::setServiceDate(const QDate &newServiceDate)
 
 int ServiceRecord::repeatAfterDistance() const
 {
-  return m_repeatAfterDistance;
+  if (m_eventType == EventType::Maintenance) {
+    return m_repeatAfterDistance;
+  }
+  return 0;
 }
 
 void ServiceRecord::setRepeatAfterDistance(int newRepeatAfterDistance)
@@ -135,7 +138,10 @@ void ServiceRecord::setRepeatAfterDistance(int newRepeatAfterDistance)
 
 bool ServiceRecord::hasRepeatAfterDistance() const
 {
-  return m_hasRepeatAfterDistance;
+  if (m_eventType == EventType::Maintenance) {
+    return m_hasRepeatAfterDistance;
+  }
+  return false;
 }
 
 void ServiceRecord::setHasRepeatAfterDistance(bool newHasRepeatAfterDistance)
@@ -148,7 +154,10 @@ void ServiceRecord::setHasRepeatAfterDistance(bool newHasRepeatAfterDistance)
 
 int ServiceRecord::repeatAfterMonths() const
 {
-  return m_repeatAfterMonths;
+  if (m_eventType == EventType::Maintenance) {
+    return m_repeatAfterMonths;
+  }
+  return 0;
 }
 
 void ServiceRecord::setRepeatAfterMonths(int newRepeatAfterMonths)
@@ -157,13 +166,14 @@ void ServiceRecord::setRepeatAfterMonths(int newRepeatAfterMonths)
     return;
   m_repeatAfterMonths = newRepeatAfterMonths;
   emit repeatAfterMonthsChanged();
-  emit isRepeatMonthsValidChanged();
-  emit isValidChanged();
 }
 
 bool ServiceRecord::hasRepeatAfterMonths() const
 {
-  return m_hasRepeatAfterMonths;
+  if (m_eventType == EventType::Maintenance) {
+    return m_hasRepeatAfterMonths;
+  }
+  return false;
 }
 
 void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
@@ -180,9 +190,9 @@ void ServiceRecord::fromJSONString(const QString &jsonString)
   if (!doc.isNull() && doc.isObject()) {
     QJsonObject json = doc.object();
     if (json.contains("eventType")) {
-      QMetaEnum metaEnum = QMetaEnum::fromType<EventType>();
-      const char *key = json["eventType"].toString().toLocal8Bit().constData();
-      setEventType(static_cast<EventType>(metaEnum.keyToValue(key)));
+      const auto metaEnum = QMetaEnum::fromType<EventType>();
+      const auto key = json["eventType"].toString();
+      setEventType(static_cast<EventType>(metaEnum.keyToValue(key.toLocal8Bit().constData())));
     }
     setName(json["name"].toString());
     setNotes(json["notes"].toString());
@@ -204,7 +214,7 @@ bool ServiceRecord::isNameValid() const
 
 bool ServiceRecord::isValid() const
 {
-  return isRepeatDistanceValid() && isRepeatDistanceValid() && isNameValid();
+  return isRepeatDistanceValid() && isRepeatMonthsValid() && isNameValid();
 }
 
 ServiceRecord::EventType ServiceRecord::eventType() const

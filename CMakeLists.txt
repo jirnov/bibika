@@ -34,6 +34,7 @@ set(QML_FILES
     qml/dialogs/UpdateMilestoneDialog.qml
     qml/AppSettings.qml
     qml/components/SmartTextField.qml
+    qml/DemoDatabase.qml
 )
 
 qt_add_translations(appBibikaService

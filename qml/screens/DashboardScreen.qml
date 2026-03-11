@@ -6,10 +6,10 @@ import BibikaService
 
 Page {
     id: root
-    width: 288
-    height: 640
+    width: AppSettings.width
+    height: AppSettings.height
 
-    property string _carName: AppSettings.carName
+    property string _carName: AppSettings.carInfo.name
     property int _mileage: AppSettings.carInfo.lastMileage
     property date _mileageDate: AppSettings.carInfo.lastMileageDate
 
@@ -17,7 +17,7 @@ Page {
     signal openEditRecordDialog(int index)
     signal openSettingsDialog()
     signal openMileageDialog()
-
+/*
     header: ToolBar{
         ColumnLayout {
             anchors.fill: parent
@@ -32,7 +32,61 @@ Page {
             }
         }
     }
+*/
 
+    Flickable {
+        anchors.fill: parent
+
+        ColumnLayout {
+            id: columnLayout
+            anchors.fill: parent
+            spacing: 25
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 60
+                color: "white"
+                border.color: "#eeeeee"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("Главный экран")
+                    font.pixelSize: Style.fontSizeTitle
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 60
+                Text {
+                    text: qsTr("Ваш автомобиль: " + root._carName)
+                    font.pixelSize: Style.fontSizeDefault
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 60
+                Text {
+                    text: qsTr("Текущий пробег:" + root._mileage)
+                    font.pixelSize: Style.fontSizeDefault
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 60
+                Text {
+                    text: qsTr("пробег обновлён:" + Qt.formatDate(root._mileageDate, "dd.MM.yyyy"))
+                    font.pixelSize: Style.fontSizeDefault
+                }
+            }
+        }
+
+    }
+
+/*
     Rectangle {
         color: Style.cardColor
         radius: 8
@@ -521,5 +575,6 @@ Page {
     ScrollBar.vertical: ScrollBar {
         parent: flickable
         policy: ScrollBar.AsNeeded
-    }*/
+    }
+    */
 }

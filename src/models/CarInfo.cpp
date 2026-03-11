@@ -8,7 +8,8 @@ CarInfo::CarInfo(QObject* parent) : QObject{ parent }
 {
   connect(this, &CarInfo::brandNameChanged, this, &CarInfo::isValidChanged);
   connect(this, &CarInfo::modelNameChanged, this, &CarInfo::isValidChanged);
-  connect(this, &CarInfo::lastMileageChanged, this, &CarInfo::lastMileageDateChanged);
+  connect(this, &CarInfo::brandNameChanged, this, &CarInfo::nameChanged);
+  connect(this, &CarInfo::modelNameChanged, this, &CarInfo::nameChanged);
 }
 
 QString CarInfo::toJSON() const
@@ -90,6 +91,7 @@ void CarInfo::setLastMileage(const int newLastMileage)
   m_lastMileage = newLastMileage;
   m_lastMileageDate = QDate::currentDate();
   emit lastMileageChanged();
+  emit lastMileageDateChanged();
 }
 
 bool CarInfo::isValid() const
@@ -135,3 +137,11 @@ QString CarInfo::validateModel() const
 }
 
 
+
+QString CarInfo::name() const
+{
+  if (isValid()) {
+    return m_brandName + " " + m_modelName;
+  }
+  return tr("Безымянный");
+}

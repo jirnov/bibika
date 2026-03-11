@@ -4,6 +4,8 @@ import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 2.15
 
+import BibikaService
+
 Item {
     id: root
 
@@ -42,7 +44,7 @@ Item {
     ColumnLayout {
         id: layout
         anchors.fill: parent
-        spacing: 1
+        spacing: 0
 
         TextField {
             property var _digitsValidator: IntValidator {
@@ -55,7 +57,7 @@ Item {
             Material.accent: "black"
             Material.containerStyle: Material.Filled
             Layout.preferredHeight: 56
-            font.pixelSize: 16
+            font.pixelSize: Style.fontSizeDefault
             Layout.fillWidth: true
 
             inputMethodHints: root.digitsOnly ? Qt.ImhDigitsOnly : Qt.ImhNone
@@ -100,10 +102,15 @@ Item {
             }
         }
 
+        Item {
+            Layout.fillWidth: true
+            height: 2
+        }
+
         Label {
             text: root.errorText
             Layout.leftMargin: inputField.leftPadding
-            font.pixelSize: 12
+            font.pixelSize: Style.fontSizeHint
             opacity: root.errorText.length > 0 ? 1 : 0
             Behavior on opacity {
                 NumberAnimation {

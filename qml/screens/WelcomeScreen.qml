@@ -10,7 +10,12 @@ Page {
     height: AppSettings.height
 
     signal accepted(CarInfo carInfo)
-    property CarInfo carInfo:CarInfo{}
+    property CarInfo carInfo:CarInfoBuilder.createEmpty()
+
+    readonly property int buttonAreaHeight: 100
+    readonly property int buttonBottomMargin: 30
+    readonly property int fieldSpacing: 20
+    readonly property int headerHeight: 60
 
     CarModelIndex {
         id: carModelIndex
@@ -19,33 +24,38 @@ Page {
 
     Flickable {
         anchors.fill: parent
-        contentHeight: columnLayout.height + 100
+        contentHeight: columnLayout.height + buttonAreaHeight
         boundsBehavior: Flickable.OvershootBounds
 
         ColumnLayout {
             id: columnLayout
             anchors.fill: parent
-            spacing: 25
+            spacing: 0
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 60
+                Layout.preferredHeight: headerHeight
                 color: "white"
                 border.color: "#EEEEEE"
 
                 Text {
                     anchors.centerIn: parent
                     text: qsTr("Расскажите о своей машине:")
-                    font.pixelSize: 20
+                    font.pixelSize: Style.fontSizeTitle
                     font.bold: true
                 }
+            }
+
+            Item {
+                Layout.fillWidth: true
+                height: fieldSpacing
             }
 
             SmartTextField {
                 id: brandName
                 Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
+                Layout.leftMargin: fieldSpacing
+                Layout.rightMargin: fieldSpacing
                 placeholderText: qsTr("Марка/бренд автомобиля")
                 text: root.carInfo.brandName
                 suggestions: carModelIndex.brands
@@ -57,11 +67,17 @@ Page {
                     errorText = root.carInfo.validateBrand()
                 }
             }
+
+            Item {
+                Layout.fillWidth: true
+                height: fieldSpacing
+            }
+
             SmartTextField {
                 id: modelName
                 Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
+                Layout.leftMargin: fieldSpacing
+                Layout.rightMargin: fieldSpacing
                 text: root.carInfo.modelName
                 placeholderText: qsTr("Модель автомобиля")
                 onEditingFinished: {
@@ -75,10 +91,16 @@ Page {
                     modelName.suggestions = carModelIndex.getModelsForBrand(root.carInfo.brandName)
                 }
             }
+
+            Item {
+                Layout.fillWidth: true
+                height: fieldSpacing
+            }
+
             SmartTextField {
                 Layout.fillWidth: true
-                Layout.leftMargin: 20
-                Layout.rightMargin: 20
+                Layout.leftMargin: fieldSpacing
+                Layout.rightMargin: fieldSpacing
                 text: String(root.carInfo.lastMileage)
                 onEditingFinished: root.carInfo.lastMileage = Number(text) || 0
                 placeholderText: qsTr("Текущий пробег (в километрах)")
@@ -87,7 +109,7 @@ Page {
 
             Item {
                 Layout.fillHeight: true
-                Layout.minimumHeight: 20
+                Layout.minimumHeight: fieldSpacing
             }
         }
     }
@@ -105,26 +127,22 @@ Page {
         Button {
             id: acceptButton
             enabled: root.carInfo.isValid
+            opacity: enabled ? 1.0 : 0.5
+            Behavior on opacity { NumberAnimation { duration: 200 } }
             anchors {
                 left: parent.left
                 right: parent.right
                 bottom: parent.bottom
                 margins: 20
-                bottomMargin: 30
+                bottomMargin: buttonBottomMargin
             }
             height: 56
 
             text: qsTr("Поехали!")
             onClicked: {
-                if (root.carInfo.isValid) {
-                    root.accepted(root.carInfo)
-                    root.visible = false
-                    console.log(root.carInfo.toJSON())
-                }
-                else {
-                    console.log("validate failed:")
-                    console.log(root.carInfo.validateAll())
-                }
+                root.accepted(root.carInfo)
+                root.visible = false
+                console.log(root.carInfo.toJSON())
             }
         }
     }
