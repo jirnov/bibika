@@ -111,7 +111,7 @@ QMap<QString, QString> CarInfo::validateAll() const {
   }
 
   const auto modelError = validateModel();
-  if (modelError.isEmpty()) {
+  if (!modelError.isEmpty()) {
     errors["modelName"] = modelError;
   }
 
