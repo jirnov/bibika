@@ -1,11 +1,8 @@
-// CustomTextField.qml
 pragma ComponentBehavior: Bound
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 2.15
-
-import BibikaService
 
 Item {
     id: root
@@ -45,7 +42,7 @@ Item {
     ColumnLayout {
         id: layout
         anchors.fill: parent
-        spacing: 5
+        spacing: 1
 
         TextField {
             property var _digitsValidator: IntValidator {

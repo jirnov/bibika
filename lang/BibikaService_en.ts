@@ -30,27 +30,27 @@
 <context>
     <name>WelcomeScreen</name>
     <message>
-        <location filename="../qml/screens/WelcomeScreen.qml" line="29"/>
+        <location filename="../qml/screens/WelcomeScreen.qml" line="38"/>
         <source>Расскажите о своей машине:</source>
-        <translation>Let&apos;s get to know your car!</translation>
+        <translation>Let&apos;s get to know your car:</translation>
     </message>
     <message>
-        <location filename="../qml/screens/WelcomeScreen.qml" line="41"/>
+        <location filename="../qml/screens/WelcomeScreen.qml" line="49"/>
         <source>Марка/бренд автомобиля</source>
         <translation>Car brand</translation>
     </message>
     <message>
-        <location filename="../qml/screens/WelcomeScreen.qml" line="57"/>
+        <location filename="../qml/screens/WelcomeScreen.qml" line="66"/>
         <source>Модель автомобиля</source>
         <translation>Car model</translation>
     </message>
     <message>
-        <location filename="../qml/screens/WelcomeScreen.qml" line="75"/>
+        <location filename="../qml/screens/WelcomeScreen.qml" line="84"/>
         <source>Текущий пробег (в километрах)</source>
         <translation>Mileage (in kilometers)</translation>
     </message>
     <message>
-        <location filename="../qml/screens/WelcomeScreen.qml" line="86"/>
+        <location filename="../qml/screens/WelcomeScreen.qml" line="117"/>
         <source>Поехали!</source>
         <translation>Start!</translation>
     </message>
