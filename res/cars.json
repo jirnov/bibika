@@ -324,6 +324,20 @@
       ]
     },
     {
+      "name": "Voyah",
+      "aliases": ["Воядж", "Воях", "Воя"],
+      "models": [
+        "Free", "Фри",
+        "Dream", "Дрим",
+        "Dream PHEV", "Дрим ПХЕВ",
+        "Dream EV", "Дрим ЭВ",
+        "Passion", "Пашн",
+        "Courage", "Каридж",
+        "i-Frees", "и-Фри",
+        "i-Free", "и-Фри"
+      ]
+    },
+    {
       "name": "Omoda",
       "aliases": ["Омода"],
       "models": [
