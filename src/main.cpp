@@ -8,26 +8,36 @@
 #include <QTranslator>
 #include <QQmlContext>
 
-int main(int argc, char *argv[])
+static void dumpResources()
 {
-  QGuiApplication app(argc, argv);
-
-  QLoggingCategory::setFilterRules(QStringLiteral("qt.translator.debug=true"));
-
-/*
   QDirIterator it(":", QDirIterator::Subdirectories);
   while (it.hasNext()) {
     qDebug() << "Ресурс:" << it.next();
   }
-*/
+}
 
-  QTranslator translator;
-  if (translator.load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang")) {
-    qDebug() << "Load translations successfully";
-    app.installTranslator(&translator);
+static QTranslator *createTranslator(QObject *parent)
+{
+  QTranslator *translator = new QTranslator(parent);
+  if (translator->load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang")) {
+    return translator;
+  }
+  return nullptr;
+}
+
+int main(int argc, char *argv[])
+{
+  QGuiApplication app(argc, argv);
+
+  // Отключаем вывод предупреждений доступности
+  QLoggingCategory::setFilterRules("qt.a11y.*=false");
+
+  if (auto translator = createTranslator(&app)) {
+    app.installTranslator(translator);
+    qDebug() << "=== Translation loaded successfully ===";
   }
   else {
-    qDebug() << "Load translations failed";
+    qWarning() << "!!! Failed to load translation !!!";
   }
 
   QQuickStyle::setStyle("Material");

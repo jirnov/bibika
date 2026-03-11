@@ -125,6 +125,7 @@ bool CarModelIndex::parseJSON(const QByteArray &jsonData)
       m_searchIndex[name.toLower()] = m_models.size();
       for (const auto &alias : aliases) {
         m_searchIndex[alias.toLower()] = m_models.size();
+        m_brands.append(alias);
       }
       m_brands.append(name);
       m_models.append(models);
