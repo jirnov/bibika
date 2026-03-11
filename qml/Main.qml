@@ -8,10 +8,6 @@ ApplicationWindow {
     id: root
     width: AppSettings.width
     height: AppSettings.height
-    minimumWidth: width
-    maximumWidth: width
-    minimumHeight: height
-    maximumHeight: height
     visible: true
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal

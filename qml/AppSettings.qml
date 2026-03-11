@@ -12,10 +12,9 @@ QtObject
 
     property int keyboardHeight: 0
 
-    function keyboardRectangleChanged(rootHeight) {
-        var y = Qt.inputMethod.keyboardRectangle.y / Screen.devicePixelRatio;
-        var newHeight = rootHeight - y;
-        if (newHeight > 0 && y > 0) {
+    function keyboardRectangleChanged(keyboardTopY, rootHeight) {
+        var newHeight = rootHeight - keyboardTopY;
+        if (newHeight > 0 && keyboardTopY > 0) {
             keyboardHeight = newHeight;
         }
         else {
