@@ -31,17 +31,20 @@ CarInfo* CarInfo::fromJSON(const QString& jsonString, QObject* parent)
 void CarInfo::fromJSONString(const QString& jsonString)
 {
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
-  if (!doc.isNull() && doc.isObject()) {
+  if (!doc.isNull() && doc.isObject())
+  {
     QJsonObject json = doc.object();
     setBrandName(json["brandName"].toString());
     setModelName(json["modelName"].toString());
     setLastMileage(json["lastMileage"].toInt());
 
     const auto date = QDate::fromString(json["lastMileageDate"].toString(), Qt::ISODate);
-    if (date.isValid()) {
+    if (date.isValid())
+    {
       m_lastMileageDate = date;
     }
-    else {
+    else
+    {
       m_lastMileageDate = QDate::currentDate();
     }
     emit lastMileageDateChanged();
@@ -55,7 +58,8 @@ QString CarInfo::brandName() const
 
 void CarInfo::setBrandName(const QString& newBrandName)
 {
-  if (m_brandName == newBrandName) {
+  if (m_brandName == newBrandName)
+  {
     return;
   }
 
@@ -70,7 +74,8 @@ QString CarInfo::modelName() const
 
 void CarInfo::setModelName(const QString& newModelName)
 {
-  if (m_modelName == newModelName) {
+  if (m_modelName == newModelName)
+  {
     return;
   }
   m_modelName = newModelName;
@@ -84,7 +89,8 @@ int CarInfo::lastMileage() const
 
 void CarInfo::setLastMileage(const int newLastMileage)
 {
-  if (m_lastMileage == newLastMileage) {
+  if (m_lastMileage == newLastMileage)
+  {
     return;
   }
   m_lastMileage     = newLastMileage;
@@ -108,12 +114,14 @@ QMap<QString, QString> CarInfo::validateAll() const
   QMap<QString, QString> errors;
 
   const auto brandError = validateBrand();
-  if (!brandError.isEmpty()) {
+  if (!brandError.isEmpty())
+  {
     errors["brandName"] = brandError;
   }
 
   const auto modelError = validateModel();
-  if (!modelError.isEmpty()) {
+  if (!modelError.isEmpty())
+  {
     errors["modelName"] = modelError;
   }
 
@@ -122,7 +130,8 @@ QMap<QString, QString> CarInfo::validateAll() const
 
 QString CarInfo::validateBrand() const
 {
-  if (m_brandName.isEmpty()) {
+  if (m_brandName.isEmpty())
+  {
     return tr("Пожалуйста, укажите марку (обязательное поле)");
   }
   return {};
@@ -130,7 +139,8 @@ QString CarInfo::validateBrand() const
 
 QString CarInfo::validateModel() const
 {
-  if (m_modelName.isEmpty()) {
+  if (m_modelName.isEmpty())
+  {
     return tr("Пожалуйста, укажите модель (обязательное поле)");
   }
   return {};
@@ -139,7 +149,8 @@ QString CarInfo::validateModel() const
 
 QString CarInfo::name() const
 {
-  if (isValid()) {
+  if (isValid())
+  {
     return m_brandName + " " + m_modelName;
   }
   return tr("Безымянный");

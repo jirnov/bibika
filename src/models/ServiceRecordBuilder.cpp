@@ -6,12 +6,13 @@ ServiceRecordBuilder::ServiceRecordBuilder(QObject* parent) : QObject{ parent }
 {
 }
 
-ServiceRecord* ServiceRecordBuilder::create(const QVariantMap &data, QObject* parent)
+ServiceRecord* ServiceRecordBuilder::create(const QVariantMap& data, QObject* parent)
 {
   auto* record = new ServiceRecord(parent);
 
   auto setIfContains = [&](const QString& key, auto setter) {
-    if (data.contains(key)) {
+    if (data.contains(key))
+    {
       setter(data[key]);
     }
   };
@@ -34,10 +35,12 @@ ServiceRecord* ServiceRecordBuilder::create(const QVariantMap &data, QObject* pa
   });
 
   setIfContains("serviceDate", [&](const QVariant& v) {
-    if (v.canConvert<QDate>()) {
+    if (v.canConvert<QDate>())
+    {
       record->setServiceDate(v.toDate());
     }
-    else {
+    else
+    {
       QDate date = QDate::fromString(v.toString(), Qt::ISODate);
       if (date.isValid())
         record->setServiceDate(date);
@@ -47,7 +50,8 @@ ServiceRecord* ServiceRecordBuilder::create(const QVariantMap &data, QObject* pa
   setIfContains("eventType", [&](const QVariant& v) {
     bool ok;
     int  val = v.toInt(&ok);
-    if (ok && val >= ServiceRecord::Repair && val <= ServiceRecord::Service) {
+    if (ok && val >= ServiceRecord::Repair && val <= ServiceRecord::Service)
+    {
       record->setEventType(static_cast<ServiceRecord::EventType>(val));
     }
   });

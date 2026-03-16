@@ -115,7 +115,8 @@ void ServiceRecord::setServiceDate(const QDate& newServiceDate)
 
 int ServiceRecord::repeatAfterDistance() const
 {
-  if (m_eventType == EventType::Maintenance) {
+  if (m_eventType == EventType::Maintenance)
+  {
     return m_repeatAfterDistance;
   }
   return 0;
@@ -132,7 +133,8 @@ void ServiceRecord::setRepeatAfterDistance(int newRepeatAfterDistance)
 
 bool ServiceRecord::hasRepeatAfterDistance() const
 {
-  if (m_eventType == EventType::Maintenance) {
+  if (m_eventType == EventType::Maintenance)
+  {
     return m_hasRepeatAfterDistance;
   }
   return false;
@@ -148,7 +150,8 @@ void ServiceRecord::setHasRepeatAfterDistance(bool newHasRepeatAfterDistance)
 
 int ServiceRecord::repeatAfterMonths() const
 {
-  if (m_eventType == EventType::Maintenance) {
+  if (m_eventType == EventType::Maintenance)
+  {
     return m_repeatAfterMonths;
   }
   return 0;
@@ -164,7 +167,8 @@ void ServiceRecord::setRepeatAfterMonths(int newRepeatAfterMonths)
 
 bool ServiceRecord::hasRepeatAfterMonths() const
 {
-  if (m_eventType == EventType::Maintenance) {
+  if (m_eventType == EventType::Maintenance)
+  {
     return m_hasRepeatAfterMonths;
   }
   return false;
@@ -181,9 +185,11 @@ void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
 void ServiceRecord::fromJSONString(const QString& jsonString)
 {
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
-  if (!doc.isNull() && doc.isObject()) {
+  if (!doc.isNull() && doc.isObject())
+  {
     QJsonObject json = doc.object();
-    if (json.contains("eventType")) {
+    if (json.contains("eventType"))
+    {
       const auto metaEnum = QMetaEnum::fromType<EventType>();
       const auto key      = json["eventType"].toString();
       setEventType(static_cast<EventType>(metaEnum.keyToValue(key.toLocal8Bit().constData())));
@@ -226,8 +232,10 @@ void ServiceRecord::setEventType(const EventType& newEventType)
 
 bool ServiceRecord::isRepeatDistanceValid() const
 {
-  if (m_eventType == EventType::Maintenance) {
-    if (m_hasRepeatAfterDistance) {
+  if (m_eventType == EventType::Maintenance)
+  {
+    if (m_hasRepeatAfterDistance)
+    {
       return m_repeatAfterDistance > 0;
     }
   }
@@ -236,8 +244,10 @@ bool ServiceRecord::isRepeatDistanceValid() const
 
 bool ServiceRecord::isRepeatMonthsValid() const
 {
-  if (m_eventType == EventType::Maintenance) {
-    if (m_hasRepeatAfterMonths) {
+  if (m_eventType == EventType::Maintenance)
+  {
+    if (m_hasRepeatAfterMonths)
+    {
       return m_repeatAfterMonths > 0;
     }
   }

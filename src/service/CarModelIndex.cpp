@@ -13,10 +13,11 @@ CarModelIndex::CarModelIndex(QObject* parent) : QObject{ parent }
 {
 }
 
-void CarModelIndex::loadFromFile(const QString &jsonPath)
+void CarModelIndex::loadFromFile(const QString& jsonPath)
 {
   QFile file(jsonPath);
-  if (!file.open(QIODevice::ReadOnly)) {
+  if (!file.open(QIODevice::ReadOnly))
+  {
     qWarning() << "Cannot open file for reading: " << jsonPath;
     return;
   }
@@ -24,21 +25,26 @@ void CarModelIndex::loadFromFile(const QString &jsonPath)
   QByteArray jsonData = file.readAll();
   file.close();
 
-  if (parseJSON(jsonData)) {
+  if (parseJSON(jsonData))
+  {
     qDebug() << "Load brands: " << m_brands.size();
     emit brandsChanged();
   }
-  else {
+  else
+  {
     qWarning() << "parseJSON() failed";
   }
 }
 
-QStringList CarModelIndex::getModelsForBrand(const QString &brand) const
+QStringList CarModelIndex::getModelsForBrand(const QString& brand) const
 {
-  if (brand.isEmpty()) {
+  if (brand.isEmpty())
+  {
     QStringList allModels;
-    for (const auto &models : m_models) {
-      for (const auto &model : models) {
+    for (const auto& models : m_models)
+    {
+      for (const auto& model : models)
+      {
         allModels.append(model);
       }
     }
@@ -48,14 +54,17 @@ QStringList CarModelIndex::getModelsForBrand(const QString &brand) const
   // Первичное имя бренда
   const QString lookupName = brand.toLower();
 
-  if (m_searchIndex.contains(lookupName)) {
+  if (m_searchIndex.contains(lookupName))
+  {
     const int index = m_searchIndex[lookupName];
     return m_models[index];
   }
 
   QStringList models;
-  for (const auto &name : m_searchIndex.keys()) {
-    if (name.startsWith(lookupName)) {
+  for (const auto& name : m_searchIndex.keys())
+  {
+    if (name.startsWith(lookupName))
+    {
       const int index = m_searchIndex[name];
       models.append(m_models[index]);
     }
@@ -68,35 +77,40 @@ QStringList CarModelIndex::brands() const
   return m_brands;
 }
 
-bool CarModelIndex::parseJSON(const QByteArray &jsonData)
+bool CarModelIndex::parseJSON(const QByteArray& jsonData)
 {
   m_brands.clear();
   m_models.clear();
   m_searchIndex.clear();
 
   QJsonParseError error;
-  QJsonDocument doc = QJsonDocument::fromJson(jsonData, &error);
+  QJsonDocument   doc = QJsonDocument::fromJson(jsonData, &error);
 
-  if (error.error != QJsonParseError::NoError) {
+  if (error.error != QJsonParseError::NoError)
+  {
     qWarning() << "JSON parse error: " << error.errorString();
     return false;
   }
 
-  if (!doc.isObject()) {
+  if (!doc.isObject())
+  {
     qWarning() << "JSON is not an object";
     return false;
   }
 
   const QJsonObject root = doc.object();
-  if (!root.contains("brands") || !root["brands"].isArray()) {
+  if (!root.contains("brands") || !root["brands"].isArray())
+  {
     qWarning() << "JSON not includes brands array";
     return false;
   }
 
   const QJsonArray brandsArray = root["brands"].toArray();
 
-  for (const auto &brandValue : brandsArray) {
-    if (!brandValue.isObject()) {
+  for (const auto& brandValue : brandsArray)
+  {
+    if (!brandValue.isObject())
+    {
       continue;
     }
 
@@ -106,10 +120,13 @@ bool CarModelIndex::parseJSON(const QByteArray &jsonData)
 
     QStringList aliases;
 
-    if (brandObj.contains("aliases") && brandObj["aliases"].isArray()) {
+    if (brandObj.contains("aliases") && brandObj["aliases"].isArray())
+    {
       const auto aliasesArr = brandObj["aliases"].toArray();
-      for (const auto &alias : aliasesArr) {
-        if (alias.isString()) {
+      for (const auto& alias : aliasesArr)
+      {
+        if (alias.isString())
+        {
           aliases.append(alias.toString());
         }
       }
@@ -119,19 +136,24 @@ bool CarModelIndex::parseJSON(const QByteArray &jsonData)
 
     QStringList models;
 
-    if (brandObj.contains("models") && brandObj["models"].isArray()) {
+    if (brandObj.contains("models") && brandObj["models"].isArray())
+    {
       const auto modelsArr = brandObj["models"].toArray();
-      for (const auto &model : modelsArr) {
-        if (model.isString()) {
+      for (const auto& model : modelsArr)
+      {
+        if (model.isString())
+        {
           models.append(model.toString());
         }
       }
     }
     models.sort();
 
-    if (!name.isEmpty()) {
+    if (!name.isEmpty())
+    {
       m_searchIndex[name.toLower()] = m_models.size();
-      for (const auto &alias : aliases) {
+      for (const auto& alias : aliases)
+      {
         m_searchIndex[alias.toLower()] = m_models.size();
         m_brands.append(alias);
       }

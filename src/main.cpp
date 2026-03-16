@@ -11,21 +11,23 @@
 static void dumpResources()
 {
   QDirIterator it(":", QDirIterator::Subdirectories);
-  while (it.hasNext()) {
+  while (it.hasNext())
+  {
     qDebug() << "Ресурс:" << it.next();
   }
 }
 
-static QTranslator *createTranslator(QObject *parent)
+static QTranslator* createTranslator(QObject* parent)
 {
-  QTranslator *translator = new QTranslator(parent);
-  if (translator->load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang")) {
+  QTranslator* translator = new QTranslator(parent);
+  if (translator->load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang"))
+  {
     return translator;
   }
   return nullptr;
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   // Отключаем вывод предупреждений доступности
   QLoggingCategory::setFilterRules("qt.a11y.*=false");
@@ -36,11 +38,13 @@ int main(int argc, char *argv[])
 
   QGuiApplication app(argc, argv);
 
-  if (auto translator = createTranslator(&app)) {
+  if (auto translator = createTranslator(&app))
+  {
     app.installTranslator(translator);
     qDebug() << "=== Translation loaded successfully ===";
   }
-  else {
+  else
+  {
     qWarning() << "!!! Failed to load translation !!!";
   }
 
@@ -59,7 +63,8 @@ int main(int argc, char *argv[])
   engine.addImportPath(":/");
   engine.loadFromModule("BibikaService", "Main");
 
-  if (engine.rootObjects().isEmpty()) {
+  if (engine.rootObjects().isEmpty())
+  {
     engine.load(QUrl("qrc:/qml/Main.qml"));
   }
 

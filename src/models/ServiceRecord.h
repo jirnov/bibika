@@ -17,10 +17,14 @@ class ServiceRecord : public QObject
   Q_PROPERTY(int mileage READ mileage WRITE setMileage NOTIFY mileageChanged FINAL)
   Q_PROPERTY(QDate serviceDate READ serviceDate WRITE setServiceDate NOTIFY serviceDateChanged FINAL)
 
-  Q_PROPERTY(int repeatAfterDistance READ repeatAfterDistance WRITE setRepeatAfterDistance NOTIFY repeatAfterDistanceChanged FINAL)
-  Q_PROPERTY(bool hasRepeatAfterDistance READ hasRepeatAfterDistance WRITE setHasRepeatAfterDistance NOTIFY hasRepeatAfterDistanceChanged FINAL)
-  Q_PROPERTY(int repeatAfterMonths READ repeatAfterMonths WRITE setRepeatAfterMonths NOTIFY repeatAfterMonthsChanged FINAL)
-  Q_PROPERTY(bool hasRepeatAfterMonths READ hasRepeatAfterMonths WRITE setHasRepeatAfterMonths NOTIFY hasRepeatAfterMonthsChanged FINAL)
+  Q_PROPERTY(int repeatAfterDistance READ repeatAfterDistance WRITE setRepeatAfterDistance NOTIFY
+               repeatAfterDistanceChanged FINAL)
+  Q_PROPERTY(bool hasRepeatAfterDistance READ hasRepeatAfterDistance WRITE setHasRepeatAfterDistance NOTIFY
+               hasRepeatAfterDistanceChanged FINAL)
+  Q_PROPERTY(
+    int repeatAfterMonths READ repeatAfterMonths WRITE setRepeatAfterMonths NOTIFY repeatAfterMonthsChanged FINAL)
+  Q_PROPERTY(bool hasRepeatAfterMonths READ hasRepeatAfterMonths WRITE setHasRepeatAfterMonths NOTIFY
+               hasRepeatAfterMonthsChanged FINAL)
 
   Q_PROPERTY(bool isNameValid READ isNameValid NOTIFY isNameValidChanged FINAL)
   Q_PROPERTY(bool isRepeatDistanceValid READ isRepeatDistanceValid NOTIFY isRepeatDistanceValidChanged FINAL)
@@ -28,11 +32,9 @@ class ServiceRecord : public QObject
   Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
 
  public:
-  static ServiceRecord* fromJSON(const QString &jsonString, QObject *parent=nullptr);
+  static ServiceRecord* fromJSON(const QString& jsonString, QObject* parent = nullptr);
 
-  Q_INVOKABLE static ServiceRecord *create(QObject *parent=nullptr) {
-    return new ServiceRecord();
-  }
+  Q_INVOKABLE static ServiceRecord* create(QObject* parent = nullptr) { return new ServiceRecord(); }
 
   explicit ServiceRecord(QObject* parent = nullptr);
 
@@ -47,27 +49,27 @@ class ServiceRecord : public QObject
   Q_INVOKABLE QString toJSON() const;
 
   QString name() const;
-  void setName(const QString &newName);
+  void    setName(const QString& newName);
 
   QString notes() const;
-  void setNotes(const QString &newNotes);
+  void    setNotes(const QString& newNotes);
 
-  int price() const;
+  int  price() const;
   void setPrice(int newPrice);
 
-  int mileage() const;
+  int  mileage() const;
   void setMileage(int newMileage);
 
   QDate serviceDate() const;
-  void setServiceDate(const QDate &newServiceDate);
+  void  setServiceDate(const QDate& newServiceDate);
 
-  int repeatAfterDistance() const;
+  int  repeatAfterDistance() const;
   void setRepeatAfterDistance(int newRepeatAfterDistance);
 
   bool hasRepeatAfterDistance() const;
   void setHasRepeatAfterDistance(bool newHasRepeatAfterDistance);
 
-  int repeatAfterMonths() const;
+  int  repeatAfterMonths() const;
   void setRepeatAfterMonths(int newRepeatAfterMonths);
 
   bool hasRepeatAfterMonths() const;
@@ -78,7 +80,7 @@ class ServiceRecord : public QObject
   bool isValid() const;
 
   EventType eventType() const;
-  void setEventType(const EventType &newEventType);
+  void      setEventType(const EventType& newEventType);
 
   bool isRepeatDistanceValid() const;
 
@@ -106,20 +108,20 @@ class ServiceRecord : public QObject
   void isRepeatMonthsValidChanged();
 
  private:
-  void fromJSONString(const QString &jsonString);
+  void fromJSONString(const QString& jsonString);
 
   QString m_name;
   QString m_notes;
-  int m_price{0};
-  int m_mileage{0};
-  QDate m_serviceDate{QDate::currentDate()};
+  int     m_price{ 0 };
+  int     m_mileage{ 0 };
+  QDate   m_serviceDate{ QDate::currentDate() };
 
-  int m_repeatAfterDistance{15000};
-  bool m_hasRepeatAfterDistance{ false };
-  int m_repeatAfterMonths{};
-  bool m_hasRepeatAfterMonths{ false };
-  EventType m_eventType{EventType::Maintenance};
-  bool m_isRepeatMonthsValid;
+  int       m_repeatAfterDistance{ 15000 };
+  bool      m_hasRepeatAfterDistance{ false };
+  int       m_repeatAfterMonths{};
+  bool      m_hasRepeatAfterMonths{ false };
+  EventType m_eventType{ EventType::Maintenance };
+  bool      m_isRepeatMonthsValid;
 };
 
 #endif  // SERVICERECORD_H
