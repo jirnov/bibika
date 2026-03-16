@@ -3,6 +3,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Material 2.15
 import QtQuick.Layouts 2.15
+import Qt5Compat.GraphicalEffects
 
 import BibikaService
 
@@ -25,8 +26,20 @@ Item {
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
 
-    // Внутренние функции
+    function _trySuggestionOpen(searchText) {
+        var filtered = root._getFiltererdSuggestions(searchText)
+        suggestionsListView.model = filtered
+        if (filtered.length > 0) {
+            suggestionPopup.open()
+        }
+        else {
+            suggestionPopup.close()
+        }
+
+    }
+
     function _getFiltererdSuggestions(searchText) {
+        root.updateSuggestions()
         if (searchText.length === 0) {
             return []
         }
@@ -46,65 +59,83 @@ Item {
         anchors.fill: parent
         spacing: 0
 
-        TextField {
-            property var _digitsValidator: IntValidator {
-                bottom: 0
-            }
-
-            property var _textValidator: null
-
-            id: inputField
-            Material.accent: "black"
-            Material.containerStyle: Material.Filled
-            Layout.preferredHeight: 56
-            font.pixelSize: Style.fontSizeDefault
+        Item {
+            Layout.preferredHeight: 80
             Layout.fillWidth: true
 
-            inputMethodHints: root.digitsOnly ? Qt.ImhDigitsOnly : Qt.ImhNone
-            validator: root.digitsOnly ? _digitsValidator : _textValidator
-
-            background: Rectangle {
-                color: "white"
-                border.color: inputField.focus ? "grey" : "lightgrey"
-                radius: 10
+            DropShadow {
+                anchors.fill: inputField
+                source: inputField
+                horizontalOffset: 0
+                verticalOffset: 2
+                radius: 16
+                samples: 33
+                color: "#1A000000"
+                transparentBorder: true
             }
 
-            onEditingFinished: {
-                root.validateField()
-                root.editingFinished()
-            }
+            TextField {
+                anchors.fill: parent
+                property var _digitsValidator: IntValidator {
+                    bottom: 0
+                }
 
-            onTextChanged: {
-                if (root.digitsOnly && text.length > 1 && text[0] === '0') {
-                    text = text.replace(/^0+/, '')
-                    if (text === '') {
-                        text = '0';
+                property var _textValidator: null
+
+                id: inputField
+                Material.accent: "black"
+                Material.containerStyle: Material.Filled
+                Layout.preferredHeight: 80
+                font.pixelSize: Style.fontSizeDefault
+                Layout.fillWidth: true
+
+                inputMethodHints: root.digitsOnly ? Qt.ImhDigitsOnly : Qt.ImhNone
+                validator: root.digitsOnly ? _digitsValidator : _textValidator
+
+                background: Rectangle {
+                    color: "white"
+                    border.color: inputField.focus ? "#3B82F6" : "#E5E7EB"
+                    radius: 12
+                }
+
+                onEditingFinished: {
+                    root.validateField()
+                    root.editingFinished()
+                }
+
+                onTextChanged: {
+                    if (root.digitsOnly && text.length > 1 && text[0] === '0') {
+                        text = text.replace(/^0+/, '')
+                        if (text === '') {
+                            text = '0';
+                        }
+                    }
+                    root.validateField()
+                }
+
+                onTextEdited: {
+                    if (_trySuggestionOpen(inputField.text)) {
+                        root.editingFinished()
                     }
                 }
-                root.validateField()
-            }
 
-            onTextEdited: {
-                root.updateSuggestions()
-                var filtered = root._getFiltererdSuggestions(inputField.text)
-                suggestionsListView.model = filtered
-                if (filtered.length > 0) {
-                    root.editingFinished()
-                    suggestionPopup.open()
-                }
-                else {
-                    suggestionPopup.close()
-                }
-            }
+                onActiveFocusChanged: {
+                    root.validateField()
 
-            onActiveFocusChanged: {
-                root.validateField()
+                    if (!focus) {
+                        root.editingFinished()
+                        suggestionPopup.close()
+                    }
+                    else {
+                        _trySuggestionOpen(inputField.text)
+                    }
+                }
             }
         }
 
         Item {
             Layout.fillWidth: true
-            height: 2
+            Layout.preferredHeight: 1
         }
 
         Label {
@@ -124,7 +155,24 @@ Item {
     Popup {
         id: suggestionPopup
         parent: inputField
-        y: inputField.height + 5
+        y: {
+            if (AppSettings.keyboardHeight > 0) {
+                var bottomY = inputField.height + 5 + suggestionPopup.height
+                if (bottomY > AppSettings.keyboardHeight) {
+                    return inputField.y - 5 - suggestionPopup.height
+                }
+            }
+            return inputField.height + 5;
+
+/*
+            console.log("keyboard height: " + AppSettings.keyboardHeight)
+            console.log("popup height: " + suggestionPopup.height);
+            console.log("popup y: " + (inputField.height + 5))
+            if (AppSettings.keyboardHeight > 0) {
+                inputField.y - 5 - suggestionPopup.implicitContentHeight
+            }
+            return inputField.height + 5*/
+        }
         width: inputField.width
 
         contentItem: ListView {

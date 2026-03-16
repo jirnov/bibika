@@ -12,6 +12,14 @@ ApplicationWindow {
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal
 
+    Connections {
+        target: Qt.inputMethod
+        function onKeyboardRectangleChanged() {
+            var height = Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio
+            AppSettings.setKeyboardHeight(height)
+        }
+    }
+
     StackView {
         id: stackView
         anchors.fill: parent
@@ -86,5 +94,9 @@ ApplicationWindow {
                 stackView.pop()
             }
         }
+    }
+
+    ServiceRecordListModel {
+        id: listModel
     }
 }

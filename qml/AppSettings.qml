@@ -12,14 +12,8 @@ QtObject
 
     property int keyboardHeight: 0
 
-    function keyboardRectangleChanged(keyboardTopY, rootHeight) {
-        var newHeight = rootHeight - keyboardTopY;
-        if (newHeight > 0 && keyboardTopY > 0) {
-            keyboardHeight = newHeight;
-        }
-        else {
-            keyboardHeight = 0;
-        }
+    function setKeyboardHeight(newHeight) {
+        keyboardHeight = newHeight;
     }
 
     property Settings _persistent : Settings {

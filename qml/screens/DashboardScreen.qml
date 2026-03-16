@@ -1,4 +1,5 @@
-﻿import QtQuick
+﻿pragma ComponentBehavior: Bound
+import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
@@ -34,13 +35,77 @@ Page {
     }
 */
 
+    ServiceRecordListModel {
+        id: prodModel
+
+        Component.onCompleted: {
+            // Очищаем модель перед добавлением
+            prodModel.clear()
+
+            // Запись 1: Замена масла
+            var record1 = ServiceRecordBuilder.createEmpty()
+            record1.name = "Замена масла"
+            record1.notes = "Лить только Liqui Molly"
+            record1.price = 4500
+            record1.mileage = 0
+            record1.serviceDate = new Date(2026, 2, 1)  // Март 2026 (месяцы с 0)
+            record1.eventType = ServiceRecord.Maintenance
+            record1.hasRepeatAfterDistance = true
+            record1.repeatAfterDistance = 15000
+            record1.hasRepeatAfterMonths = true
+            record1.repeatAfterMonths = 12
+            prodModel.append(record1)
+
+            // Запись 2: Замена лобового стекла
+            var record2 = ServiceRecordBuilder.createEmpty()
+            record2.name = "Замена лобового стекла"
+            record2.notes = "Тайваньское"
+            record2.price = 20000
+            record2.mileage = 5000
+            record2.serviceDate = new Date(2026, 2, 2)  // 2 марта 2026
+            record2.eventType = ServiceRecord.Repair
+            prodModel.append(record2)
+
+            // Запись 3: Покупка омывайки
+            var record3 = ServiceRecordBuilder.createEmpty()
+            record3.name = "Покупка омывайки"
+            record3.notes = "Зелёная, -30"
+            record3.price = 200
+            record3.mileage = 5500
+            record3.serviceDate = new Date(2026, 2, 1)  // 1 марта 2026
+            record3.eventType = ServiceRecord.Service
+            prodModel.append(record3)
+
+            // Запись 4: Капитальный ремонт двигателя
+            var record4 = ServiceRecordBuilder.createEmpty()
+            record4.name = "Капитальный ремонт двигателя"
+            record4.notes = "Этого лучше избегать!"
+            record4.price = 500000
+            record4.mileage = 10000
+            // Без даты - будет текущая или пустая
+            record4.eventType = ServiceRecord.Repair
+            prodModel.append(record4)
+
+            // Запись 5: Замена масла в коробке
+            var record5 = ServiceRecordBuilder.createEmpty()
+            record5.name = "Замена масла в коробке"
+            record5.notes = ""
+            record5.price = 15000
+            record5.mileage = 0
+            record5.eventType = ServiceRecord.Maintenance
+            prodModel.append(record5)
+
+            console.log("Добавлено записей:", prodModel.rowCount())
+        }
+    }
+
     Flickable {
         anchors.fill: parent
 
         ColumnLayout {
             id: columnLayout
             anchors.fill: parent
-            spacing: 25
+            spacing: 0
 
             Rectangle {
                 Layout.fillWidth: true
@@ -81,6 +146,35 @@ Page {
                     text: qsTr("пробег обновлён:" + Qt.formatDate(root._mileageDate, "dd.MM.yyyy"))
                     font.pixelSize: Style.fontSizeDefault
                 }
+            }
+
+            ListView {
+                id: listView
+                model: prodModel
+                delegate: ItemDelegate {
+                    Row {
+                        Label {
+                            color: "grey"
+                            text: "Название: " + listView.model.name // qmllint disable unqualified
+                        }
+                        Label {
+                            text: " "
+                        }
+                        Label {
+                            color: "green"
+                            text: "Заметка: " + listView.model.notes // qmllint disable unqualified
+                        }
+
+                        Button {
+                            text: "Удалить"
+                            onClicked: {
+                                prodModel.removeRecordById(listView.model.recordId)
+                            }
+                        }
+                    }
+                }
+
+                Layout.fillHeight: true
             }
         }
 

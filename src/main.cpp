@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
   // Отключаем вывод предупреждений доступности
   QLoggingCategory::setFilterRules("qt.a11y.*=false");
+  QLoggingCategory::setFilterRules("qt.core.translator=true");
 
   if (auto translator = createTranslator(&app)) {
     app.installTranslator(translator);

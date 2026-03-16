@@ -1,0 +1,49 @@
+<svg width="576" height="1280" viewBox="0 0 576 1280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <rect width="576" height="1280" fill="url(#paint0_linear)" />
+
+  <!-- Приветственная надпись -->
+  <text x="28" y="100" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="32">Расскажите о своей машине:</text>
+
+  <!-- БЛОК ФОРМЫ ВВОДА -->
+  <g transform="translate(28, 180)">
+
+    <!-- ПОЛЕ 1: Марка/бренд -->
+    <g transform="translate(0, 0)">
+      <rect x="0" y="0" width="520" height="80" rx="12" fill="white" stroke="#E5E7EB" stroke-width="1.5" />
+      <!-- Текст-подсказка внутри поля -->
+      <text x="16" y="40" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" dominant-baseline="middle">Марка/бренд автомобиля</text>
+      <!-- Место для ошибки с таким же отступом слева (x="16") -->
+      <text x="16" y="94" fill="#EF4444" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12">Пожалуйста, укажите марку (обязательное поле)</text>
+    </g>
+
+    <!-- ПОЛЕ 2: Модель -->
+    <g transform="translate(0, 114)">
+      <rect x="0" y="0" width="520" height="80" rx="12" fill="white" stroke="#E5E7EB" stroke-width="1.5" />
+      <text x="16" y="40" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" dominant-baseline="middle">Модель автомобиля</text>
+      <!-- Место для ошибки с таким же отступом слева -->
+      <text x="16" y="94" fill="#EF4444" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12">Пожалуйста, укажите модель (обязательное поле)</text>
+    </g>
+
+    <!-- ПОЛЕ 3: Пробег -->
+    <g transform="translate(0, 228)">
+      <rect x="0" y="0" width="520" height="80" rx="12" fill="white" stroke="#E5E7EB" stroke-width="1.5" />
+      <text x="16" y="40" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="16" dominant-baseline="middle">Пробег (км)</text>
+      <!-- Место для ошибки с таким же отступом слева -->
+      <text x="16" y="94" fill="#EF4444" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="12"> </text>
+    </g>
+  </g>
+
+  <!-- КНОПКА "Поехали!" -->
+  <g transform="translate(28, 650)">
+    <rect x="0" y="0" width="520" height="64" rx="32" fill="#3B82F6" />
+    <text x="260" y="32" fill="white" font-family="sans-serif" font-weight="600" font-size="20" text-anchor="middle" dominant-baseline="middle">Поехали!</text>
+  </g>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="0" y2="1280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC" />
+      <stop offset="1" stop-color="#F1F5F9" />
+    </linearGradient>
+  </defs>
+</svg>

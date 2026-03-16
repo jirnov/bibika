@@ -14,7 +14,7 @@ Page {
 
     readonly property int buttonAreaHeight: 100
     readonly property int buttonBottomMargin: 30
-    readonly property int fieldSpacing: 20
+    readonly property int fieldSpacing: 16
     readonly property int headerHeight: 60
 
     CarModelIndex {
@@ -22,40 +22,54 @@ Page {
         Component.onCompleted: loadFromFile(":/cars.json")
     }
 
+    background: Rectangle {
+        gradient: Gradient {
+            orientation: Gradient.Vertical
+            GradientStop { position: 0.0; color: "#F8FAFC" }  // Светлый сверху
+            GradientStop { position: 1.0; color: "#F1F5F9" }  // Чуть темнее снизу
+        }    }
+
     Flickable {
         anchors.fill: parent
-        contentHeight: columnLayout.height + buttonAreaHeight
+        contentHeight: columnLayout.height + root.buttonAreaHeight
         boundsBehavior: Flickable.OvershootBounds
 
         ColumnLayout {
             id: columnLayout
             anchors.fill: parent
-            spacing: 0
+            spacing: root.fieldSpacing
+
+            Item {
+                Layout.preferredHeight: root.fieldSpacing * 3
+            }
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: headerHeight
-                color: "white"
-                border.color: "#EEEEEE"
+                Layout.preferredHeight: root.headerHeight
+                color: "transparent"
 
                 Text {
-                    anchors.centerIn: parent
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: Style.defaultMargin * 3
+                    anchors.right: parent.right
+                    anchors.rightMargin: Style.defaultMargin * 3
                     text: qsTr("Расскажите о своей машине:")
-                    font.pixelSize: Style.fontSizeTitle
+                    wrapMode: Text.WordWrap
+                    font.pixelSize: 32
                     font.bold: true
                 }
             }
 
             Item {
-                Layout.fillWidth: true
-                height: fieldSpacing
+                Layout.preferredHeight: root.fieldSpacing * 2
             }
 
             SmartTextField {
                 id: brandName
                 Layout.fillWidth: true
-                Layout.leftMargin: fieldSpacing
-                Layout.rightMargin: fieldSpacing
+                Layout.leftMargin: Style.horizontalMargin
+                Layout.rightMargin: Style.horizontalMargin
                 placeholderText: qsTr("Марка/бренд автомобиля")
                 text: root.carInfo.brandName
                 suggestions: carModelIndex.brands
@@ -68,16 +82,11 @@ Page {
                 }
             }
 
-            Item {
-                Layout.fillWidth: true
-                height: fieldSpacing
-            }
-
             SmartTextField {
                 id: modelName
                 Layout.fillWidth: true
-                Layout.leftMargin: fieldSpacing
-                Layout.rightMargin: fieldSpacing
+                Layout.leftMargin: Style.horizontalMargin
+                Layout.rightMargin: Style.horizontalMargin
                 text: root.carInfo.modelName
                 placeholderText: qsTr("Модель автомобиля")
                 onEditingFinished: {
@@ -92,58 +101,32 @@ Page {
                 }
             }
 
-            Item {
-                Layout.fillWidth: true
-                height: fieldSpacing
-            }
-
             SmartTextField {
                 Layout.fillWidth: true
-                Layout.leftMargin: fieldSpacing
-                Layout.rightMargin: fieldSpacing
+                Layout.leftMargin: Style.horizontalMargin
+                Layout.rightMargin: Style.horizontalMargin
                 text: String(root.carInfo.lastMileage)
                 onEditingFinished: root.carInfo.lastMileage = Number(text) || 0
                 placeholderText: qsTr("Текущий пробег (в километрах)")
                 digitsOnly: true
             }
-
-            Item {
-                Layout.fillHeight: true
-                Layout.minimumHeight: fieldSpacing
-            }
         }
     }
 
-    Rectangle {
+    RoundButton {
         anchors {
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+            margins: Style.horizontalMargin
         }
-        height: 100
-        color: "white"
-        border.color: "#EEEEEE"
 
-        Button {
-            id: acceptButton
-            enabled: root.carInfo.isValid
-            opacity: enabled ? 1.0 : 0.5
-            Behavior on opacity { NumberAnimation { duration: 200 } }
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-                margins: 20
-                bottomMargin: buttonBottomMargin
-            }
-            height: 56
-
-            text: qsTr("Поехали!")
-            onClicked: {
-                root.accepted(root.carInfo)
-                root.visible = false
-                console.log(root.carInfo.toJSON())
-            }
+        enabled: root.carInfo.isValid
+        text: qsTr("Поехали!")
+        onClicked: {
+            root.accepted(root.carInfo)
+            root.visible = false
+            console.log(root.carInfo.toJSON())
         }
     }
 

@@ -52,7 +52,15 @@ QStringList CarModelIndex::getModelsForBrand(const QString &brand) const
     const int index = m_searchIndex[lookupName];
     return m_models[index];
   }
-  return {};
+
+  QStringList models;
+  for (const auto &name : m_searchIndex.keys()) {
+    if (name.startsWith(lookupName)) {
+      const int index = m_searchIndex[name];
+      models.append(m_models[index]);
+    }
+  }
+  return models;
 }
 
 QStringList CarModelIndex::brands() const

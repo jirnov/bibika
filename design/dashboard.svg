@@ -1,0 +1,108 @@
+<svg width="576" height="1280" viewBox="0 0 576 1280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Фон -->
+  <rect width="576" height="1280" fill="url(#paint0_linear)" />
+
+  <!-- Верхняя полоска высотой 80 -->
+  <rect x="0" y="0" width="576" height="80" fill="#F8FAFC" />
+  <line x1="0" y1="80" x2="576" y2="80" stroke="#E5E7EB" stroke-width="1" />
+
+  <!-- Настройки в правом верхнем углу -->
+  <text x="540" y="44" fill="#4B5563" font-size="28" text-anchor="end" dominant-baseline="middle">⚙</text>
+
+  <!-- Название машины с иконкой редактирования -->
+  <text x="28" y="130" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="36">SEAT Altea Freetrack</text>
+  <text x="400" y="120" fill="#9CA3AF" font-size="24" text-anchor="start" dominant-baseline="middle">✎</text>
+  
+  <!-- Пробег -->
+  <text x="28" y="185" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="18">Пробег</text>
+  
+  <!-- Значение пробега и кнопка обновления -->
+  <text x="28" y="235" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="42">232 200 км</text>
+  <circle cx="300" cy="220" r="22" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" />
+  <text x="300" y="220" fill="#4B5563" font-size="20" text-anchor="middle" dominant-baseline="middle">↻</text>
+  
+  <!-- Дата обновления -->
+  <text x="28" y="270" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14">Обновлено: 13.03.2026</text>
+
+  <!-- Заголовок "Следующее ТО" -->
+  <text x="28" y="320" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="22">Следующее ТО</text>
+
+  <!-- Карточка Следующее ТО -->
+  <rect x="24" y="340" width="528" height="160" rx="20" fill="white" filter="url(#shadow)" />
+  <!-- Синий кружок для следующего ТО -->
+  <circle cx="48" cy="370" r="8" fill="#3B82F6" />
+  <text x="64" y="380" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20">Замена масла и фильтров</text>
+  <text x="48" y="410" fill="#10B981" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="16">🔔 через 2 недели</text>
+  <text x="48" y="440" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="15">235 000 км</text>
+  <text x="48" y="470" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13">📝 Масло 5W-30, фильтр Mann</text>
+  
+  <!-- Иконки действий для следующего ТО -->
+  <text x="520" y="380" fill="#4B5563" font-size="24" text-anchor="middle" dominant-baseline="middle">✎</text>
+  <text x="520" y="440" fill="#DC2626" font-size="24" text-anchor="middle" dominant-baseline="middle">🗑</text>
+
+  <!-- БЛОК ПРЕДСТОЯЩИХ (сгруппирован со смещением) -->
+  <g transform="translate(0, 220)">
+    <!-- Заголовок Предстоящие (относительные координаты y=340) -->
+    <text x="28" y="340" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="22">Предстоящие</text>
+
+    <!-- Карточка ремонта (относительные координаты y=360) -->
+    <rect x="24" y="360" width="528" height="160" rx="20" fill="white" filter="url(#shadow)" />
+    <circle cx="48" cy="390" r="8" fill="#EF4444" />
+    <text x="64" y="400" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20">Замена стартера</text>
+    <text x="48" y="430" fill="#F97316" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="16">🔔 через 5000 км</text>
+    <text x="48" y="460" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="15">— км</text>
+    <text x="48" y="490" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13">📝 Щётки износились</text>
+    <text x="520" y="400" fill="#4B5563" font-size="24" text-anchor="middle" dominant-baseline="middle">✎</text>
+    <text x="520" y="460" fill="#DC2626" font-size="24" text-anchor="middle" dominant-baseline="middle">🗑</text>
+
+    <!-- Карточка сервиса (относительные координаты y=540) -->
+    <rect x="24" y="540" width="528" height="160" rx="20" fill="white" filter="url(#shadow)" />
+    <circle cx="48" cy="570" r="8" fill="#10B981" />
+    <text x="64" y="580" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20">Мойка и химчистка</text>
+    <text x="48" y="610" fill="#10B981" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="16">🔔 через 3 дня</text>
+    <text x="48" y="640" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="15">233 500 км</text>
+    <text x="48" y="670" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13">📝 Детейлинг салона</text>
+    <text x="520" y="580" fill="#4B5563" font-size="24" text-anchor="middle" dominant-baseline="middle">✎</text>
+    <text x="520" y="640" fill="#DC2626" font-size="24" text-anchor="middle" dominant-baseline="middle">🗑</text>
+  </g>
+
+  <!-- БЛОК ИСТОРИИ (сгруппирован со смещением) -->
+  <g transform="translate(0, 600)">
+    <!-- Заголовок История (относительные координаты y=380) -->
+    <text x="28" y="380" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="22">История</text>
+
+    <!-- Карточка ТО из истории (относительные координаты y=400) -->
+    <rect x="24" y="400" width="528" height="160" rx="20" fill="white" filter="url(#shadow)" />
+    <circle cx="48" cy="430" r="8" fill="#3B82F6" />
+    <text x="64" y="440" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20">Замена масла</text>
+    <text x="48" y="470" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="16">✅ 15.03.2026</text>
+    <text x="48" y="500" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="15">228 200 км</text>
+    <text x="48" y="530" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13">📝 Масло Mobil 1 5W-30</text>
+    <text x="520" y="440" fill="#4B5563" font-size="24" text-anchor="middle" dominant-baseline="middle">✎</text>
+    <text x="520" y="500" fill="#DC2626" font-size="24" text-anchor="middle" dominant-baseline="middle">🗑</text>
+
+    <!-- Карточка ремонта из истории (относительные координаты y=580) -->
+    <rect x="24" y="580" width="528" height="160" rx="20" fill="white" filter="url(#shadow)" />
+    <circle cx="48" cy="610" r="8" fill="#EF4444" />
+    <text x="64" y="620" fill="#1D1E2C" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="600" font-size="20">Замена АКБ</text>
+    <text x="48" y="650" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="500" font-size="16">✅ 20.02.2026</text>
+    <text x="48" y="680" fill="#6B7280" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="15">225 000 км</text>
+    <text x="48" y="710" fill="#9CA3AF" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13">📝 Varta 60Ah</text>
+    <text x="520" y="620" fill="#4B5563" font-size="24" text-anchor="middle" dominant-baseline="middle">✎</text>
+    <text x="520" y="680" fill="#DC2626" font-size="24" text-anchor="middle" dominant-baseline="middle">🗑</text>
+  </g>
+
+  <!-- Плавающая кнопка добавления с серым кружком -->
+  <circle cx="508" cy="1280" r="48" fill="#E5E7EB" stroke="#9CA3AF" stroke-width="1" />
+  <text x="508" y="1280" fill="#4B5563" font-size="42" text-anchor="middle" dominant-baseline="middle">+</text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="0" y2="1280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC" />
+      <stop offset="1" stop-color="#F1F5F9" />
+    </linearGradient>
+    <filter id="shadow" x="-0.05" y="-0.05" width="1.1" height="1.1">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.03" />
+    </filter>
+  </defs>
+</svg>

@@ -10,9 +10,8 @@ find_package(Qt6 REQUIRED COMPONENTS
     QuickControls2
     Core
     Qml
-    LinguistTools)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
+    LinguistTools
+    Sql)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -34,7 +33,7 @@ set(QML_FILES
     qml/dialogs/UpdateMilestoneDialog.qml
     qml/AppSettings.qml
     qml/components/SmartTextField.qml
-    qml/DemoDatabase.qml
+    qml/components/RoundButton.qml
 )
 
 qt_add_translations(appBibikaService
@@ -91,6 +90,7 @@ qt6_add_qml_module(appBibikaService
         src/models/CarInfoBuilder.cpp
         src/service/CarModelIndex.h
         src/service/CarModelIndex.cpp
+        SOURCES src/models/ServiceRecordListModel.h src/models/ServiceRecordListModel.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -108,6 +108,7 @@ target_link_libraries(appBibikaService PRIVATE Qt6::Quick)
 target_link_libraries(appBibikaService PRIVATE Qt6::QuickControls2)
 target_link_libraries(appBibikaService PRIVATE Qt6::Core)
 target_link_libraries(appBibikaService PRIVATE Qt6::Qml)
+target_link_libraries(appBibikaService PRIVATE Qt6::Sql)
 
 include(GNUInstallDirs)
 install(TARGETS appBibikaService

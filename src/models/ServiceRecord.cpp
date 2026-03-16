@@ -24,10 +24,6 @@ ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
   connect(this, &ServiceRecord::priceChanged, this, &ServiceRecord::isValidChanged);
   connect(this, &ServiceRecord::mileageChanged, this, &ServiceRecord::isValidChanged);
   connect(this, &ServiceRecord::serviceDateChanged, this, &ServiceRecord::isValidChanged);
-
-  connect(this, &ServiceRecord::isValidChanged, [this]() {
-    qDebug() << "isValidChanged signal\n";
-  });
 }
 
 QString ServiceRecord::toJSON() const

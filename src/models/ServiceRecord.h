@@ -38,7 +38,7 @@ class ServiceRecord : public QObject
 
   enum EventType
   {
-    Repait,
+    Repair,
     Maintenance,
     Service
   };
