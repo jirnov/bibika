@@ -92,7 +92,7 @@ void ServiceRecordModel::append(ServiceRecord* record)
     return;
   }
 
-  QSqlRecord sqlRecord = recordFromServiceRecord(record);
+  QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
 
   int newRow = m_model->rowCount();
   beginInsertRows(QModelIndex(), newRow, newRow);
@@ -103,6 +103,7 @@ void ServiceRecordModel::append(ServiceRecord* record)
     if (m_model->submitAll())
     {
       qDebug() << "Record appended sucessfully";
+      m_model->select();
     }
     else
     {
@@ -131,6 +132,7 @@ void ServiceRecordModel::clear()
     if (m_model->submitAll())
     {
       qDebug() << "Clear database sucessfullly";
+      m_model->select();
     }
     else
     {
@@ -143,6 +145,79 @@ void ServiceRecordModel::clear()
   }
 
   endResetModel();
+}
+
+void ServiceRecordModel::removeById(int recordId)
+{
+  if (auto index = indexById(recordId); index.has_value())
+  {
+    removeByIndex(index.value());
+  }
+}
+
+ServiceRecord* ServiceRecordModel::getById(int recordId) const
+{
+  if (auto index = indexById(recordId); index.has_value())
+  {
+    return getByIndex(index.value());
+  }
+  return nullptr;
+}
+
+void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* updateRecord)
+{
+  if (auto index = indexById(recordId); index.has_value())
+  {
+    QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+
+    QSqlRecord sqlRecord = m_model->record(index.value());
+    sqlRecord.setValue("event_type", QString::fromUtf8(metaEnum.valueToKey(updateRecord->eventType())));
+    sqlRecord.setValue("name", updateRecord->name());
+    sqlRecord.setValue("notes", updateRecord->notes());
+    sqlRecord.setValue("mileage", updateRecord->mileage());
+    sqlRecord.setValue("service_date", updateRecord->serviceDate().toString(Qt::ISODate));
+    sqlRecord.setValue("repeat_after_distance", updateRecord->repeatAfterDistance());
+    sqlRecord.setValue("has_repeat_after_distance", updateRecord->hasRepeatAfterDistance());
+    sqlRecord.setValue("repeat_after_months", updateRecord->repeatAfterMonths());
+    sqlRecord.setValue("has_repeat_after_months", updateRecord->hasRepeatAfterMonths());
+
+    if (m_model->setRecord(index.value(), sqlRecord))
+    {
+      if (m_model->submitAll())
+      {
+        qDebug() << "Record updated sucessfully";
+        emit dataChanged(this->index(index.value()), this->index(index.value()));
+      }
+      else
+      {
+        qWarning() << "Submit failed: " << m_model->lastError().text();
+        m_model->revertAll();
+      }
+    }
+
+    updateRecord->deleteLater();
+  }
+}
+
+ServiceRecord* ServiceRecordModel::getByIndex(int index) const
+{
+  QSqlRecord record = m_model->record(index);
+  return serviceRecordFromSqlRecord(record);
+}
+
+std::optional<int> ServiceRecordModel::indexById(int recordId) const
+{
+  m_model->select();
+  for (int row = 0; row < m_model->rowCount(); ++row)
+  {
+    QSqlRecord record    = m_model->record(row);
+    const int  currentId = record.value("record_id").toInt();
+    if (currentId == recordId)
+    {
+      return row;
+    }
+  }
+  return std::nullopt;
 }
 
 void ServiceRecordModel::removeByIndex(int index)
@@ -173,31 +248,6 @@ void ServiceRecordModel::removeByIndex(int index)
   endRemoveRows();
 }
 
-void ServiceRecordModel::removeByRecordId(int recordId)
-{
-  if (!m_model || recordId < 0)
-  {
-    return;
-  }
-
-  QSqlQuery query(m_model->database());
-  query.prepare("DELETE FROM service_records WHERE record_id = :id");
-  query.bindValue(":id", recordId);
-
-  if (query.exec())
-  {
-    qDebug() << "Record" << recordId << "deleted sucessfully";
-
-    beginResetModel();
-    m_model->select();
-    endResetModel();
-  }
-  else
-  {
-    qWarning() << "Delete failed:" << query.lastError().text();
-  }
-}
-
 QSqlDatabase ServiceRecordModel::openDatabase()
 {
   const QString dbPath =
@@ -226,7 +276,7 @@ QSqlDatabase ServiceRecordModel::openDatabase()
   const QString createTableSql =
     "CREATE TABLE IF NOT EXISTS service_records ("
     "record_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "event_type INTEGER NOT NULL, "
+    "event_type TEXT NOT NULL, "
     "name TEXT NOT NULL, "
     "notes TEXT, "
     "price REAL, "
@@ -247,11 +297,13 @@ QSqlDatabase ServiceRecordModel::openDatabase()
   return db;
 }
 
-QSqlRecord ServiceRecordModel::recordFromServiceRecord(ServiceRecord* record) const
+QSqlRecord ServiceRecordModel::sqlRecordFromServiceRecord(ServiceRecord* record) const
 {
   QSqlRecord sqlRecord = m_model->record();
 
-  sqlRecord.setValue("event_type", record->eventType());
+  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+
+  sqlRecord.setValue("event_type", QString::fromUtf8(metaEnum.valueToKey(record->eventType())));
   sqlRecord.setValue("name", record->name());
   sqlRecord.setValue("notes", record->notes());
   sqlRecord.setValue("price", record->price());
@@ -263,4 +315,31 @@ QSqlRecord ServiceRecordModel::recordFromServiceRecord(ServiceRecord* record) co
   sqlRecord.setValue("has_repeat_after_months", record->hasRepeatAfterMonths() ? 1 : 0);
 
   return sqlRecord;
+}
+
+ServiceRecord* ServiceRecordModel::serviceRecordFromSqlRecord(const QSqlRecord& record) const
+{
+  auto* serviceRecord = new ServiceRecord(const_cast<ServiceRecordModel*>(this));
+
+  QString   eventTypeStr = record.value("event_type").toString();
+  QMetaEnum metaEnum     = QMetaEnum::fromType<ServiceRecord::EventType>();
+  bool      ok           = false;
+  int       enumValue    = metaEnum.keyToValue(eventTypeStr.toUtf8().constData(), &ok);
+  serviceRecord->setEventType(ok ? static_cast<ServiceRecord::EventType>(enumValue) : ServiceRecord::Maintenance);
+
+  serviceRecord->setName(record.value("name").toString());
+  serviceRecord->setNotes(record.value("notes").toString());
+  serviceRecord->setPrice(record.value("price").toInt());
+  serviceRecord->setMileage(record.value("mileage").toInt());
+
+  auto date = QDate::fromString(record.value("service_date").toString(), Qt::ISODate);
+  serviceRecord->setServiceDate(date);
+
+  serviceRecord->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
+  serviceRecord->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
+  serviceRecord->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
+  serviceRecord->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
+
+  QQmlEngine::setObjectOwnership(serviceRecord, QQmlEngine::JavaScriptOwnership);
+  return serviceRecord;
 }

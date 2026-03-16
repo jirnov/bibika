@@ -19,6 +19,15 @@ Page {
     signal openSettingsDialog()
     signal openMileageDialog()
 
+    background: Rectangle {
+        gradient: Gradient {
+            orientation: Gradient.Vertical
+            GradientStop { position: 0.0; color: "#F8FAFC" }  // Светлый сверху
+            GradientStop { position: 1.0; color: "#F1F5F9" }  // Чуть темнее снизу
+        }
+    }
+
+
     ServiceRecordModel {
         id: dataModel
 
@@ -159,7 +168,7 @@ Page {
                 required property int index
 
                 width: listView.width
-                height: 120
+                height: 160
                 color: index % 2 === 0 ? "#f8f8f8" : "white"
                 border.color: "#e0e0e0"
                 border.width: 1
@@ -186,6 +195,8 @@ Page {
                             text: "Редактировать"
 
                             onClicked: {
+                                var serviceRecord = dataModel.getById(model.recordId)
+                                console.log(serviceRecord.name)
                                 root.openEditRecordDialog(model.recordId)
                             }
                         }
@@ -194,7 +205,7 @@ Page {
                             text: "Удалить"
 
                             onClicked: {
-                                dataModel.removeRecordById(model.recordId)
+                                dataModel.removeById(model.recordId)
                             }
                         }
                     }

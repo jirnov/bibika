@@ -28,7 +28,9 @@ ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
 
 QString ServiceRecord::toJSON() const
 {
-  QJsonObject json{ { "eventType", m_eventType },
+  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+
+  QJsonObject json{ { "eventType", QString::fromUtf8(metaEnum.valueToKey(m_eventType)) },
                     { "name", m_name },
                     { "notes", m_notes },
                     { "price", m_price },
@@ -188,12 +190,25 @@ void ServiceRecord::fromJSONString(const QString& jsonString)
   if (!doc.isNull() && doc.isObject())
   {
     QJsonObject json = doc.object();
-    if (json.contains("eventType"))
+
+    QString eventTypeStr = json["eventType"].toString();
+
+    if (!eventTypeStr.isEmpty())
     {
-      const auto metaEnum = QMetaEnum::fromType<EventType>();
-      const auto key      = json["eventType"].toString();
-      setEventType(static_cast<EventType>(metaEnum.keyToValue(key.toLocal8Bit().constData())));
+      QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+      bool      ok       = false;
+      int       value    = metaEnum.keyToValue(eventTypeStr.toUtf8().constData(), &ok);
+      if (ok)
+      {
+        setEventType(static_cast<EventType>(value));
+      }
+      else
+      {
+        setEventType(Maintenance);
+        qWarning() << "Unknown event type: " << eventTypeStr;
+      }
     }
+
     setName(json["name"].toString());
     setNotes(json["notes"].toString());
     setPrice(json["price"].toInt());

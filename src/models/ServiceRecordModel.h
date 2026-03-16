@@ -38,14 +38,22 @@ class ServiceRecordModel : public QAbstractListModel
   QVariant               data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
 
-  Q_INVOKABLE void append(ServiceRecord* record);
-  Q_INVOKABLE void clear();
-  Q_INVOKABLE void removeByIndex(int index);
-  Q_INVOKABLE void removeByRecordId(int recordId);
+  Q_INVOKABLE void           append(ServiceRecord* record);
+  Q_INVOKABLE void           clear();
+  Q_INVOKABLE void           removeById(int recordId);
+  Q_INVOKABLE ServiceRecord* getById(int recordId) const;
+
+  Q_INVOKABLE void updateRecordById(int recordId, ServiceRecord* updateRecord);
 
  private:
-  QSqlDatabase openDatabase();
-  QSqlRecord   recordFromServiceRecord(ServiceRecord* record) const;
+  void           removeByIndex(int index);
+  ServiceRecord* getByIndex(int index) const;
+
+  std::optional<int> indexById(int recordId) const;
+
+  QSqlDatabase   openDatabase();
+  QSqlRecord     sqlRecordFromServiceRecord(ServiceRecord* record) const;
+  ServiceRecord* serviceRecordFromSqlRecord(const QSqlRecord& record) const;
 
   QSqlTableModel* m_model = nullptr;
 };

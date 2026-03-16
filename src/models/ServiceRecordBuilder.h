@@ -15,9 +15,8 @@ class ServiceRecordBuilder : public QObject
  public:
   explicit ServiceRecordBuilder(QObject* parent = nullptr);
 
-  Q_INVOKABLE ServiceRecord* create(const QVariantMap& data, QObject* parent = nullptr);
-  Q_INVOKABLE ServiceRecord* createEmpty(QObject* parent = nullptr);
-  Q_INVOKABLE ServiceRecord* fromJSON(const QString& jsonString, QObject* parent = nullptr);
+  static Q_INVOKABLE ServiceRecord* createEmpty(QObject* parent = nullptr);
+  static Q_INVOKABLE ServiceRecord* fromJSON(const QString& jsonString, QObject* parent = nullptr);
 
  signals:
 };

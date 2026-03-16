@@ -12,6 +12,18 @@ ApplicationWindow {
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal
 
+    onClosing: function(close) {
+        if (Qt.platform.os === "android") {
+            if (stackView.depth > 1) {
+                stackView.pop()
+                close.accepted = false
+            }
+            else {
+                close.accepted = true
+            }
+        }
+    }
+
     Connections {
         target: Qt.inputMethod
         function onKeyboardRectangleChanged() {
@@ -62,12 +74,11 @@ ApplicationWindow {
                 updateMilestoneDialog.open()
             }
 
-            onOpenEditRecordDialog: function(index) {
-                console.log("open edit dialog for item " + index)
-
-                let editRecord = ServiceRecordBuilder.fromJSON("");
-                editRecord.name = "Номер записи: " + index
-
+            onOpenEditRecordDialog: function(recordId) {
+                let editRecord = dataModel.getById(recordId)
+                console.log("index = " + recordId)
+                console.log("name: " + editRecord.name)
+                console.log("editRecord: " + editRecord.toJSON())
                 stackView.push(serviceRecordScreen, {
                                    "currentMileage": AppSettings.carInfo.lastMileage,
                                    "editRecord": editRecord })
@@ -96,7 +107,7 @@ ApplicationWindow {
         }
     }
 
-    ServiceRecordListModel {
-        id: listModel
+    ServiceRecordModel {
+        id: dataModel
     }
 }

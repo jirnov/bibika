@@ -20,10 +20,14 @@ Page {
     signal rejected()
 
     Component.onCompleted: {
+        console.log("ServiceRecordScren onCompleted")
         if (editRecord) {
+            console.log("We have edit record" + editRecord.toJSON())
             _editCopy = ServiceRecordBuilder.fromJSON(editRecord.toJSON(), root)
+            console.log("eventType: " +  _editCopy.eventType)
         }
         else {
+            console.log("Create new record")
             _editCopy.eventType = ServiceRecord.Maintenance
         }
         _editCopy.mileage = currentMileage
@@ -95,7 +99,7 @@ Page {
                 TabBar {
                     id: eventType
                     Layout.fillWidth: true
-                    currentIndex: root._editCopy.eventType
+                    currentIndex: Number(root._editCopy.eventType) || 0
 
                     background: Rectangle {
                         color: "transparent"

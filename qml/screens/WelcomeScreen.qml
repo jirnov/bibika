@@ -27,7 +27,8 @@ Page {
             orientation: Gradient.Vertical
             GradientStop { position: 0.0; color: "#F8FAFC" }  // Светлый сверху
             GradientStop { position: 1.0; color: "#F1F5F9" }  // Чуть темнее снизу
-        }    }
+        }
+    }
 
     Flickable {
         anchors.fill: parent
