@@ -1,0 +1,71 @@
+﻿# .clang-format
+
+# Основной стиль — Google Style как базовый
+BasedOnStyle: Google
+
+# Отступы
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+
+# Переносы строк
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  BeforeCatch: true
+  BeforeElse: true  # Обязательный перенос перед else
+  IndentBraces: false
+ColumnLimit: 120
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+DerivePointerAlignment: false
+PointerAlignment: Left
+Cpp11BracedListStyle: false
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignOperands: true
+PenaltyBreakBeforeFirstCallParameter: 100
+
+# Комментарии
+CommentPragmas: '.*'
+
+# Прочее
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+SortIncludes: false
+SpaceBeforeParens: ControlStatements
+Standard: Auto
+
+# Специфичные настройки для сохранения стиля
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: InlineOnly
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeComma
+ContinuationIndentWidth: 2
+IndentCaseLabels: false
+IndentPPDirectives: AfterHash
+PenaltyBreakAssignment: 2
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 100
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 60
+
+# Выравнивание
+AlignTrailingComments: true
+AlignConsecutiveMacros: true

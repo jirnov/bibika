@@ -7,6 +7,8 @@
 
 class ServiceRecord;
 
+// Содержит все сервисные события
+// хранение в базе данных SQLite с помощью QSqlTableModel
 class ServiceRecordModel : public QAbstractListModel
 {
   Q_OBJECT
@@ -24,8 +26,7 @@ class ServiceRecordModel : public QAbstractListModel
     RepeatAfterDistanceRole,
     HasRepeatAfterDistanceRole,
     RepeatAfterMonthsRole,
-    HasRepeatAfterMonthsRole,
-    IsValidRole,
+    HasRepeatAfterMonthsRole
   };
 
  public:
@@ -39,7 +40,8 @@ class ServiceRecordModel : public QAbstractListModel
 
   Q_INVOKABLE void append(ServiceRecord* record);
   Q_INVOKABLE void clear();
-  Q_INVOKABLE void removeRecordById(int recordId);
+  Q_INVOKABLE void removeByIndex(int index);
+  Q_INVOKABLE void removeByRecordId(int recordId);
 
  private:
   QSqlDatabase openDatabase();
