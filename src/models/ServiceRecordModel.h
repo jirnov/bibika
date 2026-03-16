@@ -1,5 +1,5 @@
-#ifndef SERVICERECORDLISTMODEL_H
-#define SERVICERECORDLISTMODEL_H
+#ifndef SERVICERECORDMODEL_H
+#define SERVICERECORDMODEL_H
 
 #include <QAbstractListModel>
 #include <QQmlEngine>
@@ -7,12 +7,13 @@
 
 class ServiceRecord;
 
-class ServiceRecordListModel : public QAbstractListModel
+class ServiceRecordModel : public QAbstractListModel
 {
   Q_OBJECT
   QML_ELEMENT
 
-  enum Roles {
+  enum Roles
+  {
     RecordIdRole = Qt::UserRole,
     EventTypeRole,
     NameRole,
@@ -28,10 +29,12 @@ class ServiceRecordListModel : public QAbstractListModel
   };
 
  public:
-  explicit ServiceRecordListModel(QObject *parent = nullptr);
+  explicit ServiceRecordModel(QObject* parent = nullptr);
 
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+ public:
+  // QAbstractListModel
+  int                    rowCount(const QModelIndex& parent = QModelIndex()) const override;
+  QVariant               data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
   QHash<int, QByteArray> roleNames() const override;
 
   Q_INVOKABLE void append(ServiceRecord* record);
@@ -40,9 +43,9 @@ class ServiceRecordListModel : public QAbstractListModel
 
  private:
   QSqlDatabase openDatabase();
-  QSqlRecord recordFromServiceRecord(ServiceRecord *record) const;
+  QSqlRecord   recordFromServiceRecord(ServiceRecord* record) const;
 
-  QSqlTableModel *m_model = nullptr;
+  QSqlTableModel* m_model = nullptr;
 };
 
-#endif  // SERVICERECORDLISTMODEL_H
+#endif  // SERVICERECORDMODEL_H

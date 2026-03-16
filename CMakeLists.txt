@@ -90,7 +90,8 @@ qt6_add_qml_module(appBibikaService
         src/models/CarInfoBuilder.cpp
         src/service/CarModelIndex.h
         src/service/CarModelIndex.cpp
-        SOURCES src/models/ServiceRecordListModel.h src/models/ServiceRecordListModel.cpp
+        src/models/ServiceRecordModel.h
+        src/models/ServiceRecordModel.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

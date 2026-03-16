@@ -28,24 +28,22 @@ ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
 
 QString ServiceRecord::toJSON() const
 {
-  QJsonObject json{
-    {"eventType", m_eventType},
-    {"name", m_name},
-    {"notes", m_notes},
-    {"price", m_price},
-    {"mileage", m_mileage},
-    {"serviceDate", m_serviceDate.toString(Qt::ISODate)},
-    {"repeatAfterDistance", m_repeatAfterDistance},
-    {"hasRepeatAfterDistance", m_hasRepeatAfterDistance},
-    {"repeatAfterMonths", m_repeatAfterMonths},
-    {"hasRepeatAfterMonths", m_hasRepeatAfterMonths}
-  };
+  QJsonObject json{ { "eventType", m_eventType },
+                    { "name", m_name },
+                    { "notes", m_notes },
+                    { "price", m_price },
+                    { "mileage", m_mileage },
+                    { "serviceDate", m_serviceDate.toString(Qt::ISODate) },
+                    { "repeatAfterDistance", m_repeatAfterDistance },
+                    { "hasRepeatAfterDistance", m_hasRepeatAfterDistance },
+                    { "repeatAfterMonths", m_repeatAfterMonths },
+                    { "hasRepeatAfterMonths", m_hasRepeatAfterMonths } };
   return QJsonDocument(json).toJson(QJsonDocument::Compact);
 }
 
-ServiceRecord *ServiceRecord::fromJSON(const QString &jsonString, QObject *parent)
+ServiceRecord* ServiceRecord::fromJSON(const QString& jsonString, QObject* parent)
 {
-  ServiceRecord *serviceRecord = new ServiceRecord(parent);
+  ServiceRecord* serviceRecord = new ServiceRecord(parent);
   serviceRecord->fromJSONString(jsonString);
   return serviceRecord;
 }
@@ -55,7 +53,7 @@ QString ServiceRecord::name() const
   return m_name;
 }
 
-void ServiceRecord::setName(const QString &newName)
+void ServiceRecord::setName(const QString& newName)
 {
   if (m_name == newName)
     return;
@@ -68,7 +66,7 @@ QString ServiceRecord::notes() const
   return m_notes;
 }
 
-void ServiceRecord::setNotes(const QString &newNotes)
+void ServiceRecord::setNotes(const QString& newNotes)
 {
   if (m_notes == newNotes)
     return;
@@ -107,7 +105,7 @@ QDate ServiceRecord::serviceDate() const
   return m_serviceDate;
 }
 
-void ServiceRecord::setServiceDate(const QDate &newServiceDate)
+void ServiceRecord::setServiceDate(const QDate& newServiceDate)
 {
   if (m_serviceDate == newServiceDate)
     return;
@@ -180,14 +178,14 @@ void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
   emit hasRepeatAfterMonthsChanged();
 }
 
-void ServiceRecord::fromJSONString(const QString &jsonString)
+void ServiceRecord::fromJSONString(const QString& jsonString)
 {
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
   if (!doc.isNull() && doc.isObject()) {
     QJsonObject json = doc.object();
     if (json.contains("eventType")) {
       const auto metaEnum = QMetaEnum::fromType<EventType>();
-      const auto key = json["eventType"].toString();
+      const auto key      = json["eventType"].toString();
       setEventType(static_cast<EventType>(metaEnum.keyToValue(key.toLocal8Bit().constData())));
     }
     setName(json["name"].toString());
@@ -218,7 +216,7 @@ ServiceRecord::EventType ServiceRecord::eventType() const
   return m_eventType;
 }
 
-void ServiceRecord::setEventType(const EventType &newEventType)
+void ServiceRecord::setEventType(const EventType& newEventType)
 {
   if (m_eventType == newEventType)
     return;

@@ -14,23 +14,21 @@ CarInfo::CarInfo(QObject* parent) : QObject{ parent }
 
 QString CarInfo::toJSON() const
 {
-  QJsonObject json {
-    {"brandName", m_brandName},
-    {"modelName", m_modelName},
-    {"lastMileage", m_lastMileage},
-    {"lastMileageDate", m_lastMileageDate.toString(Qt::ISODate)}
-  };
+  QJsonObject json{ { "brandName", m_brandName },
+                    { "modelName", m_modelName },
+                    { "lastMileage", m_lastMileage },
+                    { "lastMileageDate", m_lastMileageDate.toString(Qt::ISODate) } };
   return QJsonDocument(json).toJson(QJsonDocument::Compact);
 }
 
-CarInfo *CarInfo::fromJSON(const QString &jsonString, QObject *parent)
+CarInfo* CarInfo::fromJSON(const QString& jsonString, QObject* parent)
 {
-  CarInfo *carInfo = new CarInfo(parent);
+  CarInfo* carInfo = new CarInfo(parent);
   carInfo->fromJSONString(jsonString);
   return carInfo;
 }
 
-void CarInfo::fromJSONString(const QString &jsonString)
+void CarInfo::fromJSONString(const QString& jsonString)
 {
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
   if (!doc.isNull() && doc.isObject()) {
@@ -50,11 +48,12 @@ void CarInfo::fromJSONString(const QString &jsonString)
   }
 }
 
-QString CarInfo::brandName() const {
+QString CarInfo::brandName() const
+{
   return m_brandName;
 }
 
-void CarInfo::setBrandName(const QString &newBrandName)
+void CarInfo::setBrandName(const QString& newBrandName)
 {
   if (m_brandName == newBrandName) {
     return;
@@ -69,7 +68,7 @@ QString CarInfo::modelName() const
   return m_modelName;
 }
 
-void CarInfo::setModelName(const QString &newModelName)
+void CarInfo::setModelName(const QString& newModelName)
 {
   if (m_modelName == newModelName) {
     return;
@@ -88,7 +87,7 @@ void CarInfo::setLastMileage(const int newLastMileage)
   if (m_lastMileage == newLastMileage) {
     return;
   }
-  m_lastMileage = newLastMileage;
+  m_lastMileage     = newLastMileage;
   m_lastMileageDate = QDate::currentDate();
   emit lastMileageChanged();
   emit lastMileageDateChanged();
@@ -104,7 +103,8 @@ QDate CarInfo::lastMileageDate() const
   return m_lastMileageDate;
 }
 
-QMap<QString, QString> CarInfo::validateAll() const {
+QMap<QString, QString> CarInfo::validateAll() const
+{
   QMap<QString, QString> errors;
 
   const auto brandError = validateBrand();
@@ -135,7 +135,6 @@ QString CarInfo::validateModel() const
   }
   return {};
 }
-
 
 
 QString CarInfo::name() const

@@ -21,15 +21,15 @@ class CarInfo : public QObject
 
   Q_INVOKABLE QString toJSON() const;
 
-  static CarInfo *fromJSON(const QString &jsonString, QObject *parent=nullptr);
+  static CarInfo* fromJSON(const QString& jsonString, QObject* parent = nullptr);
 
   QString brandName() const;
-  void setBrandName(const QString &brandName);
+  void    setBrandName(const QString& brandName);
 
   QString modelName() const;
-  void setModelName(const QString &modelName);
+  void    setModelName(const QString& modelName);
 
-  int lastMileage() const;
+  int  lastMileage() const;
   void setLastMileage(const int lastMileage);
 
   bool isValid() const;
@@ -37,8 +37,8 @@ class CarInfo : public QObject
   QDate lastMileageDate() const;
 
   Q_INVOKABLE QMap<QString, QString> validateAll() const;
-  Q_INVOKABLE QString validateBrand() const;
-  Q_INVOKABLE QString validateModel() const;
+  Q_INVOKABLE QString                validateBrand() const;
+  Q_INVOKABLE QString                validateModel() const;
 
   QString name() const;
 
@@ -53,12 +53,12 @@ class CarInfo : public QObject
   void nameChanged();
 
  private:
-  void fromJSONString(const QString &jsonString);
+  void fromJSONString(const QString& jsonString);
 
   QString m_brandName;
   QString m_modelName;
-  int m_lastMileage{0};
-  QDate m_lastMileageDate = QDate::currentDate();
+  int     m_lastMileage{ 0 };
+  QDate   m_lastMileageDate = QDate::currentDate();
 };
 
 #endif  // CARINFO_H

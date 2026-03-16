@@ -1,14 +1,15 @@
-#include "ServiceRecordListModel.h"
+#include "ServiceRecordModel.h"
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QTimer>
 #include <QStandardPaths>
 #include <QSqlRecord>
+#include <QFileInfo>
+#include <QDir>
 #include "ServiceRecord.h"
 
 
-ServiceRecordListModel::ServiceRecordListModel(QObject *parent)
-  : QAbstractListModel{parent}
+ServiceRecordModel::ServiceRecordModel(QObject* parent) : QAbstractListModel{ parent }
 {
   QSqlDatabase db = openDatabase();
 
@@ -21,7 +22,7 @@ ServiceRecordListModel::ServiceRecordListModel(QObject *parent)
   }
 }
 
-int ServiceRecordListModel::rowCount(const QModelIndex &parent) const
+int ServiceRecordModel::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid() || !m_model) {
     return 0;
@@ -29,7 +30,7 @@ int ServiceRecordListModel::rowCount(const QModelIndex &parent) const
   return m_model->rowCount();
 }
 
-QVariant ServiceRecordListModel::data(const QModelIndex &index, int role) const
+QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid() || !m_model) {
     return {};
@@ -67,27 +68,29 @@ QVariant ServiceRecordListModel::data(const QModelIndex &index, int role) const
   }
 }
 
-QHash<int, QByteArray> ServiceRecordListModel::roleNames() const
+QHash<int, QByteArray> ServiceRecordModel::roleNames() const
 {
-  QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
-  roles[RecordIdRole] = "recordId";
-  roles[EventTypeRole] = "eventType";
-  roles[NameRole] = "name";
-  roles[NotesRole] = "notes";
-  roles[PriceRole] = "price";
-  roles[MileageRole] = "mileage";
-  roles[ServiceDateRole] = "serviceDate";
-  roles[RepeatAfterDistanceRole] = "repeatAfterDistance";
+  QHash<int, QByteArray> roles      = QAbstractListModel::roleNames();
+  roles[RecordIdRole]               = "recordId";
+  roles[EventTypeRole]              = "eventType";
+  roles[NameRole]                   = "name";
+  roles[NotesRole]                  = "notes";
+  roles[PriceRole]                  = "price";
+  roles[MileageRole]                = "mileage";
+  roles[ServiceDateRole]            = "serviceDate";
+  roles[RepeatAfterDistanceRole]    = "repeatAfterDistance";
   roles[HasRepeatAfterDistanceRole] = "hasRepeatAfterDistance";
-  roles[RepeatAfterMonthsRole] = "repeatAfterMonths";
-  roles[HasRepeatAfterMonthsRole] = "hasRepeatAfterMonths";
-  roles[IsValidRole] = "isValid";
+  roles[RepeatAfterMonthsRole]      = "repeatAfterMonths";
+  roles[HasRepeatAfterMonthsRole]   = "hasRepeatAfterMonths";
+  roles[IsValidRole]                = "isValid";
   return roles;
 }
 
-void ServiceRecordListModel::append(ServiceRecord *record)
+void ServiceRecordModel::append(ServiceRecord* record)
 {
-  if (!record || !m_model) return;
+  if (!record || !m_model) {
+    return;
+  }
 
   QSqlRecord sqlRecord = recordFromServiceRecord(record);
 
@@ -111,9 +114,10 @@ void ServiceRecordListModel::append(ServiceRecord *record)
   endInsertRows();
 
   QQmlEngine::setObjectOwnership(record, QQmlEngine::CppOwnership);
-  record->deleteLater();}
+  record->deleteLater();
+}
 
-void ServiceRecordListModel::clear()
+void ServiceRecordModel::clear()
 {
   beginResetModel();
   bool success = m_model->removeRows(0, m_model->rowCount());
@@ -133,7 +137,7 @@ void ServiceRecordListModel::clear()
   endResetModel();
 }
 
-void ServiceRecordListModel::removeRecordById(int recordId)
+void ServiceRecordModel::removeRecordById(int recordId)
 {
   if (!m_model || recordId < 0) {
     return;
@@ -155,30 +159,11 @@ void ServiceRecordListModel::removeRecordById(int recordId)
     qWarning() << "Delete failed:" << query.lastError().text();
   }
 }
-/*
-ServiceRecord *ServiceRecordListModel::get(int index) const
+
+QSqlDatabase ServiceRecordModel::openDatabase()
 {
-  QSqlRecord record = m_model->record(index);
-  ServiceRecord *sr = new ServiceRecord();
-
-  sr->setEventType(static_cast<ServiceRecord::EventType>(record.value("event_type").toInt()));
-  sr->setName(record.value("name").toString());
-  sr->setNotes(record.value("notes").toString());
-  sr->setPrice(record.value("price").toDouble());
-  sr->setMileage(record.value("mileage").toInt());
-  sr->setServiceDate(QDate::fromString(record.value("service_date").toString(), Qt::ISODate));
-  sr->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
-  sr->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
-  sr->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
-  sr->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
-
-  QQmlEngine::setObjectOwnership(sr, QQmlEngine::CppOwnership);
-  return sr;
-}*/
-
-QSqlDatabase ServiceRecordListModel::openDatabase()
-{
-  const QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/bibika_service.sqlite";
+  const QString dbPath =
+    QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/bibika_service.sqlite";
   const QString connectionName = "service_records_connection";
 
   QSqlDatabase db;
@@ -220,7 +205,7 @@ QSqlDatabase ServiceRecordListModel::openDatabase()
   return db;
 }
 
-QSqlRecord ServiceRecordListModel::recordFromServiceRecord(ServiceRecord *record) const
+QSqlRecord ServiceRecordModel::recordFromServiceRecord(ServiceRecord* record) const
 {
   QSqlRecord sqlRecord = m_model->record();
 

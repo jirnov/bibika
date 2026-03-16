@@ -114,7 +114,7 @@ Item {
                 }
 
                 onTextEdited: {
-                    if (_trySuggestionOpen(inputField.text)) {
+                    if (root._trySuggestionOpen(inputField.text)) {
                         root.editingFinished()
                     }
                 }
@@ -127,7 +127,7 @@ Item {
                         suggestionPopup.close()
                     }
                     else {
-                        _trySuggestionOpen(inputField.text)
+                        root._trySuggestionOpen(inputField.text)
                     }
                 }
             }

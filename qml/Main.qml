@@ -15,7 +15,7 @@ ApplicationWindow {
     Connections {
         target: Qt.inputMethod
         function onKeyboardRectangleChanged() {
-            var height = Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio
+            var height = Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio // qmllint disable missing-property
             AppSettings.setKeyboardHeight(height)
         }
     }

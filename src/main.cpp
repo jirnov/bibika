@@ -27,11 +27,14 @@ static QTranslator *createTranslator(QObject *parent)
 
 int main(int argc, char *argv[])
 {
-  QGuiApplication app(argc, argv);
-
   // Отключаем вывод предупреждений доступности
   QLoggingCategory::setFilterRules("qt.a11y.*=false");
   QLoggingCategory::setFilterRules("qt.core.translator=true");
+  QLoggingCategory::setFilterRules("qt.accessibility.*=false");
+
+  qputenv("QT_ANDROID_DISABLE_ACCESSIBILITY", "1");
+
+  QGuiApplication app(argc, argv);
 
   if (auto translator = createTranslator(&app)) {
     app.installTranslator(translator);
