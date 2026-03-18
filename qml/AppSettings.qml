@@ -3,8 +3,7 @@ import QtCore
 import QtQuick
 import BibikaService
 
-QtObject
-{
+QtObject {
     id: root
 
     readonly property int width: 576
@@ -16,7 +15,7 @@ QtObject
         keyboardHeight = newHeight;
     }
 
-    property Settings _persistent : Settings {
+    property Settings _persistent: Settings {
         property string carInfoJson: ""
         property alias showWelcomeScreen: root.showWelcomeScreen
     }
@@ -25,7 +24,7 @@ QtObject
     readonly property CarInfo carInfo: CarInfoBuilder.fromJSON(root._persistent.value("carInfoJson"), root)
 
     function updateCarInfo(newCarInfo) {
-        root._persistent.carInfoJson = newCarInfo.toJSON()
-        root._persistent.sync()
+        root._persistent.carInfoJson = newCarInfo.toJSON();
+        root._persistent.sync();
     }
 }

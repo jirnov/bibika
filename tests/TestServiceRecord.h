@@ -11,7 +11,6 @@ class TestServiceRecord : public QObject
   void testDefaultConstructor();
   void testSettersAndGetters();
   void testSignals();
-  void testJson();
 };
 
 #endif  // TESTSERVICERECORD_H

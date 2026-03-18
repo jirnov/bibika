@@ -26,28 +26,6 @@ ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
   connect(this, &ServiceRecord::serviceDateChanged, this, &ServiceRecord::isValidChanged);
 }
 
-QString ServiceRecord::toJSON() const
-{
-  QJsonObject json{ { "eventType", eventType2Str(m_eventType) },
-                    { "name", m_name },
-                    { "notes", m_notes },
-                    { "price", m_price },
-                    { "mileage", m_mileage },
-                    { "serviceDate", m_serviceDate.toString(Qt::ISODate) },
-                    { "repeatAfterDistance", m_repeatAfterDistance },
-                    { "hasRepeatAfterDistance", m_hasRepeatAfterDistance },
-                    { "repeatAfterMonths", m_repeatAfterMonths },
-                    { "hasRepeatAfterMonths", m_hasRepeatAfterMonths } };
-  return QJsonDocument(json).toJson(QJsonDocument::Compact);
-}
-
-ServiceRecord* ServiceRecord::fromJSON(const QString& jsonString, QObject* parent)
-{
-  ServiceRecord* serviceRecord = new ServiceRecord(parent);
-  serviceRecord->fromJSONString(jsonString);
-  return serviceRecord;
-}
-
 QString ServiceRecord::name() const
 {
   return m_name;
@@ -182,27 +160,6 @@ void ServiceRecord::setHasRepeatAfterMonths(bool newHasRepeatAfterMonths)
   emit hasRepeatAfterMonthsChanged();
 }
 
-void ServiceRecord::fromJSONString(const QString& jsonString)
-{
-  QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
-  if (!doc.isNull() && doc.isObject())
-  {
-    QJsonObject json = doc.object();
-
-    setEventType(str2EventType(json["eventType"].toString()));
-    setName(json["name"].toString());
-    setNotes(json["notes"].toString());
-    setPrice(json["price"].toInt());
-    setMileage(json["mileage"].toInt());
-    setServiceDate(QDate::fromString(json["serviceDate"].toString(), Qt::ISODate));
-
-    setRepeatAfterDistance(json["repeatAfterDistance"].toInt());
-    setRepeatAfterMonths(json["repeatAfterMonths"].toInt());
-    setHasRepeatAfterDistance(json["hasRepeatAfterDistance"].toBool());
-    setHasRepeatAfterMonths(json["hasRepeatAfterMonths"].toBool());
-  }
-}
-
 bool ServiceRecord::isNameValid() const
 {
   return !m_name.isEmpty();
@@ -248,22 +205,4 @@ bool ServiceRecord::isRepeatMonthsValid() const
     }
   }
   return true;
-}
-
-QString ServiceRecord::eventType2Str(EventType eventType)
-{
-  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-  return QString::fromUtf8(metaEnum.valueToKey(static_cast<int>(eventType)));
-}
-
-ServiceRecord::EventType ServiceRecord::str2EventType(const QString& eventTypeStr)
-{
-  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-  bool      ok       = false;
-  const int value    = metaEnum.keyToValue(eventTypeStr.toUtf8(), &ok);
-  if (!ok)
-  {
-    qWarning() << "Cannot convert" << eventTypeStr << "to EventType";
-  }
-  return static_cast<ServiceRecord::EventType>(value);
 }

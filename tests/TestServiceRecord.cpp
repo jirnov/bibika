@@ -141,26 +141,3 @@ void TestServiceRecord::testSignals()
   record.setRepeatAfterMonths(0);
   QCOMPARE(repeatMonthsSpy.count(), 2);
 }
-
-void TestServiceRecord::testJson()
-{
-  ServiceRecord record;
-
-  record.setName(testName);
-  record.setNotes(testNotes);
-  record.setEventType(testEventType);
-  record.setPrice(testPrice);
-  record.setMileage(testMileage);
-  record.setServiceDate(testServiceDate);
-
-  const auto jsonString = record.toJSON();
-
-  ServiceRecord* restored = ServiceRecordBuilder::fromJSON(jsonString, this);
-
-  QCOMPARE(restored->name(), testName);
-  QCOMPARE(restored->notes(), testNotes);
-  QCOMPARE(restored->price(), testPrice);
-  QCOMPARE(restored->eventType(), testEventType);
-  QCOMPARE(restored->mileage(), testMileage);
-  QCOMPARE(restored->serviceDate(), testServiceDate);
-}

@@ -29,31 +29,29 @@ ApplicationWindow {
         }
     }
 
-    onClosing: (closeEvent) => {
+    onClosing: closeEvent => {
         if (Qt.platform.os === "android") {
             if (root.handleBackButton()) {
-                closeEvent.accepted = false
-            }
-            else {
+                closeEvent.accepted = false;
+            } else {
                 // TODO: Заставить ещё раз нажать Back для выхода, как у некоторых приложений.
-                closeEvent.accepted = true
+                closeEvent.accepted = true;
             }
         }
-
     }
 
     Connections {
         target: Qt.inputMethod
         function onKeyboardRectangleChanged() {
-            var height = Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio // qmllint disable missing-property
-            AppSettings.setKeyboardHeight(height)
+            var height = Qt.inputMethod.keyboardRectangle.height / Screen.devicePixelRatio; // qmllint disable missing-property
+            AppSettings.setKeyboardHeight(height);
         }
     }
 
     StackView {
         id: stackView
         anchors.fill: parent
-        initialItem: AppSettings.showWelcomeScreen ? welcomeScreen : dashboardScreen;
+        initialItem: AppSettings.showWelcomeScreen ? welcomeScreen : dashboardScreen
     }
 
     Component {
@@ -61,10 +59,10 @@ ApplicationWindow {
         WelcomeScreen {
             carInfo: AppSettings.carInfo
 
-            onAccepted: function(newCarInfo) {
-                AppSettings.updateCarInfo(newCarInfo)
-                AppSettings.showWelcomeScreen = false
-                stackView.replace(dashboardScreen)
+            onAccepted: function (newCarInfo) {
+                AppSettings.updateCarInfo(newCarInfo);
+                AppSettings.showWelcomeScreen = false;
+                stackView.replace(dashboardScreen);
             }
         }
     }
@@ -77,31 +75,30 @@ ApplicationWindow {
         id: dashboardScreen
         DashboardScreen {
             onOpenAddRecordDialog: {
-                console.log("open new record dialog")
-                stackView.push(serviceRecordScreen, {"currentMileage": AppSettings.carInfo.lastMileage})
+                console.log("open new record dialog");
+                stackView.push(serviceRecordScreen, {
+                    "currentMileage": AppSettings.carInfo.lastMileage
+                });
             }
 
             onOpenSettingsDialog: {
-
-                console.log("open settings")
-                stackView.push(settingsScreen)
+                console.log("open settings");
+                stackView.push(settingsScreen);
             }
             onOpenMileageDialog: {
-
-                console.log("open mileage dialog")
-                updateMilestoneDialog.open()
+                console.log("open mileage dialog");
+                updateMilestoneDialog.open();
             }
 
-            onOpenEditRecordDialog: function(recordId) {
-                stackView.push(serviceRecordScreen,
-                               {
-                                   "currentMileage": AppSettings.carInfo.lastMileage,
-                                   "recordId": recordId
-                               })
+            onOpenEditRecordDialog: function (recordId) {
+                stackView.push(serviceRecordScreen, {
+                    "currentMileage": AppSettings.carInfo.lastMileage,
+                    "recordId": recordId
+                });
             }
 
-            onOpenRemoveRecordDialog: function(recordId) {
-                ServiceRecordModel.removeById(recordId)
+            onOpenRemoveRecordDialog: function (recordId) {
+                ServiceRecordModel.removeById(recordId);
             }
         }
     }
@@ -115,11 +112,11 @@ ApplicationWindow {
 
     Component {
         id: serviceRecordScreen
-        ServiceRecordScreen{
-            onAccepted: function(recordId, serviceRecord) {
-                ServiceRecordModel.updateRecordById(recordId, serviceRecord)
-                stackView.pop()
-                console.log("Запись: " + serviceRecord.toJSON())
+        ServiceRecordScreen {
+            onAccepted: function (recordId, serviceRecord) {
+                ServiceRecordModel.updateRecordById(recordId, serviceRecord);
+                stackView.pop();
+                console.log("Запись: " + ServiceRecordBuilder.toJSON(serviceRecord));
             }
         }
     }

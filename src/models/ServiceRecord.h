@@ -32,10 +32,6 @@ class ServiceRecord : public QObject
   Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
 
  public:
-  static ServiceRecord* fromJSON(const QString& jsonString, QObject* parent = nullptr);
-
-  Q_INVOKABLE static ServiceRecord* create(QObject* parent = nullptr) { return new ServiceRecord(); }
-
   explicit ServiceRecord(QObject* parent = nullptr);
 
   enum EventType
@@ -45,8 +41,6 @@ class ServiceRecord : public QObject
     Service
   };
   Q_ENUM(EventType)
-
-  Q_INVOKABLE QString toJSON() const;
 
   QString name() const;
   void    setName(const QString& newName);
@@ -86,9 +80,6 @@ class ServiceRecord : public QObject
 
   bool isRepeatMonthsValid() const;
 
-  static QString   eventType2Str(EventType eventType);
-  static EventType str2EventType(const QString& eventTypeStr);
-
  signals:
   void nameChanged();
   void notesChanged();
@@ -111,8 +102,6 @@ class ServiceRecord : public QObject
   void isRepeatMonthsValidChanged();
 
  private:
-  void fromJSONString(const QString& jsonString);
-
   QString m_name;
   QString m_notes;
   int     m_price{ 0 };

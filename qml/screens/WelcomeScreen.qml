@@ -10,7 +10,7 @@ Page {
     height: parent ? parent.height : AppSettings.height
 
     signal accepted(CarInfo carInfo)
-    property CarInfo carInfo:CarInfoBuilder.createEmpty(root)
+    property CarInfo carInfo: CarInfoBuilder.createEmpty(root)
 
     readonly property int buttonAreaHeight: 100
     readonly property int buttonBottomMargin: 30
@@ -21,7 +21,7 @@ Page {
         id: carModelIndex
         Component.onCompleted: {
             if (!carModelIndex.loadFromFile(":/cars.json")) {
-                console.error("Failed to load cars.json")
+                console.error("Failed to load cars.json");
             }
         }
     }
@@ -29,8 +29,14 @@ Page {
     background: Rectangle {
         gradient: Gradient {
             orientation: Gradient.Vertical
-            GradientStop { position: 0.0; color: "#F8FAFC" }  // Светлый сверху
-            GradientStop { position: 1.0; color: "#F1F5F9" }  // Чуть темнее снизу
+            GradientStop {
+                position: 0.0
+                color: "#F8FAFC"
+            }  // Светлый сверху
+            GradientStop {
+                position: 1.0
+                color: "#F1F5F9"
+            }  // Чуть темнее снизу
         }
     }
 
@@ -79,32 +85,31 @@ Page {
                 text: root.carInfo.brandName
                 suggestions: carModelIndex.brands
                 onValidateField: {
-                    errorText = root.carInfo.validateBrand()
+                    errorText = root.carInfo.validateBrand();
                 }
                 onEditingFinished: {
-                    root.carInfo.brandName = text
-                    errorText = root.carInfo.validateBrand()
+                    root.carInfo.brandName = text;
+                    errorText = root.carInfo.validateBrand();
                 }
             }
 
             SmartTextField {
-                property var _updateTimer : Timer {
+                id: modelName
+                property var _updateTimer: Timer {
                     interval: 300
                     repeat: false
                     onTriggered: modelName.suggestions = carModelIndex.getModelsForBrand(root.carInfo.brandName)
                 }
-
-                id: modelName
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.horizontalMargin
                 Layout.rightMargin: Style.horizontalMargin
                 text: root.carInfo.modelName
                 placeholderText: qsTr("Модель автомобиля")
                 onEditingFinished: {
-                    root.carInfo.modelName = text
+                    root.carInfo.modelName = text;
                 }
                 onValidateField: {
-                    errorText = root.carInfo.validateModel()
+                    errorText = root.carInfo.validateModel();
                 }
 
                 onUpdateSuggestions: {
@@ -135,9 +140,8 @@ Page {
         enabled: root.carInfo.isValid
         text: qsTr("Поехали!")
         onClicked: {
-            root.accepted(root.carInfo)
-            console.log(root.carInfo.toJSON())
+            root.accepted(root.carInfo);
+            console.log(root.carInfo.toJSON());
         }
     }
-
 }

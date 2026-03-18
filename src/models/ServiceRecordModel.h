@@ -44,13 +44,14 @@ class ServiceRecordModel : public QAbstractListModel
   Q_INVOKABLE void           clear();
   Q_INVOKABLE void           removeById(int recordId);
   Q_INVOKABLE ServiceRecord* getById(int recordId) const;
+  Q_INVOKABLE int            count() const;
 
   Q_INVOKABLE void updateRecordById(int recordId, ServiceRecord* updateRecord);
 
-  void           removeByIndex(int index);
   ServiceRecord* getByIndex(int index) const;
 
  private:
+  void               removeByIndex(int index);
   std::optional<int> indexById(int recordId) const;
 
   QSqlDatabase   openDatabase();

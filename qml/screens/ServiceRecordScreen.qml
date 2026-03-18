@@ -23,16 +23,15 @@ Page {
 
     Component.onCompleted: {
         if (recordId !== 0) {
-            _editCopy = ServiceRecordModel.getById(recordId)
-            console.log("Редактирование записи:", _editCopy.name, "тип:", _editCopy.eventType)
+            _editCopy = ServiceRecordModel.getById(recordId);
+            console.log("Редактирование записи:", _editCopy.name, "тип:", _editCopy.eventType);
+        } else {
+            console.log("Создание новой записи");
+            _editCopy = ServiceRecordBuilder.createEmpty(root);
+            _editCopy.eventType = ServiceRecord.Maintenance;
         }
-        else {
-            console.log("Создание новой записи")
-            _editCopy = ServiceRecordBuilder.createEmpty(root)
-            _editCopy.eventType = ServiceRecord.Maintenance
-        }
-        _editCopy.mileage = currentMileage
-        _editCopy.serviceDate = new Date()
+        _editCopy.mileage = currentMileage;
+        _editCopy.serviceDate = new Date();
     }
 
     readonly property color accentColor: "#000000"
@@ -63,15 +62,14 @@ Page {
             anchors.fill: parent
             spacing: Style.defaultMargin
 
-            AcceptButton {                
+            AcceptButton {
                 Layout.fillWidth: true
                 Layout.margins: Style.horizontalMargin
                 text: qsTr("Сохранить")
 
                 onClicked: {
                     // TODO: Добавить валидацию данных
-                    console.log(root._editCopy.toJSON())
-                    root.accepted(root.recordId, root._editCopy)
+                    root.accepted(root.recordId, root._editCopy);
                 }
             }
         }
@@ -168,8 +166,8 @@ Page {
                     }
 
                     onCurrentIndexChanged: {
-                        console.log("new event type: ", currentIndex)
-                        root._editCopy.eventType = currentIndex
+                        console.log("new event type: ", currentIndex);
+                        root._editCopy.eventType = currentIndex;
                     }
                 }
             }
@@ -312,20 +310,20 @@ Page {
                                     }
 
                                     onEditingFinished: {
-                                        var parts = text.split('.')
+                                        var parts = text.split('.');
                                         if (parts.length === 3) {
-                                            var day = parseInt(parts[0])
-                                            var month = parseInt(parts[1]) - 1 // Месяцы с 0
-                                            var year = parseInt(parts[2])
+                                            var day = parseInt(parts[0]);
+                                            var month = parseInt(parts[1]) - 1; // Месяцы с 0
+                                            var year = parseInt(parts[2]);
 
-                                            var newDate = new Date(year, month, day)
+                                            var newDate = new Date(year, month, day);
 
                                             // Проверяем валидность даты
                                             if (!isNaN(newDate.getDate())) {
-                                                root._editCopy.serviceDate = newDate
+                                                root._editCopy.serviceDate = newDate;
                                             } else {
                                                 // Если дата невалидна, возвращаем старое значение
-                                                text = Qt.formatDateTime(root._editCopy.serviceDate, "dd.MM.yyyy")
+                                                text = Qt.formatDateTime(root._editCopy.serviceDate, "dd.MM.yyyy");
                                             }
                                         }
                                     }
@@ -407,7 +405,9 @@ Page {
                                     text: qsTr("километров")
                                     font.pixelSize: 14
                                 }
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
                             }
                             Label {
                                 text: qsTr("или (что наступит раньше)")
@@ -441,7 +441,9 @@ Page {
                                     font.pixelSize: 14
                                     enabled: useRepeatAfterMonths.checked
                                 }
-                                Item { Layout.fillWidth: true }
+                                Item {
+                                    Layout.fillWidth: true
+                                }
                             }
                         }
                     }
@@ -450,11 +452,8 @@ Page {
                     Item {
                         Layout.preferredHeight: Style.defaultMargin
                     }
-
                 }
             }
         }
-
     }
-
 }
