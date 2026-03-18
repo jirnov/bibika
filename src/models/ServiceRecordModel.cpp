@@ -194,8 +194,6 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* updateRec
         m_model->revertAll();
       }
     }
-
-    updateRecord->deleteLater();
   }
 }
 

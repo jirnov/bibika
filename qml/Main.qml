@@ -93,10 +93,15 @@ ApplicationWindow {
             }
 
             onOpenEditRecordDialog: function(recordId) {
-                let editRecord = dataModel.getById(recordId)
-                stackView.push(serviceRecordScreen, {
+                stackView.push(serviceRecordScreen,
+                               {
                                    "currentMileage": AppSettings.carInfo.lastMileage,
-                                   "editRecord": editRecord })
+                                   "recordId": recordId
+                               })
+            }
+
+            onOpenRemoveRecordDialog: function(recordId) {
+                ServiceRecordModel.removeById(recordId)
             }
         }
     }
@@ -111,14 +116,11 @@ ApplicationWindow {
     Component {
         id: serviceRecordScreen
         ServiceRecordScreen{
-            onAccepted: function(serviceRecord) {
-                console.log("Запись: " + serviceRecord.toJSON())
+            onAccepted: function(recordId, serviceRecord) {
+                ServiceRecordModel.updateRecordById(recordId, serviceRecord)
                 stackView.pop()
+                console.log("Запись: " + serviceRecord.toJSON())
             }
         }
-    }
-
-    ServiceRecordModel {
-        id: dataModel
     }
 }

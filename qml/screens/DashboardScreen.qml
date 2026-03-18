@@ -17,6 +17,66 @@ Page {
     signal openEditRecordDialog(int recordId)
     signal openSettingsDialog()
     signal openMileageDialog()
+    signal openRemoveRecordDialog(int recordId)
+
+    Component.onCompleted:  {
+        ServiceRecordModel.clear()
+
+        // Запись 1: Замена масла
+        var record1 = ServiceRecordBuilder.createEmpty()
+        record1.name = "Замена масла"
+        record1.notes = "Лить только Liqui Molly"
+        record1.price = 4500
+        record1.mileage = 0
+        record1.serviceDate = new Date(2026, 2, 1)  // Март 2026 (месяцы с 0)
+        record1.eventType = ServiceRecord.Maintenance
+        record1.hasRepeatAfterDistance = true
+        record1.repeatAfterDistance = 15000
+        record1.hasRepeatAfterMonths = true
+        record1.repeatAfterMonths = 12
+        ServiceRecordModel.append(record1)
+
+        // Запись 2: Замена лобового стекла
+        var record2 = ServiceRecordBuilder.createEmpty()
+        record2.name = "Замена лобового стекла"
+        record2.notes = "Тайваньское"
+        record2.price = 20000
+        record2.mileage = 5000
+        record2.serviceDate = new Date(2026, 2, 2)  // 2 марта 2026
+        record2.eventType = ServiceRecord.Repair
+        ServiceRecordModel.append(record2)
+
+        // Запись 3: Покупка омывайки
+        var record3 = ServiceRecordBuilder.createEmpty()
+        record3.name = "Покупка омывайки"
+        record3.notes = "Зелёная, -30"
+        record3.price = 200
+        record3.mileage = 5500
+        record3.serviceDate = new Date(2026, 2, 1)  // 1 марта 2026
+        record3.eventType = ServiceRecord.Service
+        ServiceRecordModel.append(record3)
+
+        // Запись 4: Капитальный ремонт двигателя
+        var record4 = ServiceRecordBuilder.createEmpty()
+        record4.name = "Капитальный ремонт двигателя"
+        record4.notes = "Этого лучше избегать!"
+        record4.price = 500000
+        record4.mileage = 10000
+        // Без даты - будет текущая или пустая
+        record4.eventType = ServiceRecord.Repair
+        ServiceRecordModel.append(record4)
+
+        // Запись 5: Замена масла в коробке
+        var record5 = ServiceRecordBuilder.createEmpty()
+        record5.name = "Замена масла в коробке"
+        record5.notes = ""
+        record5.price = 15000
+        record5.mileage = 0
+        record5.eventType = ServiceRecord.Maintenance
+        ServiceRecordModel.append(record5)
+
+        console.log("Всего записей:", ServiceRecordModel.rowCount())
+    }
 
     background: Rectangle {
         gradient: Gradient {
@@ -26,70 +86,6 @@ Page {
         }
     }
 
-
-    ServiceRecordModel {
-        id: dataModel
-
-        Component.onCompleted: {
-            // Очищаем модель перед добавлением
-            dataModel.clear()
-
-            // Запись 1: Замена масла
-            var record1 = ServiceRecordBuilder.createEmpty()
-            record1.name = "Замена масла"
-            record1.notes = "Лить только Liqui Molly"
-            record1.price = 4500
-            record1.mileage = 0
-            record1.serviceDate = new Date(2026, 2, 1)  // Март 2026 (месяцы с 0)
-            record1.eventType = ServiceRecord.Maintenance
-            record1.hasRepeatAfterDistance = true
-            record1.repeatAfterDistance = 15000
-            record1.hasRepeatAfterMonths = true
-            record1.repeatAfterMonths = 12
-            dataModel.append(record1)
-
-            // Запись 2: Замена лобового стекла
-            var record2 = ServiceRecordBuilder.createEmpty()
-            record2.name = "Замена лобового стекла"
-            record2.notes = "Тайваньское"
-            record2.price = 20000
-            record2.mileage = 5000
-            record2.serviceDate = new Date(2026, 2, 2)  // 2 марта 2026
-            record2.eventType = ServiceRecord.Repair
-            dataModel.append(record2)
-
-            // Запись 3: Покупка омывайки
-            var record3 = ServiceRecordBuilder.createEmpty()
-            record3.name = "Покупка омывайки"
-            record3.notes = "Зелёная, -30"
-            record3.price = 200
-            record3.mileage = 5500
-            record3.serviceDate = new Date(2026, 2, 1)  // 1 марта 2026
-            record3.eventType = ServiceRecord.Service
-            dataModel.append(record3)
-
-            // Запись 4: Капитальный ремонт двигателя
-            var record4 = ServiceRecordBuilder.createEmpty()
-            record4.name = "Капитальный ремонт двигателя"
-            record4.notes = "Этого лучше избегать!"
-            record4.price = 500000
-            record4.mileage = 10000
-            // Без даты - будет текущая или пустая
-            record4.eventType = ServiceRecord.Repair
-            dataModel.append(record4)
-
-            // Запись 5: Замена масла в коробке
-            var record5 = ServiceRecordBuilder.createEmpty()
-            record5.name = "Замена масла в коробке"
-            record5.notes = ""
-            record5.price = 15000
-            record5.mileage = 0
-            record5.eventType = ServiceRecord.Maintenance
-            dataModel.append(record5)
-
-            console.log("Всего записей:", dataModel.rowCount())
-        }
-    }
 
     Item {
         anchors.fill: parent
@@ -136,7 +132,7 @@ Page {
                 }
             }
             */
-/*
+            /*
             Text {
                 anchors {
                     left: parent.left
@@ -148,7 +144,7 @@ Page {
                 font.bold: true
             }
             */
-/*
+            /*
             Rectangle {
                 width: parent.width
                 height: 60
@@ -184,9 +180,7 @@ Page {
             clip: true
             spacing: 2
 
-            property alias dataModel: dataModel
-
-            model: dataModel
+            model: ServiceRecordModel
             delegate: Rectangle {
                 id: delegateRoot
                 required property var model
@@ -220,7 +214,6 @@ Page {
                             text: "Редактировать"
 
                             onClicked: {
-                                var serviceRecord = dataModel.getById(delegateRoot.model.recordId)
                                 root.openEditRecordDialog(delegateRoot.model.recordId)
                             }
                         }
@@ -229,7 +222,7 @@ Page {
                             text: "Удалить"
 
                             onClicked: {
-                                dataModel.removeById(delegateRoot.model.recordId)
+                                root.openRemoveRecordDialog(delegateRoot.model.recordId)
                             }
                         }
                     }

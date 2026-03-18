@@ -12,23 +12,23 @@ Page {
 
     property int currentMileage: 0
 
-    required property ServiceRecord editRecord
+    required property int recordId
 
-    property ServiceRecord _editCopy: ServiceRecord{}
+    property ServiceRecord _editCopy: null
 
-    signal accepted(ServiceRecord record)
+    signal accepted(int recordId, ServiceRecord record)
 
     Material.accent: "black"
     Material.containerStyle: Material.Filled
 
     Component.onCompleted: {
-        console.log("ServiceRecordScren onCompleted")
-        if (editRecord) {
-            console.log("We have edit record: " + editRecord.name)
-            _editCopy = ServiceRecordBuilder.fromJSON(editRecord.toJSON(), root)
+        if (recordId !== 0) {
+            _editCopy = ServiceRecordModel.getById(recordId)
+            console.log("Редактирование записи: " + _editCopy.name)
         }
         else {
-            console.log("Create new record")
+            console.log("Создание новой записи")
+            _editCopy = ServiceRecordBuilder.createEmpty(root)
             _editCopy.eventType = ServiceRecord.Maintenance
         }
         _editCopy.mileage = currentMileage
@@ -54,19 +54,24 @@ Page {
 
     footer: ToolBar {
 
+        background: Rectangle {
+            color: "transparent"
+            border.color: "transparent"
+        }
+
         RowLayout {
             anchors.fill: parent
             spacing: Style.defaultMargin
 
-            AcceptButton {
+            AcceptButton {                
                 Layout.fillWidth: true
+                Layout.margins: Style.horizontalMargin
                 text: qsTr("Сохранить")
 
                 onClicked: {
                     // TODO: Добавить валидацию данных
-                    console.log(JSON.stringify(root._editCopy))
                     console.log(root._editCopy.toJSON())
-                    root.accepted(root._editCopy)
+                    root.accepted(root.recordId, root._editCopy)
                 }
             }
         }
