@@ -139,6 +139,9 @@ add_executable(
     bibikaService_tester
     tests/main.cpp
     tests/TestServiceRecord.cpp
+    tests/TestServiceRecord.h
+    tests/TestServiceRecordModel.cpp
+    tests/TestServiceRecordModel.h
     ${COMMON_SOURCES})
 
 target_include_directories(bibikaService_tester PRIVATE ${INCLUDE_DIRS})

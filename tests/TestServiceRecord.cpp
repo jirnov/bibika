@@ -1,6 +1,8 @@
 ﻿#include <TestServiceRecord.h>
-
+#include <QTest>
+#include <ServiceRecord.h>
 #include <ServiceRecordBuilder.h>
+#include <QSignalSpy>
 
 namespace
 {

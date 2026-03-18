@@ -31,7 +31,7 @@ class ServiceRecordModel : public QAbstractListModel
   };
 
  public:
-  explicit ServiceRecordModel(QObject* parent = nullptr);
+  ServiceRecordModel(const QSqlDatabase& db = QSqlDatabase(), QObject* parent = nullptr);
 
  public:
   // QAbstractListModel
@@ -53,6 +53,7 @@ class ServiceRecordModel : public QAbstractListModel
   std::optional<int> indexById(int recordId) const;
 
   QSqlDatabase   openDatabase();
+  void           createTableIfNotExists(const QSqlDatabase& db);
   QSqlRecord     sqlRecordFromServiceRecord(ServiceRecord* record) const;
   ServiceRecord* serviceRecordFromSqlRecord(const QSqlRecord& record) const;
 

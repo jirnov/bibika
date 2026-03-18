@@ -7,11 +7,20 @@
 #include <QSqlRecord>
 #include <QStandardPaths>
 
-ServiceRecordModel::ServiceRecordModel(QObject* parent) : QAbstractListModel{ parent }
+ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent) : QAbstractListModel{ parent }
 {
-  QSqlDatabase db = openDatabase();
+  if (db.isValid())
+  {
+    createTableIfNotExists(db);
+    m_model = new QSqlTableModel(this, db);
+  }
+  else
+  {
+    QSqlDatabase myDb = openDatabase();
+    createTableIfNotExists(db);
+    m_model = new QSqlTableModel(this, myDb);
+  }
 
-  m_model = new QSqlTableModel(this, db);
   m_model->setTable("service_records");
   m_model->setSort(m_model->fieldIndex("mileage"), Qt::AscendingOrder);
   m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -268,6 +277,10 @@ QSqlDatabase ServiceRecordModel::openDatabase()
   else
   {
     db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    if (!db.isValid())
+    {
+      qWarning() << "Cannot add database" << db.lastError().text();
+    }
     db.setDatabaseName(dbPath);
   }
 
@@ -278,6 +291,11 @@ QSqlDatabase ServiceRecordModel::openDatabase()
     qWarning() << "Cannot open database" << db.lastError().text();
   }
 
+  return db;
+}
+
+void ServiceRecordModel::createTableIfNotExists(const QSqlDatabase& db)
+{
   const QString createTableSql =
     "CREATE TABLE IF NOT EXISTS service_records ("
     "record_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -298,8 +316,6 @@ QSqlDatabase ServiceRecordModel::openDatabase()
   {
     qWarning() << "Cannot create table " << query.lastError().text();
   }
-
-  return db;
 }
 
 QSqlRecord ServiceRecordModel::sqlRecordFromServiceRecord(ServiceRecord* record) const
