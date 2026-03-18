@@ -10,11 +10,7 @@ class TestServiceRecord : public QObject
 {
   Q_OBJECT
 
- private slots:
-  // Инициализация
-  void init();
-  void cleanup();
-
+private slots:
   void testDefaultConstructor();
   void testSettersAndGetters();
   void testSignals();

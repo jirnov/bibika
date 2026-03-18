@@ -4,27 +4,17 @@
 
 namespace
 {
-const auto  name                   = "TestName";
-const auto  notes                  = "TestNotes";
-const auto  eventType              = ServiceRecord::Maintenance;
-const int   price                  = 20000;
-const int   mileage                = 500000;
-const QDate serviceDate            = QDate::currentDate();
-const bool  hasRepeatAfterDistance = true;
-const int   repeatAfterDistance    = 15000;
-const bool  hasRepeatAfterMonths   = true;
-const int   repeatAfterMonths      = 12;
+const auto  testName                   = "Entering orbit";
+const auto  testNotes                  = "Yuri Gagarin, the first man in space";
+const auto  testEventType              = ServiceRecord::Maintenance;
+const int   testPrice                  = 15000;
+const int   testMileage                = 40868;
+const QDate testServiceDate            = QDate::fromString("1961-04-12", Qt::ISODate);
+const bool  testHasRepeatAfterDistance = true;
+const int   testRepeatAfterDistance    = 384400;
+const bool  testHasRepeatAfterMonths   = true;
+const int   testRepeatAfterMonths      = 99;
 }  // namespace
-
-void TestServiceRecord::init()
-{
-  qDebug() << "Starting test...";
-}
-
-void TestServiceRecord::cleanup()
-{
-  qDebug() << "Test finished";
-}
 
 void TestServiceRecord::testDefaultConstructor()
 {
@@ -47,27 +37,28 @@ void TestServiceRecord::testSettersAndGetters()
 {
   ServiceRecord record;
 
-  record.setName(name);
-  record.setNotes(notes);
-  record.setMileage(mileage);
-  record.setPrice(price);
-  record.setEventType(eventType);
-  record.setHasRepeatAfterDistance(hasRepeatAfterDistance);
-  record.setRepeatAfterDistance(repeatAfterDistance);
-  record.setHasRepeatAfterMonths(hasRepeatAfterMonths);
-  record.setRepeatAfterMonths(repeatAfterMonths);
+  record.setName(testName);
+  record.setNotes(testNotes);
+  record.setMileage(testMileage);
+  record.setPrice(testPrice);
+  record.setEventType(testEventType);
+  record.setServiceDate(testServiceDate);
+  record.setHasRepeatAfterDistance(testHasRepeatAfterDistance);
+  record.setRepeatAfterDistance(testRepeatAfterDistance);
+  record.setHasRepeatAfterMonths(testHasRepeatAfterMonths);
+  record.setRepeatAfterMonths(testRepeatAfterMonths);
 
   QVERIFY(record.isValid());
 
-  QCOMPARE(record.name(), name);
-  QCOMPARE(record.notes(), notes);
-  QCOMPARE(record.mileage(), mileage);
-  QCOMPARE(record.serviceDate(), serviceDate);
-  QCOMPARE(record.eventType(), eventType);
-  QCOMPARE(record.hasRepeatAfterDistance(), hasRepeatAfterDistance);
-  QCOMPARE(record.repeatAfterDistance(), repeatAfterDistance);
-  QCOMPARE(record.hasRepeatAfterMonths(), hasRepeatAfterMonths);
-  QCOMPARE(record.repeatAfterMonths(), repeatAfterMonths);
+  QCOMPARE(record.name(), testName);
+  QCOMPARE(record.notes(), testNotes);
+  QCOMPARE(record.mileage(), testMileage);
+  QCOMPARE(record.serviceDate(), testServiceDate);
+  QCOMPARE(record.eventType(), testEventType);
+  QCOMPARE(record.hasRepeatAfterDistance(), testHasRepeatAfterDistance);
+  QCOMPARE(record.repeatAfterDistance(), testRepeatAfterDistance);
+  QCOMPARE(record.hasRepeatAfterMonths(), testHasRepeatAfterMonths);
+  QCOMPARE(record.repeatAfterMonths(), testRepeatAfterMonths);
 }
 
 void TestServiceRecord::testSignals()
@@ -96,25 +87,25 @@ void TestServiceRecord::testSignals()
   QCOMPARE(repeatMonthsSpy.count(), 0);
   QCOMPARE(hasRepeatMonthsSpy.count(), 0);
 
-  record.setName(name);
+  record.setName(testName);
   QCOMPARE(nameSpy.count(), 1);
 
-  record.setName(name);
+  record.setName(testName);
   QCOMPARE(nameSpy.count(), 1);
 
   record.setName("");
   QCOMPARE(nameSpy.count(), 2);
 
-  record.setNotes(notes);
+  record.setNotes(testNotes);
   QCOMPARE(notesSpy.count(), 1);
 
-  record.setNotes(notes);
+  record.setNotes(testNotes);
   QCOMPARE(notesSpy.count(), 1);
 
   record.setNotes("");
   QCOMPARE(notesSpy.count(), 2);
 
-  record.setMileage(mileage);
+  record.setMileage(testMileage);
   QCOMPARE(mileageSpy.count(), 1);
   QCOMPARE(serviceDateSpy.count(), 0);
 
@@ -153,21 +144,21 @@ void TestServiceRecord::testJson()
 {
   ServiceRecord record;
 
-  record.setName(name);
-  record.setNotes(notes);
-  record.setEventType(eventType);
-  record.setPrice(price);
-  record.setMileage(mileage);
-  record.setServiceDate(serviceDate);
+  record.setName(testName);
+  record.setNotes(testNotes);
+  record.setEventType(testEventType);
+  record.setPrice(testPrice);
+  record.setMileage(testMileage);
+  record.setServiceDate(testServiceDate);
 
   const auto jsonString = record.toJSON();
 
   ServiceRecord* restored = ServiceRecordBuilder::fromJSON(jsonString, this);
 
-  QCOMPARE(restored->name(), name);
-  QCOMPARE(restored->notes(), notes);
-  QCOMPARE(restored->price(), price);
-  QCOMPARE(restored->eventType(), eventType);
-  QCOMPARE(restored->mileage(), mileage);
-  QCOMPARE(restored->serviceDate(), serviceDate);
+  QCOMPARE(restored->name(), testName);
+  QCOMPARE(restored->notes(), testNotes);
+  QCOMPARE(restored->price(), testPrice);
+  QCOMPARE(restored->eventType(), testEventType);
+  QCOMPARE(restored->mileage(), testMileage);
+  QCOMPARE(restored->serviceDate(), testServiceDate);
 }
