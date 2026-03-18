@@ -86,6 +86,9 @@ class ServiceRecord : public QObject
 
   bool isRepeatMonthsValid() const;
 
+  static QString   eventType2Str(EventType eventType);
+  static EventType str2EventType(const QString& eventTypeStr);
+
  signals:
   void nameChanged();
   void notesChanged();

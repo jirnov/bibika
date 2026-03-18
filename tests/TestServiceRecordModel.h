@@ -15,7 +15,8 @@ class TestServiceRecordModel : public QObject
   void init();
   void cleanup();
 
-  void testDefaultValues();
+  void testAppendRecord();
+  void testUpdateRecord();
 
  private:
   QSqlDatabase        m_db;

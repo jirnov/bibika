@@ -28,9 +28,7 @@ ServiceRecord::ServiceRecord(QObject* parent) : QObject{ parent }
 
 QString ServiceRecord::toJSON() const
 {
-  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-
-  QJsonObject json{ { "eventType", QString::fromUtf8(metaEnum.valueToKey(m_eventType)) },
+  QJsonObject json{ { "eventType", eventType2Str(m_eventType) },
                     { "name", m_name },
                     { "notes", m_notes },
                     { "price", m_price },
@@ -191,24 +189,7 @@ void ServiceRecord::fromJSONString(const QString& jsonString)
   {
     QJsonObject json = doc.object();
 
-    QString eventTypeStr = json["eventType"].toString();
-
-    if (!eventTypeStr.isEmpty())
-    {
-      QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-      bool      ok       = false;
-      int       value    = metaEnum.keyToValue(eventTypeStr.toUtf8().constData(), &ok);
-      if (ok)
-      {
-        setEventType(static_cast<EventType>(value));
-      }
-      else
-      {
-        setEventType(Maintenance);
-        qWarning() << "Unknown event type: " << eventTypeStr;
-      }
-    }
-
+    setEventType(str2EventType(json["eventType"].toString()));
     setName(json["name"].toString());
     setNotes(json["notes"].toString());
     setPrice(json["price"].toInt());
@@ -267,4 +248,22 @@ bool ServiceRecord::isRepeatMonthsValid() const
     }
   }
   return true;
+}
+
+QString ServiceRecord::eventType2Str(EventType eventType)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+  return QString::fromUtf8(metaEnum.valueToKey(static_cast<int>(eventType)));
+}
+
+ServiceRecord::EventType ServiceRecord::str2EventType(const QString& eventTypeStr)
+{
+  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
+  bool      ok       = false;
+  const int value    = metaEnum.keyToValue(eventTypeStr.toUtf8(), &ok);
+  if (!ok)
+  {
+    qWarning() << "Cannot convert" << eventTypeStr << "to EventType";
+  }
+  return static_cast<ServiceRecord::EventType>(value);
 }

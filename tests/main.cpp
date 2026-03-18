@@ -6,6 +6,9 @@
 template <typename... ClassList>
 int runTests(int argc, char* argv[])
 {
+  static_assert((std::is_base_of_v<QObject, ClassList> && ...), "All test classes must inherit QObject");
+  static_assert((std::is_default_constructible_v<ClassList> && ...), "All test classes must be default constructible");
+
   int status = 0;
 
   auto runTest = [&](auto testClass) {

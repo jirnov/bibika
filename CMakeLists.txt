@@ -149,6 +149,6 @@ target_include_directories(bibikaService_tester PRIVATE tests)
 target_link_libraries(bibikaService_tester PRIVATE Qt6::Test)
 target_link_libraries(bibikaService_tester PRIVATE ${LIBRARIES})
 
-add_test(NAME mytest COMMAND bibikaService_tester)
+add_test(NAME BibikaServiceTests COMMAND bibikaService_tester)
 
 

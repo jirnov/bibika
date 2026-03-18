@@ -15,6 +15,8 @@ class ServiceRecordModel : public QAbstractListModel
   QML_ELEMENT
   QML_SINGLETON
 
+
+ public:
   enum Roles
   {
     RecordIdRole = Qt::UserRole,
@@ -30,7 +32,6 @@ class ServiceRecordModel : public QAbstractListModel
     HasRepeatAfterMonthsRole
   };
 
- public:
   ServiceRecordModel(const QSqlDatabase& db = QSqlDatabase(), QObject* parent = nullptr);
 
  public:
@@ -46,10 +47,10 @@ class ServiceRecordModel : public QAbstractListModel
 
   Q_INVOKABLE void updateRecordById(int recordId, ServiceRecord* updateRecord);
 
- private:
   void           removeByIndex(int index);
   ServiceRecord* getByIndex(int index) const;
 
+ private:
   std::optional<int> indexById(int recordId) const;
 
   QSqlDatabase   openDatabase();

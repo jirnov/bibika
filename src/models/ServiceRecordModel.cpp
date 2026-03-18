@@ -52,11 +52,8 @@ QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
   {
   case RecordIdRole:
     return record.value("record_id");
-  case EventTypeRole: {
-    auto type = record.value("event_type");
-    qDebug() << "eventtype for index" << index.row() << "=" << type.toString();
-    return record.value("event_type");
-  }
+  case EventTypeRole:
+    return QVariant::fromValue(ServiceRecord::str2EventType(record.value("event_type").toString()));
   case NameRole:
     return record.value("name");
   case NotesRole:
@@ -136,6 +133,10 @@ void ServiceRecordModel::append(ServiceRecord* record)
 
 void ServiceRecordModel::clear()
 {
+  if (m_model->rowCount() == 0)
+  {
+    return;
+  }
   beginResetModel();
   bool success = m_model->removeRows(0, m_model->rowCount());
 
@@ -180,13 +181,8 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* updateRec
 {
   if (auto index = indexById(recordId); index.has_value())
   {
-    QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-
-    qDebug() << "recordId " << recordId;
-    qDebug() << "updateRecord event_type =" << QString::fromUtf8(metaEnum.valueToKey(updateRecord->eventType()));
-
     QSqlRecord sqlRecord = m_model->record(index.value());
-    sqlRecord.setValue("event_type", QString::fromUtf8(metaEnum.valueToKey(updateRecord->eventType())));
+    sqlRecord.setValue("event_type", ServiceRecord::eventType2Str(updateRecord->eventType()));
     sqlRecord.setValue("name", updateRecord->name());
     sqlRecord.setValue("notes", updateRecord->notes());
     sqlRecord.setValue("mileage", updateRecord->mileage());
@@ -322,9 +318,7 @@ QSqlRecord ServiceRecordModel::sqlRecordFromServiceRecord(ServiceRecord* record)
 {
   QSqlRecord sqlRecord = m_model->record();
 
-  QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
-
-  sqlRecord.setValue("event_type", QString::fromUtf8(metaEnum.valueToKey(record->eventType())));
+  sqlRecord.setValue("event_type", ServiceRecord::eventType2Str(record->eventType()));
   sqlRecord.setValue("name", record->name());
   sqlRecord.setValue("notes", record->notes());
   sqlRecord.setValue("price", record->price());
@@ -342,12 +336,7 @@ ServiceRecord* ServiceRecordModel::serviceRecordFromSqlRecord(const QSqlRecord& 
 {
   auto* serviceRecord = new ServiceRecord(const_cast<ServiceRecordModel*>(this));
 
-  QString   eventTypeStr = record.value("event_type").toString();
-  QMetaEnum metaEnum     = QMetaEnum::fromType<ServiceRecord::EventType>();
-  bool      ok           = false;
-  int       enumValue    = metaEnum.keyToValue(eventTypeStr.toUtf8().constData(), &ok);
-  serviceRecord->setEventType(ok ? static_cast<ServiceRecord::EventType>(enumValue) : ServiceRecord::Maintenance);
-
+  serviceRecord->setEventType(ServiceRecord::str2EventType(record.value("event_type").toString()));
   serviceRecord->setName(record.value("name").toString());
   serviceRecord->setNotes(record.value("notes").toString());
   serviceRecord->setPrice(record.value("price").toInt());
