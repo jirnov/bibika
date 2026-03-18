@@ -213,7 +213,7 @@ void ServiceRecord::fromJSONString(const QString& jsonString)
     setNotes(json["notes"].toString());
     setPrice(json["price"].toInt());
     setMileage(json["mileage"].toInt());
-    setServiceDate(QDate::fromString(json["serviceDate"].toString()));
+    setServiceDate(QDate::fromString(json["serviceDate"].toString(), Qt::ISODate));
 
     setRepeatAfterDistance(json["repeatAfterDistance"].toInt());
     setRepeatAfterMonths(json["repeatAfterMonths"].toInt());

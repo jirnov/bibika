@@ -5,19 +5,49 @@ project(BibikaService VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 
+enable_testing()
+
 find_package(Qt6 REQUIRED COMPONENTS
     Quick
     QuickControls2
     Core
+    Test
     Qml
     LinguistTools
     Sql)
 
-include_directories(
+# Включаем ресурсы по умолчаию :/qt/qml
+qt_policy(SET QTP0001 NEW)
+
+# Выключаем предупреждения о qmldir
+qt_policy(SET QTP0004 NEW)
+
+set(INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models
     ${CMAKE_CURRENT_SOURCE_DIR}/src/service
 )
+
+set(COMMON_SOURCES
+    src/models/CarInfo.cpp
+    src/models/CarInfo.h
+    src/models/ServiceRecord.cpp
+    src/models/ServiceRecord.h
+    src/models/ServiceRecordBuilder.h
+    src/models/ServiceRecordBuilder.cpp
+    src/models/CarInfoBuilder.h
+    src/models/CarInfoBuilder.cpp
+    src/service/CarModelIndex.h
+    src/service/CarModelIndex.cpp
+    src/models/ServiceRecordModel.h
+    src/models/ServiceRecordModel.cpp)
+
+set(LIBRARIES
+    Qt6::Quick
+    Qt6::QuickControls2
+    Qt6::Core
+    Qt6::Qml
+    Qt6::Sql)
 
 qt_standard_project_setup(
     I18N_TRANSLATED_LANGUAGES en)
@@ -80,19 +110,10 @@ qt6_add_qml_module(appBibikaService
     QML_FILES
         ${QML_FILES}
     SOURCES
-        src/models/CarInfo.cpp
-        src/models/CarInfo.h
-        src/models/ServiceRecord.cpp
-        src/models/ServiceRecord.h
-        src/models/ServiceRecordBuilder.h
-        src/models/ServiceRecordBuilder.cpp
-        src/models/CarInfoBuilder.h
-        src/models/CarInfoBuilder.cpp
-        src/service/CarModelIndex.h
-        src/service/CarModelIndex.cpp
-        src/models/ServiceRecordModel.h
-        src/models/ServiceRecordModel.cpp
+        ${COMMON_SOURCES}
 )
+
+target_include_directories(appBibikaService PRIVATE ${INCLUDE_DIRS})
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
@@ -105,11 +126,7 @@ set_target_properties(appBibikaService PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-target_link_libraries(appBibikaService PRIVATE Qt6::Quick)
-target_link_libraries(appBibikaService PRIVATE Qt6::QuickControls2)
-target_link_libraries(appBibikaService PRIVATE Qt6::Core)
-target_link_libraries(appBibikaService PRIVATE Qt6::Qml)
-target_link_libraries(appBibikaService PRIVATE Qt6::Sql)
+target_link_libraries(appBibikaService PRIVATE ${LIBRARIES})
 
 include(GNUInstallDirs)
 install(TARGETS appBibikaService
@@ -117,3 +134,18 @@ install(TARGETS appBibikaService
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_executable(
+    bibikaService_tester
+    tests/main.cpp
+    tests/TestServiceRecord.cpp
+    ${COMMON_SOURCES})
+
+target_include_directories(bibikaService_tester PRIVATE ${INCLUDE_DIRS})
+target_include_directories(bibikaService_tester PRIVATE tests)
+target_link_libraries(bibikaService_tester PRIVATE Qt6::Test)
+target_link_libraries(bibikaService_tester PRIVATE ${LIBRARIES})
+
+add_test(NAME mytest COMMAND bibikaService_tester)
+
+

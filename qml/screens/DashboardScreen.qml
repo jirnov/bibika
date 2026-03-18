@@ -198,10 +198,17 @@ Page {
                     anchors.margins: 10
 
                     Column {
-                        Label {
-                            text: "Название: " + delegateRoot.model.name
-                            color: "grey"
-                            font.pixelSize: 14
+                        Row {
+                            spacing: 5
+                            Label {
+                                text: "Название: " + delegateRoot.model.name
+                                color: "grey"
+                                font.pixelSize: 14
+                            }
+
+                            Label {
+                                text: "Тип: " + delegateRoot.model.eventType
+                            }
                         }
 
                         Label {

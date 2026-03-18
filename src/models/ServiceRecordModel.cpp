@@ -43,8 +43,11 @@ QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
   {
   case RecordIdRole:
     return record.value("record_id");
-  case EventTypeRole:
+  case EventTypeRole: {
+    auto type = record.value("event_type");
+    qDebug() << "eventtype for index" << index.row() << "=" << type.toString();
     return record.value("event_type");
+  }
   case NameRole:
     return record.value("name");
   case NotesRole:
@@ -170,6 +173,9 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* updateRec
   {
     QMetaEnum metaEnum = QMetaEnum::fromType<ServiceRecord::EventType>();
 
+    qDebug() << "recordId " << recordId;
+    qDebug() << "updateRecord event_type =" << QString::fromUtf8(metaEnum.valueToKey(updateRecord->eventType()));
+
     QSqlRecord sqlRecord = m_model->record(index.value());
     sqlRecord.setValue("event_type", QString::fromUtf8(metaEnum.valueToKey(updateRecord->eventType())));
     sqlRecord.setValue("name", updateRecord->name());
@@ -186,6 +192,7 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* updateRec
       if (m_model->submitAll())
       {
         qDebug() << "Record updated sucessfully";
+        m_model->selectRow(index.value());
         emit dataChanged(this->index(index.value()), this->index(index.value()));
       }
       else

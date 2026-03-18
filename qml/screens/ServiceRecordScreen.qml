@@ -24,7 +24,7 @@ Page {
     Component.onCompleted: {
         if (recordId !== 0) {
             _editCopy = ServiceRecordModel.getById(recordId)
-            console.log("Редактирование записи: " + _editCopy.name)
+            console.log("Редактирование записи:", _editCopy.name, "тип:", _editCopy.eventType)
         }
         else {
             console.log("Создание новой записи")
@@ -168,6 +168,7 @@ Page {
                     }
 
                     onCurrentIndexChanged: {
+                        console.log("new event type: ", currentIndex)
                         root._editCopy.eventType = currentIndex
                     }
                 }
