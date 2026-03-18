@@ -116,9 +116,9 @@ class ServiceRecord : public QObject
   int     m_mileage{ 0 };
   QDate   m_serviceDate{ QDate::currentDate() };
 
-  int       m_repeatAfterDistance{ 15000 };
+  int       m_repeatAfterDistance{ 0 };
   bool      m_hasRepeatAfterDistance{ false };
-  int       m_repeatAfterMonths{};
+  int       m_repeatAfterMonths{ 0 };
   bool      m_hasRepeatAfterMonths{ false };
   EventType m_eventType{ EventType::Maintenance };
   bool      m_isRepeatMonthsValid;

@@ -6,11 +6,12 @@ import BibikaService
 
 Page {
     id: root
-    width: AppSettings.width
-    height: AppSettings.height
+    width: parent ? parent.width : AppSettings.width
+    height: parent ? parent.height : AppSettings.height
 
     signal clicked
 
+    // TODO: Добавить пункт "период напоминаний об обновлении пробега": никогда, неделя, две, месяц, два, выключить
     ColumnLayout {
         anchors.fill: parent
         Layout.fillWidth: true

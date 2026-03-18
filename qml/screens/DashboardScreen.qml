@@ -1,14 +1,13 @@
 ﻿pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 
 import BibikaService
 
 Page {
     id: root
-    width: AppSettings.width
-    height: AppSettings.height
+    width: parent ? parent.width : AppSettings.width
+    height: parent ? parent.height : AppSettings.height
 
     property string _carName: AppSettings.carInfo.name
     property int _mileage: AppSettings.carInfo.lastMileage
@@ -33,7 +32,7 @@ Page {
 
         Component.onCompleted: {
             // Очищаем модель перед добавлением
-            //prodModel.clear()
+            dataModel.clear()
 
             // Запись 1: Замена масла
             var record1 = ServiceRecordBuilder.createEmpty()
@@ -88,45 +87,68 @@ Page {
             record5.eventType = ServiceRecord.Maintenance
             dataModel.append(record5)
 
-            console.log("Добавлено записей:", dataModel.rowCount())
+            console.log("Всего записей:", dataModel.rowCount())
         }
     }
 
-
     Item {
         anchors.fill: parent
+
+        Rectangle {
+            x: -1
+            y: 0
+            width: parent.width + 2
+            height: 80
+            color: "transparent"
+            border.color: "#E5E7EB"
+            //border.color: "black"
+        }
+
+        Text {
+            x: 28
+            y: 130
+            text: root._carName
+            font.pixelSize: 30
+            font.bold: true
+        }
 
         // Верхняя панель с фиксированной высотой
         Column {
             id: topPanel
             width: parent.width
-            height: 240  // 4 * 60
+            height: 300  // 4 * 60
 
+            /*
             Rectangle {
+                x: 28
+                y: 0
                 width: parent.width
                 height: 60
-                color: "white"
+                color: "red"
                 border.color: "#eeeeee"
                 Text {
-                    anchors.centerIn: parent
-                    text: qsTr("Главный экран")
-                    font.pixelSize: Style.fontSizeTitle
-                    font.bold: true
+                    anchors {
+                        left: parent.left
+                        verticalCenter: parent.verticalCenter
+                    }
+                    text: root._carName
+                    font.pixelSize: 36
                 }
             }
-
-            Rectangle {
-                width: parent.width
-                height: 60
-                color: "white"
-                border.color: "#eeeeee"
-                Text {
-                    anchors.centerIn: parent
-                    text: qsTr("Ваш автомобиль: " + root._carName)
-                    font.pixelSize: Style.fontSizeDefault
+            */
+/*
+            Text {
+                anchors {
+                    left: parent.left
+                    leftMargin: 28
+                    verticalCenter: parent.verticalCenter
                 }
+                text: root._carName
+                font.pixelSize: 36
+                font.bold: true
             }
-
+            */
+/*
             Rectangle {
                 width: parent.width
                 height: 60
@@ -138,7 +160,6 @@ Page {
                     font.pixelSize: Style.fontSizeDefault
                 }
             }
-
             Rectangle {
                 width: parent.width
                 height: 60
@@ -150,6 +171,7 @@ Page {
                     font.pixelSize: Style.fontSizeDefault
                 }
             }
+*/
         }
 
         // ListView под верхней панелью
@@ -162,8 +184,11 @@ Page {
             clip: true
             spacing: 2
 
+            property alias dataModel: dataModel
+
             model: dataModel
             delegate: Rectangle {
+                id: delegateRoot
                 required property var model
                 required property int index
 
@@ -180,13 +205,13 @@ Page {
 
                     Column {
                         Label {
-                            text: "Название: " + model.name
+                            text: "Название: " + delegateRoot.model.name
                             color: "grey"
                             font.pixelSize: 14
                         }
 
                         Label {
-                            text: "Заметка: " + (model.notes ? model.notes : "(нет)")
+                            text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
                             color: "green"
                             font.pixelSize: 14
                         }
@@ -195,9 +220,8 @@ Page {
                             text: "Редактировать"
 
                             onClicked: {
-                                var serviceRecord = dataModel.getById(model.recordId)
-                                console.log(serviceRecord.name)
-                                root.openEditRecordDialog(model.recordId)
+                                var serviceRecord = dataModel.getById(delegateRoot.model.recordId)
+                                root.openEditRecordDialog(delegateRoot.model.recordId)
                             }
                         }
 
@@ -205,7 +229,7 @@ Page {
                             text: "Удалить"
 
                             onClicked: {
-                                dataModel.removeById(model.recordId)
+                                dataModel.removeById(delegateRoot.model.recordId)
                             }
                         }
                     }

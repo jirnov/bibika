@@ -6,11 +6,11 @@ import BibikaService
 
 Page {
     id: root
-    width: AppSettings.width
-    height: AppSettings.height
+    width: parent ? parent.width : AppSettings.width
+    height: parent ? parent.height : AppSettings.height
 
     signal accepted(CarInfo carInfo)
-    property CarInfo carInfo:CarInfoBuilder.createEmpty()
+    property CarInfo carInfo:CarInfoBuilder.createEmpty(root)
 
     readonly property int buttonAreaHeight: 100
     readonly property int buttonBottomMargin: 30
@@ -19,7 +19,11 @@ Page {
 
     CarModelIndex {
         id: carModelIndex
-        Component.onCompleted: loadFromFile(":/cars.json")
+        Component.onCompleted: {
+            if (!carModelIndex.loadFromFile(":/cars.json")) {
+                console.error("Failed to load cars.json")
+            }
+        }
     }
 
     background: Rectangle {
@@ -37,7 +41,7 @@ Page {
 
         ColumnLayout {
             id: columnLayout
-            anchors.fill: parent
+            width: parent.width
             spacing: root.fieldSpacing
 
             Item {
@@ -84,6 +88,12 @@ Page {
             }
 
             SmartTextField {
+                property var _updateTimer : Timer {
+                    interval: 300
+                    repeat: false
+                    onTriggered: modelName.suggestions = carModelIndex.getModelsForBrand(root.carInfo.brandName)
+                }
+
                 id: modelName
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.horizontalMargin
@@ -98,7 +108,7 @@ Page {
                 }
 
                 onUpdateSuggestions: {
-                    modelName.suggestions = carModelIndex.getModelsForBrand(root.carInfo.brandName)
+                    _updateTimer.restart();
                 }
             }
 
@@ -114,7 +124,7 @@ Page {
         }
     }
 
-    RoundButton {
+    AcceptButton {
         anchors {
             left: parent.left
             right: parent.right
@@ -126,7 +136,6 @@ Page {
         text: qsTr("Поехали!")
         onClicked: {
             root.accepted(root.carInfo)
-            root.visible = false
             console.log(root.carInfo.toJSON())
         }
     }

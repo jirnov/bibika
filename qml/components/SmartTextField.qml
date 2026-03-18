@@ -7,6 +7,7 @@ import Qt5Compat.GraphicalEffects
 
 import BibikaService
 
+// TODO: Не показывать errorText при выборе варианта из Popup
 Item {
     id: root
 
@@ -17,20 +18,29 @@ Item {
     property bool digitsOnly: false
     property var suggestions: []
 
-    // Сигналы
+    // Вызывается при изменении текста
     signal editingFinished()
+    // Вызывается для обновления suggestions
     signal updateSuggestions()
+    // Проверка поля
     signal validateField()
 
     // Размеры по умолчанию (берем от внутреннего layout)
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
 
+    property Timer _validateTimer:Timer {
+        interval: 500
+        onTriggered: {
+            root.validateField()
+        }
+    }
+
     function _trySuggestionOpen(searchText) {
         var filtered = root._getFiltererdSuggestions(searchText)
         suggestionsListView.model = filtered
-        if (filtered.length > 0) {
-            suggestionPopup.open()
+        if (filtered.length > 0 && inputField.activeFocus) {
+            suggestionPopup.show()
         }
         else {
             suggestionPopup.close()
@@ -99,8 +109,7 @@ Item {
                 }
 
                 onEditingFinished: {
-                    root.validateField()
-                    root.editingFinished()
+                    root._validateTimer.restart()
                 }
 
                 onTextChanged: {
@@ -110,13 +119,11 @@ Item {
                             text = '0';
                         }
                     }
-                    root.validateField()
+                    root._validateTimer.restart()
                 }
 
                 onTextEdited: {
-                    if (root._trySuggestionOpen(inputField.text)) {
-                        root.editingFinished()
-                    }
+                    root._trySuggestionOpen(inputField.text)
                 }
 
                 onActiveFocusChanged: {
@@ -154,31 +161,34 @@ Item {
 
     Popup {
         id: suggestionPopup
-        parent: inputField
-        y: {
+        parent: Overlay.overlay
+
+        function show() {
+            if (!inputField || !inputField.visible) {
+                return
+            }
+
+            var fieldPos = inputField.mapToItem(null, 0, 0)
+            x = fieldPos.x;
+            y = fieldPos.y + inputField.height + 5;
+
             if (AppSettings.keyboardHeight > 0) {
                 var bottomY = inputField.height + 5 + suggestionPopup.height
-                if (bottomY > AppSettings.keyboardHeight) {
-                    return inputField.y - 5 - suggestionPopup.height
+                if (bottomY > AppSettings.keyboardHeight)  {
+                    y = fieldPos.y - 5 - suggestionPopup.height
                 }
             }
-            return inputField.height + 5;
 
-/*
-            console.log("keyboard height: " + AppSettings.keyboardHeight)
-            console.log("popup height: " + suggestionPopup.height);
-            console.log("popup y: " + (inputField.height + 5))
-            if (AppSettings.keyboardHeight > 0) {
-                inputField.y - 5 - suggestionPopup.implicitContentHeight
-            }
-            return inputField.height + 5*/
+            open()
         }
         width: inputField.width
+        height: Math.min(contentItem.implicitHeight + 10, 300)
 
         contentItem: ListView {
             id: suggestionsListView
-            implicitHeight: contentHeight
+            implicitHeight: Math.min(contentHeight, 300)
             model: []
+            clip: true
 
             delegate: ItemDelegate {
                 required property string modelData
@@ -193,7 +203,12 @@ Item {
                 onClicked: {
                     inputField.text = text
                     suggestionPopup.close()
+                    root.validateField()
                 }
+            }
+
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
             }
         }
 

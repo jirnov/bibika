@@ -13,13 +13,13 @@ CarModelIndex::CarModelIndex(QObject* parent) : QObject{ parent }
 {
 }
 
-void CarModelIndex::loadFromFile(const QString& jsonPath)
+bool CarModelIndex::loadFromFile(const QString& jsonPath)
 {
   QFile file(jsonPath);
   if (!file.open(QIODevice::ReadOnly))
   {
     qWarning() << "Cannot open file for reading: " << jsonPath;
-    return;
+    return false;
   }
 
   QByteArray jsonData = file.readAll();
@@ -33,7 +33,9 @@ void CarModelIndex::loadFromFile(const QString& jsonPath)
   else
   {
     qWarning() << "parseJSON() failed";
+    return false;
   }
+  return true;
 }
 
 QStringList CarModelIndex::getModelsForBrand(const QString& brand) const

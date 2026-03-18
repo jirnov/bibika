@@ -1,30 +1,31 @@
 ﻿import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Controls.Material 2.15
 
 import BibikaService
 
 Page {
     id: root
-    width: AppSettings.width
-    height: AppSettings.height
-    visible: true
+    width: parent ? parent.width : AppSettings.width
+    height: parent ? parent.height : AppSettings.height
 
     property int currentMileage: 0
 
-    property ServiceRecord editRecord: null
+    required property ServiceRecord editRecord
 
     property ServiceRecord _editCopy: ServiceRecord{}
 
     signal accepted(ServiceRecord record)
-    signal rejected()
+
+    Material.accent: "black"
+    Material.containerStyle: Material.Filled
 
     Component.onCompleted: {
         console.log("ServiceRecordScren onCompleted")
         if (editRecord) {
-            console.log("We have edit record" + editRecord.toJSON())
+            console.log("We have edit record: " + editRecord.name)
             _editCopy = ServiceRecordBuilder.fromJSON(editRecord.toJSON(), root)
-            console.log("eventType: " +  _editCopy.eventType)
         }
         else {
             console.log("Create new record")
@@ -57,25 +58,15 @@ Page {
             anchors.fill: parent
             spacing: Style.defaultMargin
 
-            Button {
+            AcceptButton {
                 Layout.fillWidth: true
                 text: qsTr("Сохранить")
-                highlighted: true
 
                 onClicked: {
                     // TODO: Добавить валидацию данных
                     console.log(JSON.stringify(root._editCopy))
                     console.log(root._editCopy.toJSON())
                     root.accepted(root._editCopy)
-                }
-            }
-
-            Button {
-                Layout.fillWidth: true
-                text: qsTr("Отмена")
-
-                onClicked: {
-                    root.rejected()
                 }
             }
         }
@@ -407,13 +398,13 @@ Page {
                                 }
                                 Label {
                                     enabled: useRepeatAfterDistance.checked
-                                    text: "км"
+                                    text: qsTr("километров")
                                     font.pixelSize: 14
                                 }
                                 Item { Layout.fillWidth: true }
                             }
                             Label {
-                                text: "или (что наступит раньше)"
+                                text: qsTr("или (что наступит раньше)")
                                 font.pixelSize: 12
                                 color: root.secondaryTextColor
                             }
@@ -440,7 +431,7 @@ Page {
                                     onTextEdited: root._editCopy.repeatAfterMonths = Number(text) || 0
                                 }
                                 Label {
-                                    text: "месяцев"
+                                    text: qsTr("месяцев")
                                     font.pixelSize: 14
                                     enabled: useRepeatAfterMonths.checked
                                 }

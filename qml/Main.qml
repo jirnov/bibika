@@ -12,16 +12,34 @@ ApplicationWindow {
     title: "Прототип приложения \"Бибика\" - обслуживание своего автомобиля"
     modality: Qt.ApplicationModal
 
-    onClosing: function(close) {
+    function handleBackButton() {
+        if (stackView.depth > 1) {
+            stackView.pop();
+            return true;
+        }
+        return false;
+    }
+
+    // Для тестирования Back на Windows
+    Shortcut {
+        sequence: "Esc"
+
+        onActivated: {
+            root.handleBackButton();
+        }
+    }
+
+    onClosing: (closeEvent) => {
         if (Qt.platform.os === "android") {
-            if (stackView.depth > 1) {
-                stackView.pop()
-                close.accepted = false
+            if (root.handleBackButton()) {
+                closeEvent.accepted = false
             }
             else {
-                close.accepted = true
+                // TODO: Заставить ещё раз нажать Back для выхода, как у некоторых приложений.
+                closeEvent.accepted = true
             }
         }
+
     }
 
     Connections {
@@ -76,9 +94,6 @@ ApplicationWindow {
 
             onOpenEditRecordDialog: function(recordId) {
                 let editRecord = dataModel.getById(recordId)
-                console.log("index = " + recordId)
-                console.log("name: " + editRecord.name)
-                console.log("editRecord: " + editRecord.toJSON())
                 stackView.push(serviceRecordScreen, {
                                    "currentMileage": AppSettings.carInfo.lastMileage,
                                    "editRecord": editRecord })
@@ -98,10 +113,6 @@ ApplicationWindow {
         ServiceRecordScreen{
             onAccepted: function(serviceRecord) {
                 console.log("Запись: " + serviceRecord.toJSON())
-                stackView.pop()
-            }
-
-            onRejected: {
                 stackView.pop()
             }
         }

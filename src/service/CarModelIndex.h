@@ -15,7 +15,7 @@ class CarModelIndex : public QObject
  public:
   explicit CarModelIndex(QObject* parent = nullptr);
 
-  Q_INVOKABLE void loadFromFile(const QString& jsonPath);
+  Q_INVOKABLE bool loadFromFile(const QString& jsonPath);
 
   Q_INVOKABLE QStringList getModelsForBrand(const QString& brand) const;
 
