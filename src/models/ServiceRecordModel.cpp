@@ -18,7 +18,7 @@ ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent) 
   else
   {
     QSqlDatabase myDb = openDatabase();
-    createTableIfNotExists(db);
+    createTableIfNotExists(myDb);
     m_model = new QSqlTableModel(this, myDb);
   }
 

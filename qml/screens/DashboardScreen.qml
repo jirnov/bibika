@@ -10,8 +10,8 @@ Page {
     height: parent ? parent.height : AppSettings.height
 
     property string _carName: AppSettings.carInfo.name
-    property int _mileage: AppSettings.carInfo.lastMileage
-    property date _mileageDate: AppSettings.carInfo.lastMileageDate
+    property int _mileage: AppSettings.carInfo.mileage
+    property date _mileageUpdateDate: AppSettings.carInfo.mileageUpdateDate
 
     signal openAddRecordDialog
     signal openEditRecordDialog(int recordId)
@@ -168,7 +168,7 @@ Page {
                 border.color: "#eeeeee"
                 Text {
                     anchors.centerIn: parent
-                    text: qsTr("пробег обновлён: " + Qt.formatDate(root._mileageDate, "dd.MM.yyyy"))
+                    text: qsTr("пробег обновлён: " + Qt.formatDate(root._mileageUpdateDate, "dd.MM.yyyy"))
                     font.pixelSize: Style.fontSizeDefault
                 }
             }

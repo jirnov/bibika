@@ -1,6 +1,8 @@
 ﻿#include <QTest>
 #include "TestServiceRecord.h"
 #include "TestServiceRecordModel.h"
+#include "TestCarInfo.h"
+#include "TestCarInfoBuilder.h"
 
 
 template <typename... ClassList>
@@ -25,5 +27,5 @@ int main(int argc, char* argv[])
 {
   QCoreApplication app(argc, argv);
 
-  return runTests<TestServiceRecord, TestServiceRecordModel>(argc, argv);
+  return runTests<TestServiceRecord, TestServiceRecordModel, TestCarInfo, TestCarInfoBuilder>(argc, argv);
 }

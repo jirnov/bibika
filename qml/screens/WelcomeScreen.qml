@@ -121,8 +121,8 @@ Page {
                 Layout.fillWidth: true
                 Layout.leftMargin: Style.horizontalMargin
                 Layout.rightMargin: Style.horizontalMargin
-                text: String(root.carInfo.lastMileage)
-                onEditingFinished: root.carInfo.lastMileage = Number(text) || 0
+                text: String(root.carInfo.mileage)
+                onEditingFinished: root.carInfo.mileage = Number(text) || 0
                 placeholderText: qsTr("Текущий пробег (в километрах)")
                 digitsOnly: true
             }

@@ -6,50 +6,10 @@
 
 CarInfo::CarInfo(QObject* parent) : QObject{ parent }
 {
-  connect(this, &CarInfo::brandNameChanged, this, &CarInfo::isValidChanged);
-  connect(this, &CarInfo::modelNameChanged, this, &CarInfo::isValidChanged);
   connect(this, &CarInfo::brandNameChanged, this, &CarInfo::nameChanged);
   connect(this, &CarInfo::modelNameChanged, this, &CarInfo::nameChanged);
 }
 
-QString CarInfo::toJSON() const
-{
-  QJsonObject json{ { "brandName", m_brandName },
-                    { "modelName", m_modelName },
-                    { "lastMileage", m_lastMileage },
-                    { "lastMileageDate", m_lastMileageDate.toString(Qt::ISODate) } };
-  return QJsonDocument(json).toJson(QJsonDocument::Compact);
-}
-
-CarInfo* CarInfo::fromJSON(const QString& jsonString, QObject* parent)
-{
-  CarInfo* carInfo = new CarInfo(parent);
-  carInfo->fromJSONString(jsonString);
-  return carInfo;
-}
-
-void CarInfo::fromJSONString(const QString& jsonString)
-{
-  QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
-  if (!doc.isNull() && doc.isObject())
-  {
-    QJsonObject json = doc.object();
-    setBrandName(json["brandName"].toString());
-    setModelName(json["modelName"].toString());
-    setLastMileage(json["lastMileage"].toInt());
-
-    const auto date = QDate::fromString(json["lastMileageDate"].toString(), Qt::ISODate);
-    if (date.isValid())
-    {
-      m_lastMileageDate = date;
-    }
-    else
-    {
-      m_lastMileageDate = QDate::currentDate();
-    }
-    emit lastMileageDateChanged();
-  }
-}
 
 QString CarInfo::brandName() const
 {
@@ -63,8 +23,15 @@ void CarInfo::setBrandName(const QString& newBrandName)
     return;
   }
 
+  const bool oldIsValid = isValid();
+
   m_brandName = newBrandName;
   emit brandNameChanged();
+
+  if (isValid() != oldIsValid)
+  {
+    emit isValidChanged();
+  }
 }
 
 QString CarInfo::modelName() const
@@ -78,25 +45,30 @@ void CarInfo::setModelName(const QString& newModelName)
   {
     return;
   }
+
+  const bool oldIsValid = isValid();
+
   m_modelName = newModelName;
   emit modelNameChanged();
+  if (isValid() != oldIsValid)
+  {
+    emit isValidChanged();
+  }
 }
 
-int CarInfo::lastMileage() const
+int CarInfo::mileage() const
 {
-  return m_lastMileage;
+  return m_mileage;
 }
 
-void CarInfo::setLastMileage(const int newLastMileage)
+void CarInfo::setMileage(const int newLastMileage)
 {
-  if (m_lastMileage == newLastMileage)
+  if (m_mileage == newLastMileage)
   {
     return;
   }
-  m_lastMileage     = newLastMileage;
-  m_lastMileageDate = QDate::currentDate();
-  emit lastMileageChanged();
-  emit lastMileageDateChanged();
+  m_mileage = newLastMileage;
+  emit mileageChanged();
 }
 
 bool CarInfo::isValid() const
@@ -104,9 +76,19 @@ bool CarInfo::isValid() const
   return validateAll().empty();
 }
 
-QDate CarInfo::lastMileageDate() const
+QDate CarInfo::mileageUpdateDate() const
 {
-  return m_lastMileageDate;
+  return m_mileageUpdateDate;
+}
+
+void CarInfo::setMileageUpdateDate(const QDate& newDate)
+{
+  if (m_mileageUpdateDate == newDate)
+  {
+    return;
+  }
+  m_mileageUpdateDate = newDate;
+  emit mileageUpdateDateChanged();
 }
 
 QMap<QString, QString> CarInfo::validateAll() const
@@ -130,7 +112,7 @@ QMap<QString, QString> CarInfo::validateAll() const
 
 QString CarInfo::validateBrand() const
 {
-  if (m_brandName.isEmpty())
+  if (m_brandName.trimmed().isEmpty())
   {
     return tr("Пожалуйста, укажите марку (обязательное поле)");
   }
@@ -139,7 +121,7 @@ QString CarInfo::validateBrand() const
 
 QString CarInfo::validateModel() const
 {
-  if (m_modelName.isEmpty())
+  if (m_modelName.trimmed().isEmpty())
   {
     return tr("Пожалуйста, укажите модель (обязательное поле)");
   }
@@ -153,5 +135,5 @@ QString CarInfo::name() const
   {
     return m_brandName + " " + m_modelName;
   }
-  return tr("Безымянный");
+  return QString();
 }

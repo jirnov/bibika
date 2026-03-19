@@ -12,16 +12,13 @@ class CarInfo : public QObject
   Q_PROPERTY(QString brandName READ brandName WRITE setBrandName NOTIFY brandNameChanged FINAL)
   Q_PROPERTY(QString modelName READ modelName WRITE setModelName NOTIFY modelNameChanged FINAL)
   Q_PROPERTY(QString name READ name NOTIFY nameChanged FINAL)
-  Q_PROPERTY(int lastMileage READ lastMileage WRITE setLastMileage NOTIFY lastMileageChanged FINAL)
-  Q_PROPERTY(QDate lastMileageDate READ lastMileageDate NOTIFY lastMileageDateChanged FINAL)
+  Q_PROPERTY(int mileage READ mileage WRITE setMileage NOTIFY mileageChanged FINAL)
+  Q_PROPERTY(
+    QDate mileageUpdateDate READ mileageUpdateDate WRITE setMileageUpdateDate NOTIFY mileageUpdateDateChanged FINAL)
   Q_PROPERTY(bool isValid READ isValid NOTIFY isValidChanged FINAL)
 
  public:
   explicit CarInfo(QObject* parent = nullptr);
-
-  Q_INVOKABLE QString toJSON() const;
-
-  static CarInfo* fromJSON(const QString& jsonString, QObject* parent = nullptr);
 
   QString brandName() const;
   void    setBrandName(const QString& brandName);
@@ -29,12 +26,13 @@ class CarInfo : public QObject
   QString modelName() const;
   void    setModelName(const QString& modelName);
 
-  int  lastMileage() const;
-  void setLastMileage(const int lastMileage);
+  int  mileage() const;
+  void setMileage(const int mileage);
 
   bool isValid() const;
 
-  QDate lastMileageDate() const;
+  QDate mileageUpdateDate() const;
+  void  setMileageUpdateDate(const QDate& newDate);
 
   Q_INVOKABLE QMap<QString, QString> validateAll() const;
   Q_INVOKABLE QString                validateBrand() const;
@@ -45,20 +43,18 @@ class CarInfo : public QObject
  signals:
   void brandNameChanged();
   void modelNameChanged();
-  void lastMileageChanged();
-  void lastMileageDateChanged();
+  void mileageChanged();
+  void mileageUpdateDateChanged();
 
   void isValidChanged();
 
   void nameChanged();
 
  private:
-  void fromJSONString(const QString& jsonString);
-
   QString m_brandName;
   QString m_modelName;
-  int     m_lastMileage{ 0 };
-  QDate   m_lastMileageDate = QDate::currentDate();
+  int     m_mileage{ 0 };
+  QDate   m_mileageUpdateDate;
 };
 
 #endif  // CARINFO_H

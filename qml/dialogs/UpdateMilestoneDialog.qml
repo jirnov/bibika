@@ -12,8 +12,5 @@ Dialog {
     signal mileageChanged(int newMileage)
 
     onAccepted: {
-
-        //settings.mileage = parseInt(milestoneField.text)
-        //settings.lastMileageUpdate = new Date()
     }
 }

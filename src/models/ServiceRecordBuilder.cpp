@@ -19,6 +19,7 @@ ServiceRecord* ServiceRecordBuilder::fromJSON(const QString& jsonString, QObject
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
   if (doc.isNull() || !doc.isObject())
   {
+    qWarning() << "Invalid JSON:" << jsonString;
     return nullptr;
   }
 
@@ -73,7 +74,7 @@ QString ServiceRecordBuilder::toJSON(ServiceRecord* sr)
 {
   if (!sr)
   {
-    return {};
+    return "{}";
   }
 
   QJsonObject json{ { "eventType", eventType2Str(sr->eventType()) },
@@ -105,6 +106,7 @@ ServiceRecord::EventType ServiceRecordBuilder::str2EventType(const QString& even
   if (!ok)
   {
     qWarning() << "Cannot convert" << eventTypeStr << "to EventType";
+    return ServiceRecord::Invalid;
   }
   return static_cast<ServiceRecord::EventType>(value);
 }

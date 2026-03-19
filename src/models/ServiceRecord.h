@@ -36,6 +36,7 @@ class ServiceRecord : public QObject
 
   enum EventType
   {
+    Invalid = -1,
     Repair,
     Maintenance,
     Service
@@ -113,7 +114,6 @@ class ServiceRecord : public QObject
   int       m_repeatAfterMonths{ 0 };
   bool      m_hasRepeatAfterMonths{ false };
   EventType m_eventType{ EventType::Maintenance };
-  bool      m_isRepeatMonthsValid;
 };
 
 #endif  // SERVICERECORD_H

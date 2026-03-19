@@ -77,7 +77,7 @@ ApplicationWindow {
             onOpenAddRecordDialog: {
                 console.log("open new record dialog");
                 stackView.push(serviceRecordScreen, {
-                    "currentMileage": AppSettings.carInfo.lastMileage
+                    "currentMileage": AppSettings.carInfo.mileage
                 });
             }
 
@@ -92,7 +92,7 @@ ApplicationWindow {
 
             onOpenEditRecordDialog: function (recordId) {
                 stackView.push(serviceRecordScreen, {
-                    "currentMileage": AppSettings.carInfo.lastMileage,
+                    "currentMileage": AppSettings.carInfo.mileage,
                     "recordId": recordId
                 });
             }
