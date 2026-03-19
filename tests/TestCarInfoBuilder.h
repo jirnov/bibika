@@ -9,10 +9,7 @@ class TestCarInfoBuilder : public QObject
   Q_OBJECT
 
  private slots:
-  void initTestCase();     // Выполняется перед всеми тестами
-  void init();             // Выполняется перед каждым тестом
-  void cleanup();          // Выполняется после каждого теста
-  void cleanupTestCase();  // Выполняется после всех тестов
+  void initTestCase();  // Выполняется перед всеми тестами
 
   // Тесты createEmpty
   void testCreateEmpty();

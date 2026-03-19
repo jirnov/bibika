@@ -23,21 +23,6 @@ void TestCarInfoBuilder::initTestCase()
     })";
 }
 
-void TestCarInfoBuilder::init()
-{
-  // Очистка перед каждым тестом при необходимости
-}
-
-void TestCarInfoBuilder::cleanup()
-{
-  // Очистка после каждого теста при необходимости
-}
-
-void TestCarInfoBuilder::cleanupTestCase()
-{
-  // builder удалится автоматически т.к. parent = this
-}
-
 //=============================================================================
 // Тесты createEmpty
 //=============================================================================

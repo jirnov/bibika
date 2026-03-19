@@ -11,8 +11,7 @@ class TestCarInfo : public QObject
   Q_OBJECT
 
  private slots:
-  void init();     // Выполняется перед каждым тестом
-  void cleanup();  // Выполняется после каждого теста
+  void init();  // Выполняется перед каждым тестом
 
   // Тесты конструктора и инициализации
   void testConstructor();
