@@ -16,6 +16,11 @@ ServiceRecord* ServiceRecordBuilder::createEmpty(QObject* parent)
 
 ServiceRecord* ServiceRecordBuilder::fromJSON(const QString& jsonString, QObject* parent)
 {
+  if (jsonString.isEmpty())
+  {
+    return new ServiceRecord(parent);
+  }
+
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
   if (doc.isNull() || !doc.isObject())
   {

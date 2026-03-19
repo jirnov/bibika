@@ -15,6 +15,11 @@ CarInfo* CarInfoBuilder::createEmpty(QObject* parent)
 
 CarInfo* CarInfoBuilder::fromJSON(const QString& jsonString, QObject* parent)
 {
+  if (jsonString.isEmpty())
+  {
+    return new CarInfo(parent);
+  }
+
   QJsonDocument doc = QJsonDocument::fromJson(jsonString.toUtf8());
   if (doc.isNull() || !doc.isObject())
   {

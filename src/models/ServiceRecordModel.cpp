@@ -56,7 +56,7 @@ QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
   case RecordIdRole:
     return record.value("record_id");
   case EventTypeRole:
-    return QVariant::fromValue(toEventType(record.value("event_type").toString()));
+    return record.value("event_type");
   case NameRole:
     return record.value("name");
   case NotesRole:
@@ -97,11 +97,11 @@ QHash<int, QByteArray> ServiceRecordModel::roleNames() const
   return roles;
 }
 
-void ServiceRecordModel::append(ServiceRecord* record)
+int ServiceRecordModel::append(ServiceRecord* record)
 {
   if (!record || !m_model)
   {
-    return;
+    return -1;
   }
 
   QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
@@ -132,6 +132,8 @@ void ServiceRecordModel::append(ServiceRecord* record)
 
   QQmlEngine::setObjectOwnership(record, QQmlEngine::CppOwnership);
   record->deleteLater();
+
+  return m_model->record(newRow).value("record_id").toInt();
 }
 
 void ServiceRecordModel::clear()
@@ -191,7 +193,9 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
 
   if (auto index = indexById(recordId); index.has_value())
   {
-    QSqlRecord record = m_model->record(index.value());
+    const auto row    = index.value();
+    auto       record = m_model->record(row);
+
     record.setValue("event_type", toString(sr->eventType()));
     record.setValue("name", sr->name());
     record.setValue("notes", sr->notes());
@@ -202,19 +206,42 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
     record.setValue("repeat_after_months", sr->repeatAfterMonths());
     record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths());
 
-    if (m_model->setRecord(index.value(), record))
+    if (m_model->setRecord(row, record))
     {
       if (m_model->submitAll())
       {
-        qDebug() << "Record updated sucessfully";
-        m_model->selectRow(index.value());
-        emit dataChanged(this->index(index.value()), this->index(index.value()));
+        if (auto newIndex = indexById(recordId); newIndex.has_value())
+        {
+          const auto newRow = newIndex.value();
+
+          if (newRow == row)
+          {
+            emit dataChanged(this->index(row), this->index(row));
+          }
+          else
+          {
+            beginResetModel();
+            m_model->select();
+            endResetModel();
+          }
+        }
+        else
+        {
+          qWarning() << "Record disappeared!";
+          beginResetModel();
+          m_model->select();
+          endResetModel();
+        }
       }
       else
       {
         qWarning() << "Submit failed: " << m_model->lastError().text();
         m_model->revertAll();
       }
+    }
+    else
+    {
+      qWarning() << "Record update failed: " << m_model->lastError().text();
     }
   }
 }

@@ -140,8 +140,9 @@ Page {
         enabled: root.carInfo.isValid
         text: qsTr("Поехали!")
         onClicked: {
+            root.carInfo.mileageUpdateDate = new Date();
             root.accepted(root.carInfo);
-            console.log(root.carInfo.toJSON());
+            console.log(CarInfoBuilder.toJSON(carInfo));
         }
     }
 }

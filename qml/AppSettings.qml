@@ -24,7 +24,7 @@ QtObject {
     readonly property CarInfo carInfo: CarInfoBuilder.fromJSON(root._persistent.value("carInfoJson"), root)
 
     function updateCarInfo(newCarInfo) {
-        root._persistent.carInfoJson = newCarInfo.toJSON();
+        root._persistent.carInfoJson = CarInfoBuilder.toJSON(newCarInfo)
         root._persistent.sync();
     }
 }

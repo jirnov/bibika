@@ -29,18 +29,18 @@ set(INCLUDE_DIRS
 )
 
 set(COMMON_SOURCES
-    src/models/CarInfo.cpp
-    src/models/CarInfo.h
-    src/models/ServiceRecord.cpp
-    src/models/ServiceRecord.h
-    src/models/ServiceRecordBuilder.h
-    src/models/ServiceRecordBuilder.cpp
-    src/models/CarInfoBuilder.h
-    src/models/CarInfoBuilder.cpp
-    src/service/CarModelIndex.h
-    src/service/CarModelIndex.cpp
-    src/models/ServiceRecordModel.h
-    src/models/ServiceRecordModel.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/CarInfo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/CarInfo.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecord.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecord.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordBuilder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordBuilder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/CarInfoBuilder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/CarInfoBuilder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/service/CarModelIndex.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/service/CarModelIndex.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.cpp)
 
 set(LIBRARIES
     Qt6::Quick
@@ -135,24 +135,7 @@ install(TARGETS appBibikaService
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-add_executable(
-    bibikaService_tester
-    tests/main.cpp
-    tests/TestServiceRecord.cpp
-    tests/TestServiceRecord.h
-    tests/TestServiceRecordModel.cpp
-    tests/TestServiceRecordModel.h
-    tests/TestCarInfo.h
-    tests/TestCarInfo.cpp
-    tests/TestCarInfoBuilder.h
-    tests/TestCarInfoBuilder.cpp
-    ${COMMON_SOURCES})
-
-target_include_directories(bibikaService_tester PRIVATE ${INCLUDE_DIRS})
-target_include_directories(bibikaService_tester PRIVATE tests)
-target_link_libraries(bibikaService_tester PRIVATE Qt6::Test)
-target_link_libraries(bibikaService_tester PRIVATE ${LIBRARIES})
-
-add_test(NAME BibikaServiceTests COMMAND bibikaService_tester)
-
-
+option(BUILD_TESTS "Build tests" ON)
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

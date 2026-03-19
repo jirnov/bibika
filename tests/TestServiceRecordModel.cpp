@@ -67,25 +67,31 @@ void TestServiceRecordModel::testUpdateRecord()
   const auto oldEventType = ServiceRecord::Maintenance;
   const auto newEventType = ServiceRecord::Service;
 
-  // Добавляем одну запись для проверки
+  int recordId = -1;
+
+  // Добавляем пару записей для проверки
   {
     ServiceRecord* serviceRecord = new ServiceRecord(this);
     serviceRecord->setName(testName);
     serviceRecord->setNotes(testNotes);
     serviceRecord->setEventType(oldEventType);
+    serviceRecord->setMileage(0);
+
+    recordId = m_model->append(serviceRecord);
+    QVERIFY(recordId != -1);
+
+    serviceRecord->setName(testName + QString("2"));
+    serviceRecord->setNotes(testNotes + QString("2"));
+    serviceRecord->setMileage(2000);
 
     m_model->append(serviceRecord);
   }
 
-  QVERIFY(m_model->rowCount() == 1);
-
-  const int recordId = m_model->data(m_model->index(0, 0), ServiceRecordModel::RecordIdRole).toInt();
-
-  QVERIFY(recordId != 0);
+  QVERIFY(m_model->rowCount() == 2);
 
   // Обновляем ей EventType и загружаем обратно в модель
   {
-    ServiceRecord* serviceRecord = m_model->getByIndex(0);
+    ServiceRecord* serviceRecord = m_model->getById(recordId);
 
     QVERIFY(serviceRecord != nullptr);
 
@@ -108,11 +114,10 @@ void TestServiceRecordModel::testUpdateRecord()
 
   // Проверяем что выдаёт модель для каждого столбца
   {
-    QCOMPARE(m_model->data(m_model->index(0, 0), ServiceRecordModel::RecordIdRole), recordId);
-    QCOMPARE(m_model->data(m_model->index(0, 0), ServiceRecordModel::NameRole).toString(), testName);
-    QCOMPARE(m_model->data(m_model->index(0, 0), ServiceRecordModel::NotesRole).toString(), testNotes);
-    const int eventType    = m_model->data(m_model->index(0, 0), ServiceRecordModel::EventTypeRole).toInt();
-    const int expectedType = static_cast<int>(newEventType);
-    QCOMPARE(eventType, expectedType);
+    ServiceRecord* newRecord = m_model->getById(recordId);
+
+    QCOMPARE(newRecord->name(), testName);
+    QCOMPARE(newRecord->notes(), testNotes);
+    QCOMPARE(newRecord->eventType(), newEventType);
   }
 }
