@@ -250,7 +250,7 @@ Page {
     Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 20
+        anchors.margins: 10
 
         width: 100
         height: width

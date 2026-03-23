@@ -118,6 +118,8 @@ ApplicationWindow {
 
             onRecordCreated: function (serviceRecord) {
                 ServiceRecordModel.append(serviceRecord);
+                stackView.pop();
+                console.log("Новая запись" + ServiceRecordBuilder.toJSON(serviceRecord));
             }
         }
     }
