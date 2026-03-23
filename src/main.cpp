@@ -8,20 +8,6 @@
 #include <QTranslator>
 #include <QQmlContext>
 
-#ifdef Q_CC_MSVC
-#  define _CRTDBG_MAP_ALLOC
-#  include <crtdbg.h>
-#endif
-
-static void dumpResources()
-{
-  QDirIterator it(":", QDirIterator::Subdirectories);
-  while (it.hasNext())
-  {
-    qDebug() << "Ресурс:" << it.next();
-  }
-}
-
 static QTranslator* createTranslator(QObject* parent)
 {
   QTranslator* translator = new QTranslator(parent);
@@ -74,12 +60,6 @@ int runApp(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-#ifdef Q_CC_MSVC
-  _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-  _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-  //_CrtSetBreakAlloc(523549);
-#endif
-
   // Отключаем вывод предупреждений доступности
   QLoggingCategory::setFilterRules("qt.a11y.*=false");
   QLoggingCategory::setFilterRules("qt.core.translator=true");

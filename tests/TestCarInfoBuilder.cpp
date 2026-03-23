@@ -29,7 +29,7 @@ void TestCarInfoBuilder::initTestCase()
 
 void TestCarInfoBuilder::testCreateEmpty()
 {
-  CarInfo* car = builder->createEmpty();
+  CarInfo* car = builder->createEmpty(this);
   QVERIFY(car != nullptr);
 
   // Проверяем значения по умолчанию
@@ -62,7 +62,7 @@ void TestCarInfoBuilder::testCreateEmptyWithParent()
 
 void TestCarInfoBuilder::testFromJSON_ValidFull()
 {
-  CarInfo* car = builder->fromJSON(validJsonFull);
+  CarInfo* car = builder->fromJSON(validJsonFull, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);  // Автоудаление
 
@@ -75,7 +75,7 @@ void TestCarInfoBuilder::testFromJSON_ValidFull()
 
 void TestCarInfoBuilder::testFromJSON_ValidPartial()
 {
-  CarInfo* car = builder->fromJSON(validJsonPartial);
+  CarInfo* car = builder->fromJSON(validJsonPartial, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);
 
@@ -93,7 +93,7 @@ void TestCarInfoBuilder::testFromJSON_InvalidJson()
 {
   QString invalidJson = R"({ "brandName": "Toyota", missing closing )";
 
-  CarInfo* car = builder->fromJSON(invalidJson);
+  CarInfo* car = builder->fromJSON(invalidJson, this);
   QVERIFY(car == nullptr);  // Должен вернуть nullptr при ошибке
 }
 
@@ -101,7 +101,7 @@ void TestCarInfoBuilder::testFromJSON_EmptyJson()
 {
   QString emptyJson = "{}";
 
-  CarInfo* car = builder->fromJSON(emptyJson);
+  CarInfo* car = builder->fromJSON(emptyJson, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);
 
@@ -123,7 +123,7 @@ void TestCarInfoBuilder::testFromJSON_ExtraFields()
         "color": "red"
     })";
 
-  CarInfo* car = builder->fromJSON(jsonWithExtra);
+  CarInfo* car = builder->fromJSON(jsonWithExtra, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);
 
@@ -142,7 +142,7 @@ void TestCarInfoBuilder::testFromJSON_InvalidTypes()
         "mileage": "15000"
     })";
 
-  CarInfo* car = builder->fromJSON(jsonInvalidMileage);
+  CarInfo* car = builder->fromJSON(jsonInvalidMileage, this);
   QVERIFY(car != nullptr);  // Должен создать, игнорируя неверное поле
   QScopedPointer<CarInfo> cleanup(car);
 
@@ -155,7 +155,7 @@ void TestCarInfoBuilder::testFromJSON_InvalidTypes()
         "mileageUpdateDate": "not-a-date"
     })";
 
-  car = builder->fromJSON(jsonInvalidDate);
+  car = builder->fromJSON(jsonInvalidDate, this);
   QVERIFY(car != nullptr);
   cleanup.reset(car);
 
@@ -295,7 +295,7 @@ void TestCarInfoBuilder::testSerializationRoundTrip()
   QVERIFY(!json.isEmpty());
 
   // Десериализуем
-  CarInfo* deserialized = builder->fromJSON(json);
+  CarInfo* deserialized = builder->fromJSON(json, this);
   QVERIFY(deserialized != nullptr);
   QScopedPointer<CarInfo> cleanup(deserialized);
 
@@ -357,7 +357,7 @@ void TestCarInfoBuilder::testFromJSON_WithTimeInDate()
         "mileageUpdateDate": "2026-03-19T15:30:00"
     })";
 
-  CarInfo* car = builder->fromJSON(jsonWithTime);
+  CarInfo* car = builder->fromJSON(jsonWithTime, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);
 
@@ -371,7 +371,7 @@ void TestCarInfoBuilder::testFromJSON_WithInvalidDate()
         "mileageUpdateDate": "2026-13-45"
     })";
 
-  CarInfo* car = builder->fromJSON(jsonWithInvalidDate);
+  CarInfo* car = builder->fromJSON(jsonWithInvalidDate, this);
   QVERIFY(car != nullptr);
   QScopedPointer<CarInfo> cleanup(car);
 

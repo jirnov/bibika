@@ -42,8 +42,6 @@ int ServiceRecordModel::rowCount(const QModelIndex& parent) const
 
 QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
 {
-  const auto& toEventType = ServiceRecordBuilder::str2EventType;
-
   if (!index.isValid() || !m_model)
   {
     return {};
@@ -106,6 +104,8 @@ int ServiceRecordModel::append(ServiceRecord* record)
 
   QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
 
+  int recordId = -1;
+
   int newRow = m_model->rowCount();
   beginInsertRows(QModelIndex(), newRow, newRow);
   bool success = m_model->insertRecord(newRow, sqlRecord);
@@ -114,8 +114,9 @@ int ServiceRecordModel::append(ServiceRecord* record)
   {
     if (m_model->submitAll())
     {
-      qDebug() << "Record appended sucessfully";
+      qDebug() << "Record appended successfully";
       m_model->select();
+      recordId = m_model->record(newRow).value("record_id").toInt();
     }
     else
     {
@@ -130,10 +131,7 @@ int ServiceRecordModel::append(ServiceRecord* record)
   }
   endInsertRows();
 
-  QQmlEngine::setObjectOwnership(record, QQmlEngine::CppOwnership);
-  record->deleteLater();
-
-  return m_model->record(newRow).value("record_id").toInt();
+  return recordId;
 }
 
 void ServiceRecordModel::clear()
@@ -173,11 +171,11 @@ void ServiceRecordModel::removeById(int recordId)
   }
 }
 
-ServiceRecord* ServiceRecordModel::getById(int recordId) const
+ServiceRecord* ServiceRecordModel::getById(int recordId, QObject* parent) const
 {
   if (auto index = indexById(recordId); index.has_value())
   {
-    return getByIndex(index.value());
+    return getByIndex(index.value(), parent);
   }
   return nullptr;
 }
@@ -187,7 +185,7 @@ int ServiceRecordModel::count() const
   return rowCount();
 }
 
-void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
+bool ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
 {
   const auto& toString = ServiceRecordBuilder::eventType2Str;
 
@@ -232,6 +230,7 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
           m_model->select();
           endResetModel();
         }
+        return true;
       }
       else
       {
@@ -244,16 +243,26 @@ void ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
       qWarning() << "Record update failed: " << m_model->lastError().text();
     }
   }
+  return false;
 }
 
-ServiceRecord* ServiceRecordModel::getByIndex(int index) const
+ServiceRecord* ServiceRecordModel::getByIndex(int index, QObject* parent) const
 {
+  if (!m_model || index < 0 || index >= m_model->rowCount())
+  {
+    return nullptr;
+  }
   QSqlRecord record = m_model->record(index);
-  return serviceRecordFromSqlRecord(record);
+  return serviceRecordFromSqlRecord(record, parent);
 }
 
 std::optional<int> ServiceRecordModel::indexById(int recordId) const
 {
+  if (!m_model)
+  {
+    return std::nullopt;
+  }
+
   m_model->select();
   for (int row = 0; row < m_model->rowCount(); ++row)
   {
@@ -317,9 +326,7 @@ QSqlDatabase ServiceRecordModel::openDatabase()
     db.setDatabaseName(dbPath);
   }
 
-  db.open();
-
-  if (!db.isOpen())
+  if (!db.open())
   {
     qWarning() << "Cannot open database" << db.lastError().text();
   }
@@ -371,26 +378,33 @@ QSqlRecord ServiceRecordModel::sqlRecordFromServiceRecord(ServiceRecord* sr) con
   return record;
 }
 
-ServiceRecord* ServiceRecordModel::serviceRecordFromSqlRecord(const QSqlRecord& record) const
+ServiceRecord* ServiceRecordModel::serviceRecordFromSqlRecord(const QSqlRecord& record, QObject* parent) const
 {
   const auto& toEventType = ServiceRecordBuilder::str2EventType;
 
-  auto* sr = new ServiceRecord(const_cast<ServiceRecordModel*>(this));
+  try
+  {
+    auto* sr = new ServiceRecord(parent);
 
-  sr->setEventType(toEventType(record.value("event_type").toString()));
-  sr->setName(record.value("name").toString());
-  sr->setNotes(record.value("notes").toString());
-  sr->setPrice(record.value("price").toInt());
-  sr->setMileage(record.value("mileage").toInt());
+    sr->setEventType(toEventType(record.value("event_type").toString()));
+    sr->setName(record.value("name").toString());
+    sr->setNotes(record.value("notes").toString());
+    sr->setPrice(record.value("price").toInt());
+    sr->setMileage(record.value("mileage").toInt());
 
-  auto serviceDate = QDate::fromString(record.value("service_date").toString(), Qt::ISODate);
-  sr->setServiceDate(serviceDate);
+    auto serviceDate = QDate::fromString(record.value("service_date").toString(), Qt::ISODate);
+    sr->setServiceDate(serviceDate);
 
-  sr->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
-  sr->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
-  sr->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
-  sr->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
+    sr->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
+    sr->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
+    sr->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
+    sr->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
 
-  QQmlEngine::setObjectOwnership(sr, QQmlEngine::JavaScriptOwnership);
-  return sr;
+    return sr;
+  }
+  catch (const std::bad_alloc& e)
+  {
+    qWarning() << "serviceRecordFromSqlRecord faield: bad alloc exception with reason" << e.what();
+  }
+  return nullptr;
 }

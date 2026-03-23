@@ -91,10 +91,9 @@ ApplicationWindow {
             }
 
             onOpenEditRecordDialog: function (recordId) {
-                stackView.push(serviceRecordScreen, {
-                    "currentMileage": AppSettings.carInfo.mileage,
+                stackView.push(serviceRecordScreen.createObject(stackView, {
                     "recordId": recordId
-                });
+                }));
             }
 
             onOpenRemoveRecordDialog: function (recordId) {
@@ -113,10 +112,14 @@ ApplicationWindow {
     Component {
         id: serviceRecordScreen
         ServiceRecordScreen {
-            onAccepted: function (recordId, serviceRecord) {
+            onRecordUpdated: function (recordId, serviceRecord) {
                 ServiceRecordModel.updateRecordById(recordId, serviceRecord);
                 stackView.pop();
                 console.log("Запись: " + ServiceRecordBuilder.toJSON(serviceRecord));
+            }
+
+            onRecordCreated: function (serviceRecord) {
+                ServiceRecordModel.append(serviceRecord);
             }
         }
     }

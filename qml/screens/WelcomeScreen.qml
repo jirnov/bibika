@@ -142,7 +142,7 @@ Page {
         onClicked: {
             root.carInfo.mileageUpdateDate = new Date();
             root.accepted(root.carInfo);
-            console.log(CarInfoBuilder.toJSON(carInfo));
+            console.log(CarInfoBuilder.toJSON(root.carInfo));
         }
     }
 }

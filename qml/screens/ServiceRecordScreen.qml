@@ -1,7 +1,6 @@
 ﻿import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Controls.Material 2.15
+import QtQuick.Controls
 
 import BibikaService
 
@@ -10,28 +9,34 @@ Page {
     width: parent ? parent.width : AppSettings.width
     height: parent ? parent.height : AppSettings.height
 
-    property int currentMileage: 0
-
     required property int recordId
 
     property ServiceRecord _editCopy: null
 
-    signal accepted(int recordId, ServiceRecord record)
+    signal recordUpdated(int recordId, ServiceRecord record)
+    signal recordCreated(ServiceRecord record)
 
     Material.accent: "black"
     Material.containerStyle: Material.Filled
 
     Component.onCompleted: {
         if (recordId !== 0) {
-            _editCopy = ServiceRecordModel.getById(recordId);
-            console.log("Редактирование записи:", _editCopy.name, "тип:", _editCopy.eventType);
+            _editCopy = ServiceRecordModel.getById(recordId, root);
+            let msg = `Редактирование записи: ${_editCopy.name} на пробеге ${Qt.locale().toString(_editCopy.mileage)} километров, ${Qt.formatDateTime(_editCopy.serviceDate, "dd.MM.yyyy")}`;
+            console.log(msg);
         } else {
-            console.log("Создание новой записи");
             _editCopy = ServiceRecordBuilder.createEmpty(root);
             _editCopy.eventType = ServiceRecord.Maintenance;
+            _editCopy.mileage = AppSettings.carInfo.mileage;
+            _editCopy.serviceDate = new Date();
+            console.log(`Создание новой записи с текущим пробегом: ${Qt.locale().toString(_editCopy.mileage)} на дату ${Qt.formatDateTime(_editCopy.serviceDate, "dd.MM.yyyy")}`);
         }
-        _editCopy.mileage = currentMileage;
-        _editCopy.serviceDate = new Date();
+    }
+
+    Component.onDestruction: {
+        if (root._editCopy !== null) {
+            root._editCopy.destroy();
+        }
     }
 
     readonly property color accentColor: "#000000"
@@ -69,7 +74,11 @@ Page {
 
                 onClicked: {
                     // TODO: Добавить валидацию данных
-                    root.accepted(root.recordId, root._editCopy);
+                    if (root.recordId === 0) {
+                        root.recordCreated(root._editCopy);
+                    } else {
+                        root.recordUpdated(root.recordId, root._editCopy);
+                    }
                 }
             }
         }
@@ -167,7 +176,9 @@ Page {
 
                     onCurrentIndexChanged: {
                         console.log("new event type: ", currentIndex);
-                        root._editCopy.eventType = currentIndex;
+                        if (root._editCopy) {
+                            root._editCopy.eventType = currentIndex;
+                        }
                     }
                 }
             }

@@ -14,8 +14,8 @@ class ServiceRecordBuilder : public QObject
  public:
   explicit ServiceRecordBuilder(QObject* parent = nullptr);
 
-  static Q_INVOKABLE ServiceRecord* createEmpty(QObject* parent = nullptr);
-  static Q_INVOKABLE ServiceRecord* fromJSON(const QString& jsonString, QObject* parent = nullptr);
+  static Q_INVOKABLE ServiceRecord* createEmpty(QObject* parent);
+  static Q_INVOKABLE ServiceRecord* fromJSON(const QString& jsonString, QObject* parent);
   static Q_INVOKABLE QString        toJSON(ServiceRecord* sr);
 
   static QString                  eventType2Str(ServiceRecord::EventType eventType);

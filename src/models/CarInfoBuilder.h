@@ -15,9 +15,9 @@ class CarInfoBuilder : public QObject
  public:
   explicit CarInfoBuilder(QObject* parent = nullptr);
 
-  Q_INVOKABLE CarInfo* createEmpty(QObject* parent = nullptr);
+  Q_INVOKABLE CarInfo* createEmpty(QObject* parent);
 
-  Q_INVOKABLE CarInfo* fromJSON(const QString& jsonString, QObject* parent = nullptr);
+  Q_INVOKABLE CarInfo* fromJSON(const QString& jsonString, QObject* parent);
   Q_INVOKABLE QString  toJSON(CarInfo* ci);
 };
 

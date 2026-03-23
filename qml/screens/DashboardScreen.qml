@@ -23,7 +23,7 @@ Page {
         ServiceRecordModel.clear();
 
         // Запись 1: Замена масла
-        var record1 = ServiceRecordBuilder.createEmpty();
+        var record1 = ServiceRecordBuilder.createEmpty(root);
         record1.name = "Замена масла";
         record1.notes = "Лить только Liqui Molly";
         record1.price = 4500;
@@ -37,7 +37,7 @@ Page {
         ServiceRecordModel.append(record1);
 
         // Запись 2: Замена лобового стекла
-        var record2 = ServiceRecordBuilder.createEmpty();
+        var record2 = ServiceRecordBuilder.createEmpty(root);
         record2.name = "Замена лобового стекла";
         record2.notes = "Тайваньское";
         record2.price = 20000;
@@ -47,7 +47,7 @@ Page {
         ServiceRecordModel.append(record2);
 
         // Запись 3: Покупка омывайки
-        var record3 = ServiceRecordBuilder.createEmpty();
+        var record3 = ServiceRecordBuilder.createEmpty(root);
         record3.name = "Покупка омывайки";
         record3.notes = "Зелёная, -30";
         record3.price = 200;
@@ -57,7 +57,7 @@ Page {
         ServiceRecordModel.append(record3);
 
         // Запись 4: Капитальный ремонт двигателя
-        var record4 = ServiceRecordBuilder.createEmpty();
+        var record4 = ServiceRecordBuilder.createEmpty(root);
         record4.name = "Капитальный ремонт двигателя";
         record4.notes = "Этого лучше избегать!";
         record4.price = 500000;
@@ -67,7 +67,7 @@ Page {
         ServiceRecordModel.append(record4);
 
         // Запись 5: Замена масла в коробке
-        var record5 = ServiceRecordBuilder.createEmpty();
+        var record5 = ServiceRecordBuilder.createEmpty(root);
         record5.name = "Замена масла в коробке";
         record5.notes = "";
         record5.price = 15000;

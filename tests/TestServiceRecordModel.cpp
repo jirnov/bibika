@@ -53,7 +53,7 @@ void TestServiceRecordModel::testAppendRecord()
 
   QVERIFY(m_model->rowCount() == 1);
 
-  ServiceRecord* copyRec = m_model->getByIndex(0);
+  ServiceRecord* copyRec = m_model->getByIndex(0, this);
 
   QVERIFY(copyRec != nullptr);
 
@@ -91,7 +91,7 @@ void TestServiceRecordModel::testUpdateRecord()
 
   // Обновляем ей EventType и загружаем обратно в модель
   {
-    ServiceRecord* serviceRecord = m_model->getById(recordId);
+    ServiceRecord* serviceRecord = m_model->getById(recordId, this);
 
     QVERIFY(serviceRecord != nullptr);
 
@@ -106,7 +106,7 @@ void TestServiceRecordModel::testUpdateRecord()
 
   // Проверяем что в нашей копии всё хорошо
   {
-    ServiceRecord* serviceRecord = m_model->getById(recordId);
+    ServiceRecord* serviceRecord = m_model->getById(recordId, this);
     QCOMPARE(serviceRecord->name(), testName);
     QCOMPARE(serviceRecord->notes(), testNotes);
     QCOMPARE(serviceRecord->eventType(), newEventType);
@@ -114,7 +114,7 @@ void TestServiceRecordModel::testUpdateRecord()
 
   // Проверяем что выдаёт модель для каждого столбца
   {
-    ServiceRecord* newRecord = m_model->getById(recordId);
+    ServiceRecord* newRecord = m_model->getById(recordId, this);
 
     QCOMPARE(newRecord->name(), testName);
     QCOMPARE(newRecord->notes(), testNotes);
