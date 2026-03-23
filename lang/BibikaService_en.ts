@@ -21,37 +21,37 @@
 <context>
     <name>ServiceRecordScreen</name>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="73"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="74"/>
         <source>Сохранить</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="113"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="114"/>
         <source>Ремонт</source>
         <translation>Repair</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="135"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="136"/>
         <source>Плановое ТО</source>
         <translation>Maintenance</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="157"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="158"/>
         <source>Услуга</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="416"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="417"/>
         <source>километров</source>
         <translation>kilometers</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="424"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="425"/>
         <source>или (что наступит раньше)</source>
         <translation>or whichever comes first</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="451"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="452"/>
         <source>месяцев</source>
         <translation>months</translation>
     </message>

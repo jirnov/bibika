@@ -97,7 +97,9 @@ qt_add_resources(appBibikaService "lang"
 set_source_files_properties(qml/style/Style.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(qml/AppSettings.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
-set_property(TARGET appBibikaService APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
+if(ANDROID)
+    set_property(TARGET appBibikaService APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
+endif()
 
 qt6_add_qml_module(appBibikaService
     URI BibikaService
