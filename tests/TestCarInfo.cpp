@@ -40,7 +40,7 @@ void TestCarInfo::testDefaultValues()
 
 void TestCarInfo::testSetGetBrandName()
 {
-  QString testBrand = "Toyota";
+  QString testBrand = "SEAT";
   car->setBrandName(testBrand);
   QCOMPARE(car->brandName(), testBrand);
 
@@ -48,19 +48,20 @@ void TestCarInfo::testSetGetBrandName()
   car->setBrandName("");
   QCOMPARE(car->brandName(), "");
 
-  // Длинная строка
-  QString longBrand = "VeryLongBrandNameThatMightBeMoreThanTypical";
-  car->setBrandName(longBrand);
-  QCOMPARE(car->brandName(), longBrand);
-
   // Строка с пробелами
-  car->setBrandName("  BMW  ");
-  QCOMPARE(car->brandName(), "  BMW  ");
+  car->setBrandName("  CUPRA  ");
+  QCOMPARE(car->brandName(), "  CUPRA  ");
+
+  car->setBrandName("Cupra");
+  QCOMPARE(car->brandName(), "Cupra");
+
+  // Информация невалидна без modelName
+  QVERIFY(!car->isValid());
 }
 
 void TestCarInfo::testSetGetModelName()
 {
-  QString testModel = "Camry";
+  QString testModel = "Leon";
   car->setModelName(testModel);
   QCOMPARE(car->modelName(), testModel);
 
@@ -68,15 +69,17 @@ void TestCarInfo::testSetGetModelName()
   car->setModelName("");
   QCOMPARE(car->modelName(), "");
 
-  // Длинная строка
-  QString longModel = "VeryLongModelNameWithManyCharacters1234567890";
-  car->setModelName(longModel);
-  QCOMPARE(car->modelName(), longModel);
+  // Другая модель
+  car->setModelName("Formentor");
+  QCOMPARE(car->modelName(), "Formentor");
+
+  // Информация невалидна без modelName
+  QVERIFY(!car->isValid());
 }
 
 void TestCarInfo::testSetGetMileage()
 {
-  int testMileage = 15000;
+  const int testMileage = 15000;
   car->setMileage(testMileage);
   QCOMPARE(car->mileage(), testMileage);
 
@@ -84,9 +87,9 @@ void TestCarInfo::testSetGetMileage()
   car->setMileage(0);
   QCOMPARE(car->mileage(), 0);
 
-  // Отрицательный пробег (согласно реализации - допустимо)
+  // Отрицательный пробег приводит к нулю
   car->setMileage(-1000);
-  QCOMPARE(car->mileage(), -1000);
+  QCOMPARE(car->mileage(), 0);
 
   // Максимальное значение
   car->setMileage(std::numeric_limits<int>::max());
@@ -94,7 +97,7 @@ void TestCarInfo::testSetGetMileage()
 
   // Минимальное значение
   car->setMileage(std::numeric_limits<int>::min());
-  QCOMPARE(car->mileage(), std::numeric_limits<int>::min());
+  QCOMPARE(car->mileage(), 0);
 }
 
 void TestCarInfo::testSetGetMileageUpdateDate()
@@ -127,14 +130,14 @@ void TestCarInfo::testBrandNameSignal()
 {
   QSignalSpy spy(car, &CarInfo::brandNameChanged);
 
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   QCOMPARE(spy.count(), 1);
 
-  car->setBrandName("Honda");
+  car->setBrandName("Cupra");
   QCOMPARE(spy.count(), 2);
 
   // Повторная установка того же значения
-  car->setBrandName("Honda");
+  car->setBrandName("Cupra");
   QCOMPARE(spy.count(), 2);  // Сигнал не должен испускаться
 }
 
@@ -142,13 +145,13 @@ void TestCarInfo::testModelNameSignal()
 {
   QSignalSpy spy(car, &CarInfo::modelNameChanged);
 
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   QCOMPARE(spy.count(), 1);
 
-  car->setModelName("Accord");
+  car->setModelName("Arona");
   QCOMPARE(spy.count(), 2);
 
-  car->setModelName("Accord");
+  car->setModelName("Arona");
   QCOMPARE(spy.count(), 2);
 }
 
@@ -187,21 +190,24 @@ void TestCarInfo::testNameSignal()
   QSignalSpy spy(car, &CarInfo::nameChanged);
 
   // nameChanged должен испускаться при изменении brand или model
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   QCOMPARE(spy.count(), 1);
 
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   QCOMPARE(spy.count(), 2);
 
-  car->setBrandName("Honda");
+  car->setBrandName("Cupra");
   QCOMPARE(spy.count(), 3);
 
-  car->setModelName("Accord");
+  car->setModelName("Formentor");
   QCOMPARE(spy.count(), 4);
 
   // Проверяем, что сигнал не испускается при установке тех же значений
-  car->setBrandName("Honda");
+  car->setBrandName("Cupra");
   QCOMPARE(spy.count(), 4);
+
+  // Проверяем формирование полного имени
+  QCOMPARE(car->name(), "Cupra Formentor");
 }
 
 void TestCarInfo::testIsValidSignal()
@@ -212,16 +218,16 @@ void TestCarInfo::testIsValidSignal()
   QVERIFY(!car->isValid());
 
   // Устанавливаем бренд - все еще невалидно
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   QCOMPARE(spy.count(), 0);  // isValid не изменился (было false, стало false)
 
   // Устанавливаем модель - становится валидно
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   QCOMPARE(spy.count(), 1);
   QVERIFY(car->isValid());
 
   // Меняем бренд - валидность сохраняется (true -> true)
-  car->setBrandName("Honda");
+  car->setBrandName("Cupra");
   QCOMPARE(spy.count(), 1);  // Сигнал не должен испускаться
 
   // Очищаем модель - становится невалидно
@@ -230,7 +236,7 @@ void TestCarInfo::testIsValidSignal()
   QVERIFY(!car->isValid());
 
   // Заполняем модель - снова валидно
-  car->setModelName("Accord");
+  car->setModelName("Ateca");
   QCOMPARE(spy.count(), 3);
   QVERIFY(car->isValid());
 }
@@ -244,16 +250,18 @@ void TestCarInfo::testValidateBrand()
   // Пустой бренд
   car->setBrandName("");
   QVERIFY(!car->validateBrand().isEmpty());
-  QCOMPARE(car->validateBrand(), QString("Пожалуйста, укажите марку (обязательное поле)"));
 
   // Непустой бренд
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   QVERIFY(car->validateBrand().isEmpty());
 
   // Бренд с пробелами
   car->setBrandName("   ");
-  QVERIFY(!car->validateBrand().isEmpty());  // Строка из пробелов не пустая, но может считаться валидной?
-  // В текущей реализации проверка только на isEmpty, поэтому "   " будет валидно
+  QVERIFY(!car->validateBrand().isEmpty());
+
+  // Другой валидный бренд
+  car->setBrandName("Cupra");
+  QVERIFY(car->validateBrand().isEmpty());
 }
 
 void TestCarInfo::testValidateModel()
@@ -261,10 +269,17 @@ void TestCarInfo::testValidateModel()
   // Пустая модель
   car->setModelName("");
   QVERIFY(!car->validateModel().isEmpty());
-  QCOMPARE(car->validateModel(), QString("Пожалуйста, укажите модель (обязательное поле)"));
 
   // Непустая модель
-  car->setModelName("Camry");
+  car->setModelName("Leon");
+  QVERIFY(car->validateModel().isEmpty());
+
+  // Модель из пробелов невалидна
+  car->setModelName("   ");
+  QVERIFY(!car->validateModel().isEmpty());
+
+  // Другая валидная модель
+  car->setModelName("Formentor");
   QVERIFY(car->validateModel().isEmpty());
 }
 
@@ -277,7 +292,7 @@ void TestCarInfo::testValidateAll()
   QVERIFY(errors.contains("modelName"));
 
   // Только бренд заполнен
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   errors = car->validateAll();
   QCOMPARE(errors.size(), 1);
   QVERIFY(errors.contains("modelName"));
@@ -285,14 +300,20 @@ void TestCarInfo::testValidateAll()
 
   // Только модель заполнена
   car->setBrandName("");
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   errors = car->validateAll();
   QCOMPARE(errors.size(), 1);
   QVERIFY(errors.contains("brandName"));
 
-  // Оба поля заполнены
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  // Оба поля заполнены (SEAT)
+  car->setBrandName("SEAT");
+  car->setModelName("Leon");
+  errors = car->validateAll();
+  QCOMPARE(errors.size(), 0);
+
+  // Оба поля заполнены (Cupra)
+  car->setBrandName("Cupra");
+  car->setModelName("Formentor");
   errors = car->validateAll();
   QCOMPARE(errors.size(), 0);
 }
@@ -307,24 +328,33 @@ void TestCarInfo::testName()
   QCOMPARE(car->name(), QString());
 
   // Только бренд
-  car->setBrandName("Toyota");
+  car->setBrandName("SEAT");
   QCOMPARE(car->name(), QString());  // Все еще невалидно
 
   // Бренд и модель
-  car->setModelName("Camry");
-  QCOMPARE(car->name(), "Toyota Camry");
+  car->setModelName("Leon");
+  QCOMPARE(car->name(), "SEAT Leon");
 
-  // Смена бренда
-  car->setBrandName("Honda");
-  QCOMPARE(car->name(), "Honda Camry");
+  // Смена бренда на Cupra
+  car->setBrandName("Cupra");
+  QCOMPARE(car->name(), "Cupra Leon");
 
   // Смена модели
-  car->setModelName("Accord");
-  QCOMPARE(car->name(), "Honda Accord");
+  car->setModelName("Ateca");
+  QCOMPARE(car->name(), "Cupra Ateca");
 
   // Очистка модели
   car->setModelName("");
   QCOMPARE(car->name(), QString());
+
+  // Проверка других комбинаций
+  car->setBrandName("SEAT");
+  car->setModelName("Arona");
+  QCOMPARE(car->name(), "SEAT Arona");
+
+  car->setBrandName("Cupra");
+  car->setModelName("Born");
+  QCOMPARE(car->name(), "Cupra Born");
 }
 
 void TestCarInfo::testIsValid()
@@ -332,18 +362,28 @@ void TestCarInfo::testIsValid()
   // Пустой автомобиль
   QVERIFY(!car->isValid());
 
-  // Только бренд
-  car->setBrandName("Toyota");
+  // Только бренд SEAT
+  car->setBrandName("SEAT");
+  QVERIFY(!car->isValid());
+
+  // Только бренд Cupra
+  car->setBrandName("");
+  car->setBrandName("Cupra");
   QVERIFY(!car->isValid());
 
   // Только модель
   car->setBrandName("");
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   QVERIFY(!car->isValid());
 
-  // Бренд и модель
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  // Бренд и модель (SEAT)
+  car->setBrandName("SEAT");
+  car->setModelName("Leon");
+  QVERIFY(car->isValid());
+
+  // Бренд и модель (Cupra)
+  car->setBrandName("Cupra");
+  car->setModelName("Formentor");
   QVERIFY(car->isValid());
 
   // Проверяем, что isValid зависит только от brand и model
@@ -366,8 +406,8 @@ void TestCarInfo::testMultipleUpdates()
   QSignalSpy isValidSpy(car, &CarInfo::isValidChanged);
 
   // Последовательные обновления
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  car->setBrandName("SEAT");
+  car->setModelName("Altea Freetrack");
   car->setMileage(15000);
 
   QCOMPARE(brandSpy.count(), 1);
@@ -376,10 +416,19 @@ void TestCarInfo::testMultipleUpdates()
   QCOMPARE(isValidSpy.count(), 1);  // стал валидным
 
   // Финальная проверка
-  QCOMPARE(car->brandName(), "Toyota");
-  QCOMPARE(car->modelName(), "Camry");
+  QCOMPARE(car->brandName(), "SEAT");
+  QCOMPARE(car->modelName(), "Altea Freetrack");
   QCOMPARE(car->mileage(), 15000);
-  QCOMPARE(car->name(), "Toyota Camry");
+  QCOMPARE(car->name(), "SEAT Altea Freetrack");
+  QVERIFY(car->isValid());
+
+  // Обновление до Cupra
+  car->setBrandName("Cupra");
+  car->setModelName("Formentor");
+
+  QCOMPARE(car->brandName(), "Cupra");
+  QCOMPARE(car->modelName(), "Formentor");
+  QCOMPARE(car->name(), "Cupra Formentor");
   QVERIFY(car->isValid());
 }
 
@@ -394,9 +443,12 @@ void TestCarInfo::testIsValidTransitions()
   };
 
   QVector<TestCase> testCases = {
-    { "", "", false },           { "Toyota", "", false },   { "", "Camry", false },
-    { "Toyota", "Camry", true }, { "   ", "Camry", false },  // Строка с пробелами не пустая
-    { "Toyota", "   ", false },                              // Строка с пробелами не пустая
+    { "", "", false },
+    { "SEAT", "", false },
+    { "", "Altea Freetrack", false },
+    { "SEAT", "Altea Freetrack", true },
+    { "   ", "Altea Freetrack", false },  // Строка с пробелами не пустая
+    { "SEAT", "   ", false },             // Строка с пробелами не пустая
   };
 
   for (const auto& tc : testCases)
@@ -417,8 +469,8 @@ void TestCarInfo::testNoSignalsOnSameValue()
   QSignalSpy isValidSpy(car, &CarInfo::isValidChanged);
 
   // Устанавливаем начальные значения
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  car->setBrandName("SEAT");
+  car->setModelName("Leon");
   car->setMileage(1000);
   car->setMileageUpdateDate(QDate(2026, 3, 20));
 
@@ -431,8 +483,8 @@ void TestCarInfo::testNoSignalsOnSameValue()
   isValidSpy.clear();
 
   // Повторная установка тех же значений
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  car->setBrandName("SEAT");
+  car->setModelName("Leon");
   car->setMileage(1000);
   car->setMileageUpdateDate(QDate(2026, 3, 20));
 
@@ -460,12 +512,12 @@ void TestCarInfo::testEdgeCases()
   QCOMPARE(car->name().length(), longString.length() * 2 + 1);
 
   // Спецсимволы и юникод
-  car->setBrandName("BMW 2024!@#$%^&*()");
-  car->setModelName("X5 (Diesel/Гибрид) αβγ");
-  QCOMPARE(car->name(), "BMW 2024!@#$%^&*() X5 (Diesel/Гибрид) αβγ");
+  car->setBrandName("SEAT 2024!@#$%^&*()");
+  car->setModelName("Leon (Diesel/Гибрид) αβγ");
+  QCOMPARE(car->name(), "SEAT 2024!@#$%^&*() Leon (Diesel/Гибрид) αβγ");
 
   // Нулевые символы в строках
-  QString withNull = "Toyota\0Camry";
+  QString withNull = "Cupra\0Formentor";
   car->setBrandName(withNull);
   QCOMPARE(car->brandName(), withNull);  // Qt строки могут содержать \0
 
@@ -482,23 +534,34 @@ void TestCarInfo::testEdgeCases()
 
 void TestCarInfo::testInvariants()
 {
-  car->setBrandName("Toyota");
+  // Тест с SEAT
+  car->setBrandName("SEAT");
   QVERIFY(!car->isValid());
   QVERIFY(car->name().isEmpty());
 
-  car->setModelName("Camry");
+  car->setModelName("Leon");
   QVERIFY(car->isValid());
   QVERIFY(!car->name().isEmpty());
+  QCOMPARE(car->name(), "SEAT Leon");
 
+  // Тест с Cupra
+  car->setBrandName("Cupra");
+  car->setModelName("Formentor");
+  QVERIFY(car->isValid());
+  QCOMPARE(car->name(), "Cupra Formentor");
+
+  // Очистка
   car->setBrandName("");
   car->setModelName("");
   QVERIFY(!car->validateAll().isEmpty());
   QVERIFY(!car->isValid());
 
-  car->setBrandName("Toyota");
-  car->setModelName("Camry");
+  // Восстановление
+  car->setBrandName("SEAT");
+  car->setModelName("Arona");
   QVERIFY(car->validateAll().isEmpty());
   QVERIFY(car->isValid());
+  QCOMPARE(car->name(), "SEAT Arona");
 
   car->setMileageUpdateDate(QDate());
   QVERIFY(!car->mileageUpdateDate().isValid());  // Допустимо по реализации

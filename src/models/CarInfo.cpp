@@ -67,7 +67,7 @@ void CarInfo::setMileage(const int newLastMileage)
   {
     return;
   }
-  m_mileage = newLastMileage;
+  m_mileage = std::max(0, newLastMileage);
   emit mileageChanged();
 }
 
@@ -133,7 +133,7 @@ QString CarInfo::name() const
 {
   if (isValid())
   {
-    return m_brandName + " " + m_modelName;
+    return m_brandName.trimmed() + " " + m_modelName.trimmed();
   }
   return QString();
 }

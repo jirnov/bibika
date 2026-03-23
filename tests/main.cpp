@@ -16,8 +16,6 @@ int runTests(int argc, char* argv[], const QString& selectedTest = {})
   static_assert((std::is_base_of_v<QObject, ClassList> && ...), "All test classes must inherit QObject");
   static_assert((std::is_default_constructible_v<ClassList> && ...), "All test classes must be default constructible");
 
-  int status = 0;
-
   auto runTest = [&](auto obj) {
     using ObjClass = decltype(obj);
     if (selectedTest.isEmpty() || className<ObjClass>() == selectedTest)
@@ -27,9 +25,7 @@ int runTests(int argc, char* argv[], const QString& selectedTest = {})
     return 0;
   };
 
-  status |= (runTest(ClassList{}), ...);
-
-  return status;
+  return (runTest(ClassList{}) | ...);
 }
 
 int main(int argc, char* argv[])
