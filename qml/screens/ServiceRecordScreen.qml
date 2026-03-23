@@ -9,7 +9,7 @@ Page {
     width: parent ? parent.width : AppSettings.width
     height: parent ? parent.height : AppSettings.height
 
-    required property int recordId
+    property int recordId: 0
 
     property ServiceRecord _editCopy: null
 

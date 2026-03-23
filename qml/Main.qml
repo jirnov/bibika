@@ -76,9 +76,7 @@ ApplicationWindow {
         DashboardScreen {
             onOpenAddRecordDialog: {
                 console.log("open new record dialog");
-                stackView.push(serviceRecordScreen, {
-                    "currentMileage": AppSettings.carInfo.mileage
-                });
+                stackView.push(serviceRecordScreen);
             }
 
             onOpenSettingsDialog: {
@@ -115,7 +113,7 @@ ApplicationWindow {
             onRecordUpdated: function (recordId, serviceRecord) {
                 ServiceRecordModel.updateRecordById(recordId, serviceRecord);
                 stackView.pop();
-                console.log("Запись: " + ServiceRecordBuilder.toJSON(serviceRecord));
+                console.log("Обновлённая запись" + ServiceRecordBuilder.toJSON(serviceRecord));
             }
 
             onRecordCreated: function (serviceRecord) {

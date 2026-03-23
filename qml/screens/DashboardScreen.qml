@@ -246,4 +246,27 @@ Page {
             }
         }
     }
+
+    Rectangle {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 20
+
+        width: 100
+        height: width
+        radius: width / 2
+        color: "#9CA3AF"
+
+        Label {
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: -5
+            text: "+"
+            font.pixelSize: 42
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.openAddRecordDialog()
+        }
+    }
 }
