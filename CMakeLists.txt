@@ -80,11 +80,6 @@ qt_add_resources(appBibikaService "data"
     FILES
         res/cars.json)
 
-qt_add_resources(appBibikaService "qml"
-    PREFIX "/"
-    FILES
-        ${QML_FILES})
-
 qt_add_resources(appBibikaService "icons"
     BASE "res"
     FILES
