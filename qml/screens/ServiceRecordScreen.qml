@@ -1,6 +1,7 @@
 ﻿import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Controls.Material
 
 import BibikaService
 
@@ -110,7 +111,7 @@ Page {
 
                     TabButton {
                         id: repairTabButton
-                        text: "Ремонт"
+                        text: qsTr("Ремонт")
                         font.pixelSize: 12
                         contentItem: Text {
                             text: repairTabButton.text
@@ -132,7 +133,7 @@ Page {
 
                     TabButton {
                         id: maintenanceTabButton
-                        text: "Плановое ТО"
+                        text: qsTr("Плановое ТО")
                         font.pixelSize: 12
                         contentItem: Text {
                             text: maintenanceTabButton.text
@@ -154,7 +155,7 @@ Page {
 
                     TabButton {
                         id: serviceTabButton
-                        text: "Услуга"
+                        text: qsTr("Услуга")
                         font.pixelSize: 12
                         contentItem: Text {
                             text: serviceTabButton.text
