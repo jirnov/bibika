@@ -110,7 +110,7 @@ Page {
 
                     TabButton {
                         id: repairTabButton
-                        text: "🔧 Ремонт"
+                        text: "Ремонт"
                         font.pixelSize: 12
                         contentItem: Text {
                             text: repairTabButton.text
@@ -132,7 +132,7 @@ Page {
 
                     TabButton {
                         id: maintenanceTabButton
-                        text: "📅 ТО"
+                        text: "Плановое ТО"
                         font.pixelSize: 12
                         contentItem: Text {
                             text: maintenanceTabButton.text
@@ -154,7 +154,7 @@ Page {
 
                     TabButton {
                         id: serviceTabButton
-                        text: "🧼 Услуга"
+                        text: "Услуга"
                         font.pixelSize: 12
                         contentItem: Text {
                             text: serviceTabButton.text

@@ -93,7 +93,9 @@ Page {
     }
 
     Item {
-        anchors.fill: parent
+        id: topPanel
+        width: parent.width
+        height: 180  // Фиксированная высота
 
         Rectangle {
             x: -1
@@ -102,7 +104,6 @@ Page {
             height: 80
             color: "transparent"
             border.color: "#E5E7EB"
-            //border.color: "black"
         }
 
         Text {
@@ -112,147 +113,87 @@ Page {
             font.pixelSize: 30
             font.bold: true
         }
+    }
 
-        // Верхняя панель с фиксированной высотой
-        Column {
-            id: topPanel
-            width: parent.width
-            height: 300  // 4 * 60
+    // ListView под верхней панелью
+    ListView {
+        id: listView
+        anchors.top: topPanel.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        clip: true
+        spacing: 2
 
-            /*
-            Rectangle {
-                x: 28
-                y: 0
-                width: parent.width
-                height: 60
-                color: "red"
-                border.color: "#eeeeee"
-                Text {
-                    anchors {
-                        left: parent.left
-                        verticalCenter: parent.verticalCenter
-                    }
-                    text: root._carName
-                    font.pixelSize: 36
-                }
-            }
-            */
-            /*
-            Text {
-                anchors {
-                    left: parent.left
-                    leftMargin: 28
-                    verticalCenter: parent.verticalCenter
-                }
-                text: root._carName
-                font.pixelSize: 36
-                font.bold: true
-            }
-            */
-            /*
-            Rectangle {
-                width: parent.width
-                height: 60
-                color: "white"
-                border.color: "#eeeeee"
-                Text {
-                    anchors.centerIn: parent
-                    text: qsTr("Текущий пробег: " + root._mileage)
-                    font.pixelSize: Style.fontSizeDefault
-                }
-            }
-            Rectangle {
-                width: parent.width
-                height: 60
-                color: "white"
-                border.color: "#eeeeee"
-                Text {
-                    anchors.centerIn: parent
-                    text: qsTr("пробег обновлён: " + Qt.formatDate(root._mileageUpdateDate, "dd.MM.yyyy"))
-                    font.pixelSize: Style.fontSizeDefault
-                }
-            }
-*/
-        }
+        model: ServiceRecordModel
+        delegate: Rectangle {
+            id: delegateRoot
+            required property var model
+            required property int index
 
-        // ListView под верхней панелью
-        ListView {
-            id: listView
-            anchors.top: topPanel.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            clip: true
-            spacing: 2
+            width: listView.width
+            height: 160
+            color: index % 2 === 0 ? "#f8f8f8" : "white"
+            border.color: "#e0e0e0"
+            border.width: 1
+            radius: 4
 
-            model: ServiceRecordModel
-            delegate: Rectangle {
-                id: delegateRoot
-                required property var model
-                required property int index
+            Item {
+                anchors.fill: parent
+                anchors.margins: 10
 
-                width: listView.width
-                height: 160
-                color: index % 2 === 0 ? "#f8f8f8" : "white"
-                border.color: "#e0e0e0"
-                border.width: 1
-                radius: 4
-
-                Item {
-                    anchors.fill: parent
-                    anchors.margins: 10
-
-                    Column {
-                        Row {
-                            spacing: 5
-                            Label {
-                                text: "Название: " + delegateRoot.model.name
-                                color: "grey"
-                                font.pixelSize: 14
-                            }
-
-                            Label {
-                                text: "Тип: " + delegateRoot.model.eventType
-                            }
-                        }
-
+                Column {
+                    Row {
+                        spacing: 5
                         Label {
-                            text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
-                            color: "green"
+                            text: "Название: " + delegateRoot.model.name
+                            color: "grey"
                             font.pixelSize: 14
                         }
 
-                        Button {
-                            text: "Редактировать"
-
-                            onClicked: {
-                                root.openEditRecordDialog(delegateRoot.model.recordId);
-                            }
+                        Label {
+                            text: "Тип: " + delegateRoot.model.eventType
                         }
+                    }
 
-                        Button {
-                            text: "Удалить"
+                    Label {
+                        text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
+                        color: "green"
+                        font.pixelSize: 14
+                    }
 
-                            onClicked: {
-                                root.openRemoveRecordDialog(delegateRoot.model.recordId);
-                            }
+                    Button {
+                        text: "Редактировать"
+
+                        onClicked: {
+                            root.openEditRecordDialog(delegateRoot.model.recordId);
+                        }
+                    }
+
+                    Button {
+                        text: "Удалить"
+
+                        onClicked: {
+                            root.openRemoveRecordDialog(delegateRoot.model.recordId);
                         }
                     }
                 }
             }
+        }
 
-            ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-            }
+        ScrollBar.vertical: ScrollBar {
+            policy: ScrollBar.AsNeeded
         }
     }
 
     Rectangle {
+        id: addButton
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         anchors.margins: 10
+        z: 1000
 
-        width: 100
+        width: 56
         height: width
         radius: width / 2
         color: "#9CA3AF"
