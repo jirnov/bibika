@@ -19,48 +19,46 @@ Item {
     property var suggestions: []
 
     // Вызывается при изменении текста
-    signal editingFinished()
+    signal editingFinished
     // Вызывается для обновления suggestions
-    signal updateSuggestions()
+    signal updateSuggestions
     // Проверка поля
-    signal validateField()
+    signal validateField
 
     // Размеры по умолчанию (берем от внутреннего layout)
     implicitWidth: layout.implicitWidth
     implicitHeight: layout.implicitHeight
 
-    property Timer _validateTimer:Timer {
+    property Timer _validateTimer: Timer {
         interval: 500
         onTriggered: {
-            root.validateField()
+            root.validateField();
         }
     }
 
     function _trySuggestionOpen(searchText) {
-        var filtered = root._getFiltererdSuggestions(searchText)
-        suggestionsListView.model = filtered
+        var filtered = root._getFiltererdSuggestions(searchText);
+        suggestionsListView.model = filtered;
         if (filtered.length > 0 && inputField.activeFocus) {
-            suggestionPopup.show()
+            suggestionPopup.show();
+        } else {
+            suggestionPopup.close();
         }
-        else {
-            suggestionPopup.close()
-        }
-
     }
 
     function _getFiltererdSuggestions(searchText) {
-        root.updateSuggestions()
+        root.updateSuggestions();
         if (searchText.length === 0) {
-            return []
+            return [];
         }
 
-        var filtered = []
+        var filtered = [];
         for (var i = 0; i < suggestions.length; ++i) {
             if (suggestions[i].toLowerCase().startsWith(searchText.toLowerCase())) {
-                filtered.push(suggestions[i])
+                filtered.push(suggestions[i]);
             }
         }
-        return filtered.sort()
+        return filtered.sort();
     }
 
     // Основной layout
@@ -85,14 +83,13 @@ Item {
             }
 
             TextField {
+                id: inputField
                 anchors.fill: parent
                 property var _digitsValidator: IntValidator {
                     bottom: 0
                 }
 
                 property var _textValidator: null
-
-                id: inputField
                 Material.accent: "black"
                 Material.containerStyle: Material.Filled
                 Layout.preferredHeight: 80
@@ -109,32 +106,31 @@ Item {
                 }
 
                 onEditingFinished: {
-                    root._validateTimer.restart()
+                    root._validateTimer.restart();
                 }
 
                 onTextChanged: {
                     if (root.digitsOnly && text.length > 1 && text[0] === '0') {
-                        text = text.replace(/^0+/, '')
+                        text = text.replace(/^0+/, '');
                         if (text === '') {
                             text = '0';
                         }
                     }
-                    root._validateTimer.restart()
+                    root._validateTimer.restart();
                 }
 
                 onTextEdited: {
-                    root._trySuggestionOpen(inputField.text)
+                    root._trySuggestionOpen(inputField.text);
                 }
 
                 onActiveFocusChanged: {
-                    root.validateField()
+                    root.validateField();
 
                     if (!focus) {
-                        root.editingFinished()
-                        suggestionPopup.close()
-                    }
-                    else {
-                        root._trySuggestionOpen(inputField.text)
+                        root.editingFinished();
+                        suggestionPopup.close();
+                    } else {
+                        root._trySuggestionOpen(inputField.text);
                     }
                 }
             }
@@ -165,21 +161,21 @@ Item {
 
         function show() {
             if (!inputField || !inputField.visible) {
-                return
+                return;
             }
 
-            var fieldPos = inputField.mapToItem(null, 0, 0)
+            var fieldPos = inputField.mapToItem(null, 0, 0);
             x = fieldPos.x;
             y = fieldPos.y + inputField.height + 5;
 
             if (AppSettings.keyboardHeight > 0) {
-                var bottomY = inputField.height + 5 + suggestionPopup.height
-                if (bottomY > AppSettings.keyboardHeight)  {
-                    y = fieldPos.y - 5 - suggestionPopup.height
+                var bottomY = inputField.height + 5 + suggestionPopup.height;
+                if (bottomY > AppSettings.keyboardHeight) {
+                    y = fieldPos.y - 5 - suggestionPopup.height;
                 }
             }
 
-            open()
+            open();
         }
         width: inputField.width
         height: Math.min(contentItem.implicitHeight + 10, 300)
@@ -201,9 +197,9 @@ Item {
                 text: modelData
 
                 onClicked: {
-                    inputField.text = text
-                    suggestionPopup.close()
-                    root.validateField()
+                    inputField.text = text;
+                    suggestionPopup.close();
+                    root.validateField();
                 }
             }
 
@@ -218,5 +214,4 @@ Item {
             radius: 3
         }
     }
-
 }

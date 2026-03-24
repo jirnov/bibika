@@ -32,7 +32,6 @@ int runApp(int argc, char* argv[])
     qWarning() << "!!! Failed to load translation !!!";
   }
 
-  QQuickStyle::setStyle("Material");
   app.setOrganizationDomain("ru.blog2k.bibikaservice");
   app.setOrganizationName("Personal");
 

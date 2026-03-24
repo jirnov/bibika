@@ -78,7 +78,8 @@ qt6_add_executable(appBibikaService
 qt_add_resources(appBibikaService "data"
     BASE "res"
     FILES
-        res/cars.json)
+        res/cars.json
+        res/qtquickcontrols2.conf)
 
 qt_add_resources(appBibikaService "icons"
     BASE "res"
