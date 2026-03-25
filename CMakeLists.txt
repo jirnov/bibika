@@ -40,7 +40,9 @@ set(COMMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/service/CarModelIndex.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/service/CarModelIndex.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordProxy.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordProxy.cpp)
 
 set(LIBRARIES
     Qt6::Quick

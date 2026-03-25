@@ -2,7 +2,6 @@
 #define SERVICERECORDMODEL_H
 
 #include <QAbstractListModel>
-#include <QQmlEngine>
 #include <QSqlTableModel>
 
 class ServiceRecord;
@@ -11,8 +10,6 @@ class ServiceRecord;
 // хранение в базе данных SQLite с помощью QSqlTableModel
 class ServiceRecordModel : public QAbstractListModel {
     Q_OBJECT
-    QML_ELEMENT
-    QML_SINGLETON
 
 public:
     enum Roles {
@@ -38,7 +35,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE int append(ServiceRecord* record);
-    Q_INVOKABLE void clear();
+    Q_INVOKABLE bool clear();
     Q_INVOKABLE void removeById(int recordId);
     Q_INVOKABLE ServiceRecord* getById(int recordId, QObject* parent) const;
     Q_INVOKABLE int count() const;

@@ -7,6 +7,8 @@
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QTranslator>
+#include <ServiceRecordModel.h>
+#include <ServiceRecordProxy.h>
 
 static QTranslator* createTranslator(QObject* parent)
 {
@@ -45,6 +47,12 @@ int runApp(int argc, char* argv[])
            QCoreApplication::exit(-1);
        },
        Qt::QueuedConnection);
+
+    ServiceRecordModel serviceRecordModel;
+    ServiceRecordProxy serviceRecordProxy(&serviceRecordModel, &app);
+
+    engine.rootContext()->setContextProperty("serviceRecordModel", &serviceRecordModel);
+    engine.rootContext()->setContextProperty("serviceRecordProxy", &serviceRecordProxy);
 
     engine.addImportPath(":/");
     engine.loadFromModule("BibikaService", "Main");

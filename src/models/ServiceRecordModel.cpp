@@ -8,6 +8,10 @@
 #include <QStandardPaths>
 #include <ServiceRecordBuilder.h>
 
+namespace {
+constexpr QStringView tableName = u"service_records";
+}
+
 ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent)
    : QAbstractListModel{parent}
 {
@@ -23,9 +27,8 @@ ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent)
         m_model = new QSqlTableModel(this, myDb);
     }
 
-    m_model->setTable("service_records");
-    m_model->setSort(m_model->fieldIndex("mileage"), Qt::AscendingOrder);
-    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    m_model->setTable(tableName.toString());
+    m_model->setEditStrategy(QSqlTableModel::OnRowChange);
     if (!m_model->select())
     {
         qWarning() << "Failed to select data" << m_model->lastError().text();
@@ -105,63 +108,49 @@ int ServiceRecordModel::append(ServiceRecord* record)
 
     QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
 
-    int recordId = -1;
+    const int newRow = m_model->rowCount();
 
-    int newRow = m_model->rowCount();
-    beginInsertRows(QModelIndex(), newRow, newRow);
-    bool success = m_model->insertRecord(newRow, sqlRecord);
-
-    if (success)
-    {
-        if (m_model->submitAll())
-        {
-            qDebug() << "Record appended successfully";
-            m_model->select();
-            recordId = m_model->record(newRow).value("record_id").toInt();
-        }
-        else
-        {
-            qWarning() << "Failed to submit append:" << m_model->lastError().text();
-            m_model->revertAll();
-            m_model->select();
-        }
-    }
-    else
+    if (!m_model->insertRecord(newRow, sqlRecord))
     {
         qWarning() << "Failed to append record:" << m_model->lastError().text();
+        return -1;
     }
-    endInsertRows();
 
-    return recordId;
+    if (!m_model->submitAll())
+    {
+        qWarning() << "Failed to submit append:" << m_model->lastError().text();
+        m_model->revertAll();
+        m_model->select();
+        return -1;
+    }
+
+    qDebug() << "Record appended successfully";
+
+    beginInsertRows(QModelIndex(), newRow, newRow);
+    m_model->select();
+    endInsertRows();
+    return m_model->record(newRow).value("record_id").toInt();
 }
 
-void ServiceRecordModel::clear()
+bool ServiceRecordModel::clear()
 {
     if (m_model->rowCount() == 0)
     {
-        return;
+        return true;
     }
+
+    QSqlQuery query(m_model->database());
+    if (!query.exec(QString("DELETE FROM %1").arg(tableName)))
+    {
+        qWarning() << "DELETE failed:" << query.lastError().text();
+        return false;
+    }
+
     beginResetModel();
-    bool success = m_model->removeRows(0, m_model->rowCount());
-
-    if (success)
-    {
-        if (m_model->submitAll())
-        {
-            qDebug() << "Clear database sucessfullly";
-            m_model->select();
-        }
-        else
-        {
-            qWarning() << "Failed to submit clear: " << m_model->lastError().text();
-        }
-    }
-    else
-    {
-        qWarning() << "Failed to clear: " << m_model->lastError().text();
-    }
-
+    m_model->select();
     endResetModel();
+
+    return true;
 }
 
 void ServiceRecordModel::removeById(int recordId)
@@ -190,61 +179,42 @@ bool ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
 {
     const auto& toString = ServiceRecordBuilder::eventType2Str;
 
-    if (auto index = indexById(recordId); index.has_value())
+    auto index = indexById(recordId);
+    if (!index)
     {
-        const auto row = index.value();
-        auto record = m_model->record(row);
-
-        record.setValue("event_type", toString(sr->eventType()));
-        record.setValue("name", sr->name());
-        record.setValue("notes", sr->notes());
-        record.setValue("mileage", sr->mileage());
-        record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
-        record.setValue("repeat_after_distance", sr->repeatAfterDistance());
-        record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance());
-        record.setValue("repeat_after_months", sr->repeatAfterMonths());
-        record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths());
-
-        if (m_model->setRecord(row, record))
-        {
-            if (m_model->submitAll())
-            {
-                if (auto newIndex = indexById(recordId); newIndex.has_value())
-                {
-                    const auto newRow = newIndex.value();
-
-                    if (newRow == row)
-                    {
-                        emit dataChanged(this->index(row), this->index(row));
-                    }
-                    else
-                    {
-                        beginResetModel();
-                        m_model->select();
-                        endResetModel();
-                    }
-                }
-                else
-                {
-                    qWarning() << "Record disappeared!";
-                    beginResetModel();
-                    m_model->select();
-                    endResetModel();
-                }
-                return true;
-            }
-            else
-            {
-                qWarning() << "Submit failed: " << m_model->lastError().text();
-                m_model->revertAll();
-            }
-        }
-        else
-        {
-            qWarning() << "Record update failed: " << m_model->lastError().text();
-        }
+        qWarning() << "Cannot found record with id" << recordId;
+        return false;
     }
-    return false;
+
+    const auto row = index.value();
+
+    auto record = m_model->record(row);
+
+    record.setValue("event_type", toString(sr->eventType()));
+    record.setValue("name", sr->name());
+    record.setValue("notes", sr->notes());
+    record.setValue("price", sr->price());
+    record.setValue("mileage", sr->mileage());
+    record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
+    record.setValue("repeat_after_distance", sr->repeatAfterDistance());
+    record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance());
+    record.setValue("repeat_after_months", sr->repeatAfterMonths());
+    record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths());
+
+    if (!m_model->setRecord(row, record))
+    {
+        qWarning() << "setRecord failed:" << m_model->lastError().text();
+        return false;
+    }
+
+    if (!m_model->submit())
+    {
+        qWarning() << "Submit failed:" << m_model->lastError().text();
+        return false;
+    }
+
+    emit dataChanged(this->index(row), this->index(row));
+    return true;
 }
 
 ServiceRecord* ServiceRecordModel::getByIndex(int index, QObject* parent) const
@@ -264,7 +234,6 @@ std::optional<int> ServiceRecordModel::indexById(int recordId) const
         return std::nullopt;
     }
 
-    m_model->select();
     for (int row = 0; row < m_model->rowCount(); ++row)
     {
         QSqlRecord record = m_model->record(row);
@@ -279,29 +248,24 @@ std::optional<int> ServiceRecordModel::indexById(int recordId) const
 
 void ServiceRecordModel::removeByIndex(int index)
 {
+    const int rowCount = m_model->rowCount();
+
     if (index < 0 || index >= m_model->rowCount())
     {
         return;
     }
 
-    beginRemoveRows(QModelIndex(), index, index);
-    if (m_model->removeRows(index, 1, QModelIndex()))
+    if (!m_model->removeRow(index))
     {
-        if (m_model->submitAll())
-        {
-            qDebug() << "Removed by index successfully";
-        }
-        else
-        {
-            qWarning() << "Submit remove by index failed: " << m_model->lastError().text();
-            m_model->revertAll();
-        }
+        qWarning() << "Remove row failed:" << m_model->lastError().text();
+        return;
     }
     else
     {
-        qWarning() << "Remove by index failed: " << m_model->lastError().text();
+        qDebug() << "Removed by index successfully";
     }
 
+    beginRemoveRows(QModelIndex(), index, index);
     endRemoveRows();
 }
 
@@ -338,7 +302,7 @@ QSqlDatabase ServiceRecordModel::openDatabase()
 void ServiceRecordModel::createTableIfNotExists(const QSqlDatabase& db)
 {
     const QString createTableSql =
-       "CREATE TABLE IF NOT EXISTS service_records ("
+       "CREATE TABLE IF NOT EXISTS %1 ("
        "record_id INTEGER PRIMARY KEY AUTOINCREMENT, "
        "event_type TEXT NOT NULL, "
        "name TEXT NOT NULL, "
@@ -353,7 +317,7 @@ void ServiceRecordModel::createTableIfNotExists(const QSqlDatabase& db)
        ")";
 
     QSqlQuery query(db);
-    if (!query.exec(createTableSql))
+    if (!query.exec(createTableSql.arg(tableName)))
     {
         qWarning() << "Cannot create table " << query.lastError().text();
     }

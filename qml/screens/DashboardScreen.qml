@@ -20,7 +20,7 @@ Page {
     signal openRemoveRecordDialog(int recordId)
 
     Component.onCompleted: {
-        ServiceRecordModel.clear();
+        serviceRecordModel.clear();
 
         // Запись 1: Замена масла
         var record1 = ServiceRecordBuilder.createEmpty(root);
@@ -33,7 +33,7 @@ Page {
         record1.repeatAfterDistance = 15000;
         record1.hasRepeatAfterMonths = true;
         record1.repeatAfterMonths = 12;
-        ServiceRecordModel.append(record1);
+        serviceRecordModel.append(record1);
 
         // Запись 2: Замена лобового стекла
         var record2 = ServiceRecordBuilder.createEmpty(root);
@@ -42,7 +42,7 @@ Page {
         record2.mileage = 5000;
         record2.serviceDate = new Date(2026, 2, 2);  // 2 марта 2026
         record2.eventType = ServiceRecord.Repair;
-        ServiceRecordModel.append(record2);
+        serviceRecordModel.append(record2);
 
         // Запись 3: Покупка омывайки
         var record3 = ServiceRecordBuilder.createEmpty(root);
@@ -51,7 +51,7 @@ Page {
         record3.mileage = 5500;
         record3.serviceDate = new Date(2026, 2, 1);  // 1 марта 2026
         record3.eventType = ServiceRecord.Service;
-        ServiceRecordModel.append(record3);
+        serviceRecordModel.append(record3);
 
         // Запись 4: Капитальный ремонт двигателя
         var record4 = ServiceRecordBuilder.createEmpty(root);
@@ -60,7 +60,7 @@ Page {
         record4.mileage = 10000;
         // Без даты - будет текущая или пустая
         record4.eventType = ServiceRecord.Repair;
-        ServiceRecordModel.append(record4);
+        serviceRecordModel.append(record4);
 
         // Запись 5: Замена масла в коробке
         var record5 = ServiceRecordBuilder.createEmpty(root);
@@ -68,9 +68,9 @@ Page {
         record5.price = 15000;
         record5.mileage = 0;
         record5.eventType = ServiceRecord.Maintenance;
-        ServiceRecordModel.append(record5);
+        serviceRecordModel.append(record5);
 
-        console.log("Всего записей:", ServiceRecordModel.count());
+        console.log("Всего записей:", serviceRecordModel.count());
     }
 
     background: Rectangle {
@@ -120,7 +120,7 @@ Page {
         clip: true
         spacing: 2
 
-        model: ServiceRecordModel
+        model: serviceRecordProxy
         delegate: Rectangle {
             id: delegateRoot
             required property var model
