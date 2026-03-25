@@ -123,7 +123,8 @@ Page {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 20
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
         clip: true
         spacing: 20
 
@@ -145,16 +146,16 @@ Page {
 
                 Image {
                     source: "/icons/edit.svg"
-                    sourceSize.width: 24
-                    sourceSize.height: 24
+                    sourceSize.width: 32
+                    sourceSize.height: 32
                     anchors.right: parent.right
                     anchors.rightMargin: 20
                     anchors.top: parent.top
                     anchors.topMargin: 20
 
                     MouseArea {
-                        width: 60
-                        height: 60
+                        width: 48
+                        height: 48
                         anchors.centerIn: parent
                         onClicked: root.openEditRecordDialog(delegateRoot.model.recordId)
 
@@ -170,16 +171,16 @@ Page {
 
                 Image {
                     source: "/icons/trash.svg"
-                    sourceSize.width: 24
-                    sourceSize.height: 24
+                    sourceSize.width: 32
+                    sourceSize.height: 32
                     anchors.right: parent.right
                     anchors.rightMargin: 20
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 20
 
                     MouseArea {
-                        width: 60
-                        height: 60
+                        width: 48
+                        height: 48
                         anchors.centerIn: parent
                         onClicked: root.openRemoveRecordDialog(delegateRoot.model.recordId)
 
@@ -205,7 +206,7 @@ Page {
 
                 Label {
                     x: 20
-                    y: 90
+                    y: 95
                     text: delegateRoot.model.mileage + "км"
                     font.pixelSize: 14
                     font.family: "sans-serif"
@@ -214,7 +215,7 @@ Page {
 
                 Label {
                     x: 20
-                    y: 120
+                    y: 125
                     text: delegateRoot.model.notes
                     font.pixelSize: 12
                     font.family: "sans-serif"
@@ -266,13 +267,14 @@ Page {
         id: addButton
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        anchors.margins: 10
+        anchors.margins: 30
         z: 1000
 
-        width: 56
+        width: 76
         height: width
         radius: width / 2
-        color: "#9CA3AF"
+        color: "#E5E7EB"
+        border.color: "#9CA3AF"
 
         Label {
             anchors.centerIn: parent
