@@ -49,7 +49,7 @@ int runApp(int argc, char* argv[])
        Qt::QueuedConnection);
 
     ServiceRecordModel serviceRecordModel;
-    ServiceRecordProxy serviceRecordProxy(&serviceRecordModel, &app);
+    ServiceRecordProxy serviceRecordProxy(&serviceRecordModel, nullptr);
 
     engine.rootContext()->setContextProperty("serviceRecordModel", &serviceRecordModel);
     engine.rootContext()->setContextProperty("serviceRecordProxy", &serviceRecordProxy);
