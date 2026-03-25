@@ -8,403 +8,404 @@
 #include <QStandardPaths>
 #include <ServiceRecordBuilder.h>
 
-ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent) : QAbstractListModel{ parent }
+ServiceRecordModel::ServiceRecordModel(const QSqlDatabase& db, QObject* parent)
+   : QAbstractListModel{parent}
 {
-  if (db.isValid())
-  {
-    createTableIfNotExists(db);
-    m_model = new QSqlTableModel(this, db);
-  }
-  else
-  {
-    QSqlDatabase myDb = openDatabase();
-    createTableIfNotExists(myDb);
-    m_model = new QSqlTableModel(this, myDb);
-  }
+    if (db.isValid())
+    {
+        createTableIfNotExists(db);
+        m_model = new QSqlTableModel(this, db);
+    }
+    else
+    {
+        QSqlDatabase myDb = openDatabase();
+        createTableIfNotExists(myDb);
+        m_model = new QSqlTableModel(this, myDb);
+    }
 
-  m_model->setTable("service_records");
-  m_model->setSort(m_model->fieldIndex("mileage"), Qt::AscendingOrder);
-  m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
-  if (!m_model->select())
-  {
-    qWarning() << "Failed to select data" << m_model->lastError().text();
-  }
+    m_model->setTable("service_records");
+    m_model->setSort(m_model->fieldIndex("mileage"), Qt::AscendingOrder);
+    m_model->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    if (!m_model->select())
+    {
+        qWarning() << "Failed to select data" << m_model->lastError().text();
+    }
 }
 
 int ServiceRecordModel::rowCount(const QModelIndex& parent) const
 {
-  if (parent.isValid() || !m_model)
-  {
-    return 0;
-  }
-  return m_model->rowCount();
+    if (parent.isValid() || !m_model)
+    {
+        return 0;
+    }
+    return m_model->rowCount();
 }
 
 QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
 {
-  if (!index.isValid() || !m_model)
-  {
-    return {};
-  }
+    if (!index.isValid() || !m_model)
+    {
+        return {};
+    }
 
-  const QSqlRecord record = m_model->record(index.row());
+    const QSqlRecord record = m_model->record(index.row());
 
-  switch (role)
-  {
-  case RecordIdRole:
-    return record.value("record_id");
-  case EventTypeRole:
-    return record.value("event_type");
-  case NameRole:
-    return record.value("name");
-  case NotesRole:
-    return record.value("notes");
-  case PriceRole:
-    return record.value("price");
-  case MileageRole:
-    return record.value("mileage");
-  case ServiceDateRole:
-    return record.value("service_date").toString();
-  case RepeatAfterDistanceRole:
-    return record.value("repeat_after_distance");
-  case HasRepeatAfterDistanceRole:
-    return record.value("has_repeat_after_distance").toBool();
-  case RepeatAfterMonthsRole:
-    return record.value("repeat_after_months");
-  case HasRepeatAfterMonthsRole:
-    return record.value("has_repeat_after_months").toBool();
-  default:
-    return {};
-  }
+    switch (role)
+    {
+        case RecordIdRole:
+            return record.value("record_id");
+        case EventTypeRole:
+            return record.value("event_type");
+        case NameRole:
+            return record.value("name");
+        case NotesRole:
+            return record.value("notes");
+        case PriceRole:
+            return record.value("price");
+        case MileageRole:
+            return record.value("mileage");
+        case ServiceDateRole:
+            return record.value("service_date").toString();
+        case RepeatAfterDistanceRole:
+            return record.value("repeat_after_distance");
+        case HasRepeatAfterDistanceRole:
+            return record.value("has_repeat_after_distance").toBool();
+        case RepeatAfterMonthsRole:
+            return record.value("repeat_after_months");
+        case HasRepeatAfterMonthsRole:
+            return record.value("has_repeat_after_months").toBool();
+        default:
+            return {};
+    }
 }
 
 QHash<int, QByteArray> ServiceRecordModel::roleNames() const
 {
-  QHash<int, QByteArray> roles      = QAbstractListModel::roleNames();
-  roles[RecordIdRole]               = "recordId";
-  roles[EventTypeRole]              = "eventType";
-  roles[NameRole]                   = "name";
-  roles[NotesRole]                  = "notes";
-  roles[PriceRole]                  = "price";
-  roles[MileageRole]                = "mileage";
-  roles[ServiceDateRole]            = "serviceDate";
-  roles[RepeatAfterDistanceRole]    = "repeatAfterDistance";
-  roles[HasRepeatAfterDistanceRole] = "hasRepeatAfterDistance";
-  roles[RepeatAfterMonthsRole]      = "repeatAfterMonths";
-  roles[HasRepeatAfterMonthsRole]   = "hasRepeatAfterMonths";
-  return roles;
+    QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
+    roles[RecordIdRole] = "recordId";
+    roles[EventTypeRole] = "eventType";
+    roles[NameRole] = "name";
+    roles[NotesRole] = "notes";
+    roles[PriceRole] = "price";
+    roles[MileageRole] = "mileage";
+    roles[ServiceDateRole] = "serviceDate";
+    roles[RepeatAfterDistanceRole] = "repeatAfterDistance";
+    roles[HasRepeatAfterDistanceRole] = "hasRepeatAfterDistance";
+    roles[RepeatAfterMonthsRole] = "repeatAfterMonths";
+    roles[HasRepeatAfterMonthsRole] = "hasRepeatAfterMonths";
+    return roles;
 }
 
 int ServiceRecordModel::append(ServiceRecord* record)
 {
-  if (!record || !m_model)
-  {
-    return -1;
-  }
-
-  QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
-
-  int recordId = -1;
-
-  int newRow = m_model->rowCount();
-  beginInsertRows(QModelIndex(), newRow, newRow);
-  bool success = m_model->insertRecord(newRow, sqlRecord);
-
-  if (success)
-  {
-    if (m_model->submitAll())
+    if (!record || !m_model)
     {
-      qDebug() << "Record appended successfully";
-      m_model->select();
-      recordId = m_model->record(newRow).value("record_id").toInt();
+        return -1;
+    }
+
+    QSqlRecord sqlRecord = sqlRecordFromServiceRecord(record);
+
+    int recordId = -1;
+
+    int newRow = m_model->rowCount();
+    beginInsertRows(QModelIndex(), newRow, newRow);
+    bool success = m_model->insertRecord(newRow, sqlRecord);
+
+    if (success)
+    {
+        if (m_model->submitAll())
+        {
+            qDebug() << "Record appended successfully";
+            m_model->select();
+            recordId = m_model->record(newRow).value("record_id").toInt();
+        }
+        else
+        {
+            qWarning() << "Failed to submit append:" << m_model->lastError().text();
+            m_model->revertAll();
+            m_model->select();
+        }
     }
     else
     {
-      qWarning() << "Failed to submit append:" << m_model->lastError().text();
-      m_model->revertAll();
-      m_model->select();
+        qWarning() << "Failed to append record:" << m_model->lastError().text();
     }
-  }
-  else
-  {
-    qWarning() << "Failed to append record:" << m_model->lastError().text();
-  }
-  endInsertRows();
+    endInsertRows();
 
-  return recordId;
+    return recordId;
 }
 
 void ServiceRecordModel::clear()
 {
-  if (m_model->rowCount() == 0)
-  {
-    return;
-  }
-  beginResetModel();
-  bool success = m_model->removeRows(0, m_model->rowCount());
-
-  if (success)
-  {
-    if (m_model->submitAll())
+    if (m_model->rowCount() == 0)
     {
-      qDebug() << "Clear database sucessfullly";
-      m_model->select();
+        return;
+    }
+    beginResetModel();
+    bool success = m_model->removeRows(0, m_model->rowCount());
+
+    if (success)
+    {
+        if (m_model->submitAll())
+        {
+            qDebug() << "Clear database sucessfullly";
+            m_model->select();
+        }
+        else
+        {
+            qWarning() << "Failed to submit clear: " << m_model->lastError().text();
+        }
     }
     else
     {
-      qWarning() << "Failed to submit clear: " << m_model->lastError().text();
+        qWarning() << "Failed to clear: " << m_model->lastError().text();
     }
-  }
-  else
-  {
-    qWarning() << "Failed to clear: " << m_model->lastError().text();
-  }
 
-  endResetModel();
+    endResetModel();
 }
 
 void ServiceRecordModel::removeById(int recordId)
 {
-  if (auto index = indexById(recordId); index.has_value())
-  {
-    removeByIndex(index.value());
-  }
+    if (auto index = indexById(recordId); index.has_value())
+    {
+        removeByIndex(index.value());
+    }
 }
 
 ServiceRecord* ServiceRecordModel::getById(int recordId, QObject* parent) const
 {
-  if (auto index = indexById(recordId); index.has_value())
-  {
-    return getByIndex(index.value(), parent);
-  }
-  return nullptr;
+    if (auto index = indexById(recordId); index.has_value())
+    {
+        return getByIndex(index.value(), parent);
+    }
+    return nullptr;
 }
 
 int ServiceRecordModel::count() const
 {
-  return rowCount();
+    return rowCount();
 }
 
 bool ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
 {
-  const auto& toString = ServiceRecordBuilder::eventType2Str;
+    const auto& toString = ServiceRecordBuilder::eventType2Str;
 
-  if (auto index = indexById(recordId); index.has_value())
-  {
-    const auto row    = index.value();
-    auto       record = m_model->record(row);
-
-    record.setValue("event_type", toString(sr->eventType()));
-    record.setValue("name", sr->name());
-    record.setValue("notes", sr->notes());
-    record.setValue("mileage", sr->mileage());
-    record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
-    record.setValue("repeat_after_distance", sr->repeatAfterDistance());
-    record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance());
-    record.setValue("repeat_after_months", sr->repeatAfterMonths());
-    record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths());
-
-    if (m_model->setRecord(row, record))
+    if (auto index = indexById(recordId); index.has_value())
     {
-      if (m_model->submitAll())
-      {
-        if (auto newIndex = indexById(recordId); newIndex.has_value())
-        {
-          const auto newRow = newIndex.value();
+        const auto row = index.value();
+        auto record = m_model->record(row);
 
-          if (newRow == row)
-          {
-            emit dataChanged(this->index(row), this->index(row));
-          }
-          else
-          {
-            beginResetModel();
-            m_model->select();
-            endResetModel();
-          }
+        record.setValue("event_type", toString(sr->eventType()));
+        record.setValue("name", sr->name());
+        record.setValue("notes", sr->notes());
+        record.setValue("mileage", sr->mileage());
+        record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
+        record.setValue("repeat_after_distance", sr->repeatAfterDistance());
+        record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance());
+        record.setValue("repeat_after_months", sr->repeatAfterMonths());
+        record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths());
+
+        if (m_model->setRecord(row, record))
+        {
+            if (m_model->submitAll())
+            {
+                if (auto newIndex = indexById(recordId); newIndex.has_value())
+                {
+                    const auto newRow = newIndex.value();
+
+                    if (newRow == row)
+                    {
+                        emit dataChanged(this->index(row), this->index(row));
+                    }
+                    else
+                    {
+                        beginResetModel();
+                        m_model->select();
+                        endResetModel();
+                    }
+                }
+                else
+                {
+                    qWarning() << "Record disappeared!";
+                    beginResetModel();
+                    m_model->select();
+                    endResetModel();
+                }
+                return true;
+            }
+            else
+            {
+                qWarning() << "Submit failed: " << m_model->lastError().text();
+                m_model->revertAll();
+            }
         }
         else
         {
-          qWarning() << "Record disappeared!";
-          beginResetModel();
-          m_model->select();
-          endResetModel();
+            qWarning() << "Record update failed: " << m_model->lastError().text();
         }
-        return true;
-      }
-      else
-      {
-        qWarning() << "Submit failed: " << m_model->lastError().text();
-        m_model->revertAll();
-      }
     }
-    else
-    {
-      qWarning() << "Record update failed: " << m_model->lastError().text();
-    }
-  }
-  return false;
+    return false;
 }
 
 ServiceRecord* ServiceRecordModel::getByIndex(int index, QObject* parent) const
 {
-  if (!m_model || index < 0 || index >= m_model->rowCount())
-  {
-    return nullptr;
-  }
-  QSqlRecord record = m_model->record(index);
-  return serviceRecordFromSqlRecord(record, parent);
+    if (!m_model || index < 0 || index >= m_model->rowCount())
+    {
+        return nullptr;
+    }
+    QSqlRecord record = m_model->record(index);
+    return serviceRecordFromSqlRecord(record, parent);
 }
 
 std::optional<int> ServiceRecordModel::indexById(int recordId) const
 {
-  if (!m_model)
-  {
-    return std::nullopt;
-  }
-
-  m_model->select();
-  for (int row = 0; row < m_model->rowCount(); ++row)
-  {
-    QSqlRecord record    = m_model->record(row);
-    const int  currentId = record.value("record_id").toInt();
-    if (currentId == recordId)
+    if (!m_model)
     {
-      return row;
+        return std::nullopt;
     }
-  }
-  return std::nullopt;
+
+    m_model->select();
+    for (int row = 0; row < m_model->rowCount(); ++row)
+    {
+        QSqlRecord record = m_model->record(row);
+        const int currentId = record.value("record_id").toInt();
+        if (currentId == recordId)
+        {
+            return row;
+        }
+    }
+    return std::nullopt;
 }
 
 void ServiceRecordModel::removeByIndex(int index)
 {
-  if (index < 0 || index >= m_model->rowCount())
-  {
-    return;
-  }
-
-  beginRemoveRows(QModelIndex(), index, index);
-  if (m_model->removeRows(index, 1, QModelIndex()))
-  {
-    if (m_model->submitAll())
+    if (index < 0 || index >= m_model->rowCount())
     {
-      qDebug() << "Removed by index successfully";
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(), index, index);
+    if (m_model->removeRows(index, 1, QModelIndex()))
+    {
+        if (m_model->submitAll())
+        {
+            qDebug() << "Removed by index successfully";
+        }
+        else
+        {
+            qWarning() << "Submit remove by index failed: " << m_model->lastError().text();
+            m_model->revertAll();
+        }
     }
     else
     {
-      qWarning() << "Submit remove by index failed: " << m_model->lastError().text();
-      m_model->revertAll();
+        qWarning() << "Remove by index failed: " << m_model->lastError().text();
     }
-  }
-  else
-  {
-    qWarning() << "Remove by index failed: " << m_model->lastError().text();
-  }
 
-  endRemoveRows();
+    endRemoveRows();
 }
 
 QSqlDatabase ServiceRecordModel::openDatabase()
 {
-  const QString dbPath =
-    QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/bibika_service.sqlite";
-  const QString connectionName = "service_records_connection";
+    const QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)
+                           + "/bibika_service.sqlite";
+    const QString connectionName = "service_records_connection";
 
-  QSqlDatabase db;
+    QSqlDatabase db;
 
-  if (QSqlDatabase::contains(connectionName))
-  {
-    db = QSqlDatabase::database(connectionName);
-  }
-  else
-  {
-    db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
-    if (!db.isValid())
+    if (QSqlDatabase::contains(connectionName))
     {
-      qWarning() << "Cannot add database" << db.lastError().text();
+        db = QSqlDatabase::database(connectionName);
     }
-    db.setDatabaseName(dbPath);
-  }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        if (!db.isValid())
+        {
+            qWarning() << "Cannot add database" << db.lastError().text();
+        }
+        db.setDatabaseName(dbPath);
+    }
 
-  if (!db.open())
-  {
-    qWarning() << "Cannot open database" << db.lastError().text();
-  }
+    if (!db.open())
+    {
+        qWarning() << "Cannot open database" << db.lastError().text();
+    }
 
-  return db;
+    return db;
 }
 
 void ServiceRecordModel::createTableIfNotExists(const QSqlDatabase& db)
 {
-  const QString createTableSql =
-    "CREATE TABLE IF NOT EXISTS service_records ("
-    "record_id INTEGER PRIMARY KEY AUTOINCREMENT, "
-    "event_type TEXT NOT NULL, "
-    "name TEXT NOT NULL, "
-    "notes TEXT, "
-    "price REAL, "
-    "mileage INTEGER, "
-    "service_date TEXT, "
-    "repeat_after_distance INTEGER, "
-    "has_repeat_after_distance INTEGER DEFAULT 0, "
-    "repeat_after_months INTEGER, "
-    "has_repeat_after_months INTEGER DEFAULT 0 "
-    ")";
+    const QString createTableSql =
+       "CREATE TABLE IF NOT EXISTS service_records ("
+       "record_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+       "event_type TEXT NOT NULL, "
+       "name TEXT NOT NULL, "
+       "notes TEXT, "
+       "price REAL, "
+       "mileage INTEGER, "
+       "service_date TEXT, "
+       "repeat_after_distance INTEGER, "
+       "has_repeat_after_distance INTEGER DEFAULT 0, "
+       "repeat_after_months INTEGER, "
+       "has_repeat_after_months INTEGER DEFAULT 0 "
+       ")";
 
-  QSqlQuery query(db);
-  if (!query.exec(createTableSql))
-  {
-    qWarning() << "Cannot create table " << query.lastError().text();
-  }
+    QSqlQuery query(db);
+    if (!query.exec(createTableSql))
+    {
+        qWarning() << "Cannot create table " << query.lastError().text();
+    }
 }
 
 QSqlRecord ServiceRecordModel::sqlRecordFromServiceRecord(ServiceRecord* sr) const
 {
-  const auto& toString = ServiceRecordBuilder::eventType2Str;
+    const auto& toString = ServiceRecordBuilder::eventType2Str;
 
-  QSqlRecord record = m_model->record();
+    QSqlRecord record = m_model->record();
 
-  record.setValue("event_type", toString(sr->eventType()));
-  record.setValue("name", sr->name());
-  record.setValue("notes", sr->notes());
-  record.setValue("price", sr->price());
-  record.setValue("mileage", sr->mileage());
-  record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
-  record.setValue("repeat_after_distance", sr->repeatAfterDistance());
-  record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance() ? 1 : 0);
-  record.setValue("repeat_after_months", sr->repeatAfterMonths());
-  record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths() ? 1 : 0);
+    record.setValue("event_type", toString(sr->eventType()));
+    record.setValue("name", sr->name());
+    record.setValue("notes", sr->notes());
+    record.setValue("price", sr->price());
+    record.setValue("mileage", sr->mileage());
+    record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
+    record.setValue("repeat_after_distance", sr->repeatAfterDistance());
+    record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance() ? 1 : 0);
+    record.setValue("repeat_after_months", sr->repeatAfterMonths());
+    record.setValue("has_repeat_after_months", sr->hasRepeatAfterMonths() ? 1 : 0);
 
-  return record;
+    return record;
 }
 
 ServiceRecord* ServiceRecordModel::serviceRecordFromSqlRecord(const QSqlRecord& record, QObject* parent) const
 {
-  const auto& toEventType = ServiceRecordBuilder::str2EventType;
+    const auto& toEventType = ServiceRecordBuilder::str2EventType;
 
-  try
-  {
-    auto* sr = new ServiceRecord(parent);
+    try
+    {
+        auto* sr = new ServiceRecord(parent);
 
-    sr->setEventType(toEventType(record.value("event_type").toString()));
-    sr->setName(record.value("name").toString());
-    sr->setNotes(record.value("notes").toString());
-    sr->setPrice(record.value("price").toInt());
-    sr->setMileage(record.value("mileage").toInt());
+        sr->setEventType(toEventType(record.value("event_type").toString()));
+        sr->setName(record.value("name").toString());
+        sr->setNotes(record.value("notes").toString());
+        sr->setPrice(record.value("price").toInt());
+        sr->setMileage(record.value("mileage").toInt());
 
-    auto serviceDate = QDate::fromString(record.value("service_date").toString(), Qt::ISODate);
-    sr->setServiceDate(serviceDate);
+        auto serviceDate = QDate::fromString(record.value("service_date").toString(), Qt::ISODate);
+        sr->setServiceDate(serviceDate);
 
-    sr->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
-    sr->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
-    sr->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
-    sr->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
+        sr->setRepeatAfterDistance(record.value("repeat_after_distance").toInt());
+        sr->setHasRepeatAfterDistance(record.value("has_repeat_after_distance").toBool());
+        sr->setRepeatAfterMonths(record.value("repeat_after_months").toInt());
+        sr->setHasRepeatAfterMonths(record.value("has_repeat_after_months").toBool());
 
-    return sr;
-  }
-  catch (const std::bad_alloc& e)
-  {
-    qWarning() << "serviceRecordFromSqlRecord faield: bad alloc exception with reason" << e.what();
-  }
-  return nullptr;
+        return sr;
+    }
+    catch (const std::bad_alloc& e)
+    {
+        qWarning() << "serviceRecordFromSqlRecord faield: bad alloc exception with reason" << e.what();
+    }
+    return nullptr;
 }

@@ -3,14 +3,13 @@
 
 #include <QObject>
 
-class TestServiceRecord : public QObject
-{
-  Q_OBJECT
+class TestServiceRecord : public QObject {
+    Q_OBJECT
 
- private slots:
-  void testDefaultConstructor();
-  void testSettersAndGetters();
-  void testSignals();
+private slots:
+    void testDefaultConstructor();
+    void testSettersAndGetters();
+    void testSignals();
 };
 
-#endif  // TESTSERVICERECORD_H
+#endif // TESTSERVICERECORD_H

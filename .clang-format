@@ -1,71 +1,86 @@
-﻿# .clang-format
-
-# Основной стиль — Google Style как базовый
-BasedOnStyle: Google
-
-# Отступы
-IndentWidth: 2
-TabWidth: 2
-UseTab: Never
-
-# Переносы строк
+﻿---
+Language: Cpp
+AccessModifierOffset: -4
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlinesLeft: false
+AlignOperands: true
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: true
 AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
-BinPackParameters: false
-BreakBeforeBraces: Custom
+BinPackParameters: true
 BraceWrapping:
-  AfterClass: true
+  AfterClass: false
   AfterControlStatement: true
-  AfterEnum: true
+  AfterEnum: false
   AfterFunction: true
-  AfterNamespace: true
+  AfterNamespace: false
   AfterObjCDeclaration: true
-  AfterStruct: true
-  AfterUnion: true
+  AfterStruct: false
+  AfterUnion: false
   BeforeCatch: true
-  BeforeElse: true  # Обязательный перенос перед else
+  BeforeElse: true
   IndentBraces: false
-ColumnLimit: 120
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
-ConstructorInitializerIndentWidth: 2
-DerivePointerAlignment: false
-PointerAlignment: Left
-Cpp11BracedListStyle: false
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
-AlignOperands: true
-PenaltyBreakBeforeFirstCallParameter: 100
-
-# Комментарии
-CommentPragmas: '.*'
-
-# Прочее
-MaxEmptyLinesToKeep: 2
-KeepEmptyLinesAtTheStartOfBlocks: false
-SortIncludes: false
-SpaceBeforeParens: ControlStatements
-Standard: Auto
-
-# Специфичные настройки для сохранения стиля
-AllowShortBlocksOnASingleLine: Never
-AllowShortFunctionsOnASingleLine: InlineOnly
-BreakBeforeBinaryOperators: None
+  SplitEmptyFunction: false
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializers: BeforeComma
-ContinuationIndentWidth: 2
-IndentCaseLabels: false
-IndentPPDirectives: AfterHash
-PenaltyBreakAssignment: 2
+BreakConstructorInitializersBeforeComma: true
+BreakStringLiterals: true
+ColumnLimit: 120
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerIndentWidth: 3
+ContinuationIndentWidth: 3
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+DisableFormat: false
+ExperimentalAutoDetectBinPacking: false
+ForEachMacros:
+  - foreach
+  - Q_FOREACH
+  - BOOST_FOREACH
+IndentCaseLabels: true
+IndentWidth: 4
+IndentWrappedFunctionNames: false
+MacroBlockBegin: ""
+MacroBlockEnd: ""
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+PenaltyBreakBeforeFirstCallParameter: 19
 PenaltyBreakComment: 300
-PenaltyBreakFirstLessLess: 100
+PenaltyBreakFirstLessLess: 120
 PenaltyBreakString: 1000
 PenaltyExcessCharacter: 1000000
-PenaltyReturnTypeOnItsOwnLine: 60
-
-# Выравнивание
-AlignTrailingComments: true
-AlignConsecutiveMacros: true
+PenaltyReturnTypeOnItsOwnLine: 600000
+PointerAlignment: Left
+ReflowComments: false
+SortIncludes: true
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 1
+SpacesInAngles: false
+SpacesInContainerLiterals: true
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+Standard: c++20
+TabWidth: 4
+UseTab: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowAllArgumentsOnNextLine: false
+RemoveSemicolon: true
+InsertBraces: true
+PenaltyBreakAssignment: 600000

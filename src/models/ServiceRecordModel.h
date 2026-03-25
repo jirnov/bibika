@@ -9,58 +9,54 @@ class ServiceRecord;
 
 // Содержит все сервисные события
 // хранение в базе данных SQLite с помощью QSqlTableModel
-class ServiceRecordModel : public QAbstractListModel
-{
-  Q_OBJECT
-  QML_ELEMENT
-  QML_SINGLETON
+class ServiceRecordModel : public QAbstractListModel {
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
 
+public:
+    enum Roles {
+        RecordIdRole = Qt::UserRole,
+        EventTypeRole,
+        NameRole,
+        NotesRole,
+        PriceRole,
+        MileageRole,
+        ServiceDateRole,
+        RepeatAfterDistanceRole,
+        HasRepeatAfterDistanceRole,
+        RepeatAfterMonthsRole,
+        HasRepeatAfterMonthsRole
+    };
 
- public:
-  enum Roles
-  {
-    RecordIdRole = Qt::UserRole,
-    EventTypeRole,
-    NameRole,
-    NotesRole,
-    PriceRole,
-    MileageRole,
-    ServiceDateRole,
-    RepeatAfterDistanceRole,
-    HasRepeatAfterDistanceRole,
-    RepeatAfterMonthsRole,
-    HasRepeatAfterMonthsRole
-  };
+    ServiceRecordModel(const QSqlDatabase& db = QSqlDatabase(), QObject* parent = nullptr);
 
-  ServiceRecordModel(const QSqlDatabase& db = QSqlDatabase(), QObject* parent = nullptr);
+public:
+    // QAbstractListModel
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
- public:
-  // QAbstractListModel
-  int                    rowCount(const QModelIndex& parent = QModelIndex()) const override;
-  QVariant               data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-  QHash<int, QByteArray> roleNames() const override;
+    Q_INVOKABLE int append(ServiceRecord* record);
+    Q_INVOKABLE void clear();
+    Q_INVOKABLE void removeById(int recordId);
+    Q_INVOKABLE ServiceRecord* getById(int recordId, QObject* parent) const;
+    Q_INVOKABLE int count() const;
 
-  Q_INVOKABLE int            append(ServiceRecord* record);
-  Q_INVOKABLE void           clear();
-  Q_INVOKABLE void           removeById(int recordId);
-  Q_INVOKABLE ServiceRecord* getById(int recordId, QObject* parent) const;
-  Q_INVOKABLE int            count() const;
+    Q_INVOKABLE bool updateRecordById(int recordId, ServiceRecord* updateRecord);
 
-  Q_INVOKABLE bool updateRecordById(int recordId, ServiceRecord* updateRecord);
+    ServiceRecord* getByIndex(int index, QObject* parent) const;
 
-  ServiceRecord* getByIndex(int index, QObject* parent) const;
+private:
+    void removeByIndex(int index);
+    std::optional<int> indexById(int recordId) const;
 
- private:
-  void               removeByIndex(int index);
-  std::optional<int> indexById(int recordId) const;
+    QSqlDatabase openDatabase();
+    void createTableIfNotExists(const QSqlDatabase& db);
+    QSqlRecord sqlRecordFromServiceRecord(ServiceRecord* record) const;
+    ServiceRecord* serviceRecordFromSqlRecord(const QSqlRecord& record, QObject* parent) const;
 
-  QSqlDatabase   openDatabase();
-  void           createTableIfNotExists(const QSqlDatabase& db);
-  QSqlRecord     sqlRecordFromServiceRecord(ServiceRecord* record) const;
-  ServiceRecord* serviceRecordFromSqlRecord(const QSqlRecord& record, QObject* parent) const;
-
-  QSqlTableModel* m_model = nullptr;
+    QSqlTableModel* m_model = nullptr;
 };
 
-
-#endif  // SERVICERECORDMODEL_H
+#endif // SERVICERECORDMODEL_H

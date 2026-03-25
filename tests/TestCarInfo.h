@@ -6,52 +6,51 @@
 
 class CarInfo;
 
-class TestCarInfo : public QObject
-{
-  Q_OBJECT
+class TestCarInfo : public QObject {
+    Q_OBJECT
 
- private slots:
-  void init();  // Выполняется перед каждым тестом
+private slots:
+    void init(); // Выполняется перед каждым тестом
 
-  // Тесты конструктора и инициализации
-  void testConstructor();
-  void testDefaultValues();
+    // Тесты конструктора и инициализации
+    void testConstructor();
+    void testDefaultValues();
 
-  // Тесты геттеров/сеттеров
-  void testSetGetBrandName();
-  void testSetGetModelName();
-  void testSetGetMileage();
-  void testSetGetMileageUpdateDate();
+    // Тесты геттеров/сеттеров
+    void testSetGetBrandName();
+    void testSetGetModelName();
+    void testSetGetMileage();
+    void testSetGetMileageUpdateDate();
 
-  // Тесты сигналов
-  void testBrandNameSignal();
-  void testModelNameSignal();
-  void testMileageSignal();
-  void testMileageUpdateDateSignal();
-  void testNameSignal();
-  void testIsValidSignal();
+    // Тесты сигналов
+    void testBrandNameSignal();
+    void testModelNameSignal();
+    void testMileageSignal();
+    void testMileageUpdateDateSignal();
+    void testNameSignal();
+    void testIsValidSignal();
 
-  // Тесты валидации
-  void testValidateBrand();
-  void testValidateModel();
-  void testValidateAll();
+    // Тесты валидации
+    void testValidateBrand();
+    void testValidateModel();
+    void testValidateAll();
 
-  // Тесты вычисляемых свойств
-  void testName();
-  void testIsValid();
+    // Тесты вычисляемых свойств
+    void testName();
+    void testIsValid();
 
-  // Тесты сложных сценариев
-  void testMultipleUpdates();
-  void testIsValidTransitions();
-  void testNoSignalsOnSameValue();
+    // Тесты сложных сценариев
+    void testMultipleUpdates();
+    void testIsValidTransitions();
+    void testNoSignalsOnSameValue();
 
-  // Тесты граничных значений
-  void testEdgeCases();
+    // Тесты граничных значений
+    void testEdgeCases();
 
-  void testInvariants();
+    void testInvariants();
 
- private:
-  CarInfo* car;
+private:
+    CarInfo* car;
 };
 
-#endif  // TESTCARINFO_H
+#endif // TESTCARINFO_H

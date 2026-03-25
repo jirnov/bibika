@@ -24,9 +24,8 @@ Page {
 
         // Запись 1: Замена масла
         var record1 = ServiceRecordBuilder.createEmpty(root);
-        record1.name = "Замена масла";
-        record1.notes = "Лить только Liqui Molly";
-        record1.price = 4500;
+        record1.name = "Первая запись";
+        record1.price = 500000;
         record1.mileage = 0;
         record1.serviceDate = new Date(2026, 2, 1);  // Март 2026 (месяцы с 0)
         record1.eventType = ServiceRecord.Maintenance;
@@ -38,8 +37,7 @@ Page {
 
         // Запись 2: Замена лобового стекла
         var record2 = ServiceRecordBuilder.createEmpty(root);
-        record2.name = "Замена лобового стекла";
-        record2.notes = "Тайваньское";
+        record2.name = "Вторая запись";
         record2.price = 20000;
         record2.mileage = 5000;
         record2.serviceDate = new Date(2026, 2, 2);  // 2 марта 2026
@@ -48,8 +46,7 @@ Page {
 
         // Запись 3: Покупка омывайки
         var record3 = ServiceRecordBuilder.createEmpty(root);
-        record3.name = "Покупка омывайки";
-        record3.notes = "Зелёная, -30";
+        record3.name = "Третья запись";
         record3.price = 200;
         record3.mileage = 5500;
         record3.serviceDate = new Date(2026, 2, 1);  // 1 марта 2026
@@ -58,8 +55,7 @@ Page {
 
         // Запись 4: Капитальный ремонт двигателя
         var record4 = ServiceRecordBuilder.createEmpty(root);
-        record4.name = "Капитальный ремонт двигателя";
-        record4.notes = "Этого лучше избегать!";
+        record4.name = "Четвертая запись";
         record4.price = 500000;
         record4.mileage = 10000;
         // Без даты - будет текущая или пустая
@@ -68,8 +64,7 @@ Page {
 
         // Запись 5: Замена масла в коробке
         var record5 = ServiceRecordBuilder.createEmpty(root);
-        record5.name = "Замена масла в коробке";
-        record5.notes = "";
+        record5.name = "Пятая запись";
         record5.price = 15000;
         record5.mileage = 0;
         record5.eventType = ServiceRecord.Maintenance;
@@ -155,11 +150,22 @@ Page {
                             text: "Тип: " + delegateRoot.model.eventType
                         }
                     }
+                    Row {
+                        spacing: 5
+                        Label {
+                            text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
+                            font.pixelSize: 14
+                        }
 
-                    Label {
-                        text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
-                        color: "green"
-                        font.pixelSize: 14
+                        Label {
+                            text: "Цена: " + delegateRoot.model.price
+                            font.pixelSize: 14
+                        }
+
+                        Label {
+                            text: "Пробег: " + delegateRoot.model.mileage
+                            font.pixelSize: 14
+                        }
                     }
 
                     Button {
