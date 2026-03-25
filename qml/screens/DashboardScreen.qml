@@ -25,8 +25,9 @@ Page {
 
         // Запись 1: Замена масла
         var record1 = ServiceRecordBuilder.createEmpty(root);
-        record1.name = "Первая запись";
+        record1.name = "Замена масла и фильтров";
         record1.price = 500000;
+        record1.notes = "Масло 5W-30, фильтр Mann";
         record1.mileage = 0;
         record1.serviceDate = new Date(2026, 2, 1);  // Март 2026 (месяцы с 0)
         record1.eventType = ServiceRecord.Maintenance;
@@ -38,36 +39,40 @@ Page {
 
         // Запись 2: Замена лобового стекла
         var record2 = ServiceRecordBuilder.createEmpty(root);
-        record2.name = "Вторая запись";
+        record2.name = "Замена стартера";
         record2.price = 20000;
         record2.mileage = 5000;
+        record2.notes = "Щётки износились";
         record2.serviceDate = new Date(2026, 2, 2);  // 2 марта 2026
         record2.eventType = ServiceRecord.Repair;
         serviceRecordModel.append(record2);
 
         // Запись 3: Покупка омывайки
         var record3 = ServiceRecordBuilder.createEmpty(root);
-        record3.name = "Третья запись";
+        record3.name = "Мойка и химчистка";
         record3.price = 200;
         record3.mileage = 5500;
+        record3.notes = "Детейлинг салона";
         record3.serviceDate = new Date(2026, 2, 1);  // 1 марта 2026
         record3.eventType = ServiceRecord.Service;
         serviceRecordModel.append(record3);
 
         // Запись 4: Капитальный ремонт двигателя
         var record4 = ServiceRecordBuilder.createEmpty(root);
-        record4.name = "Четвертая запись";
+        record4.name = "Замена масла";
         record4.price = 500000;
         record4.mileage = 10000;
+        record4.notes = "Масло Mobil 1 5W-30";
         // Без даты - будет текущая или пустая
         record4.eventType = ServiceRecord.Repair;
         serviceRecordModel.append(record4);
 
         // Запись 5: Замена масла в коробке
         var record5 = ServiceRecordBuilder.createEmpty(root);
-        record5.name = "Пятая запись";
+        record5.name = "Замена АКБ";
         record5.price = 15000;
         record5.mileage = 0;
+        record5.notes = "Varta 60Ah";
         record5.eventType = ServiceRecord.Maintenance;
         serviceRecordModel.append(record5);
 
@@ -118,8 +123,9 @@ Page {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+        anchors.margins: 20
         clip: true
-        spacing: 2
+        spacing: 20
 
         model: serviceRecordProxy
         delegate: Rectangle {
@@ -129,22 +135,22 @@ Page {
 
             width: listView.width
             height: 160
-            color: index % 2 === 0 ? "#f8f8f8" : "white"
+            color: "white"
             border.color: "#e0e0e0"
             border.width: 1
-            radius: 4
+            radius: 20
 
             Item {
                 anchors.fill: parent
-                anchors.margins: 10
 
                 Image {
-                    source: "qrc:/icons/edit.svg"
-                    sourceSize.width: 32
-                    sourceSize.height: 32
+                    source: "/icons/edit.svg"
+                    sourceSize.width: 24
+                    sourceSize.height: 24
                     anchors.right: parent.right
+                    anchors.rightMargin: 20
                     anchors.top: parent.top
-                    anchors.margins: 20
+                    anchors.topMargin: 20
 
                     MouseArea {
                         width: 60
@@ -163,12 +169,13 @@ Page {
                 }
 
                 Image {
-                    source: "qrc:/icons/trash.svg"
-                    sourceSize.width: 32
-                    sourceSize.height: 32
+                    source: "/icons/trash.svg"
+                    sourceSize.width: 24
+                    sourceSize.height: 24
                     anchors.right: parent.right
+                    anchors.rightMargin: 20
                     anchors.bottom: parent.bottom
-                    anchors.margins: 20
+                    anchors.bottomMargin: 20
 
                     MouseArea {
                         width: 60
@@ -185,6 +192,36 @@ Page {
                         }
                     }
                 }
+
+                Label {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: 20
+                    text: delegateRoot.model.name
+                    font.pixelSize: 16
+                    font.bold: true
+                    font.family: "sans-serif"
+                }
+
+                Label {
+                    x: 20
+                    y: 90
+                    text: delegateRoot.model.mileage + "км"
+                    font.pixelSize: 14
+                    font.family: "sans-serif"
+                    color: "#6B7280"
+                }
+
+                Label {
+                    x: 20
+                    y: 120
+                    text: delegateRoot.model.notes
+                    font.pixelSize: 12
+                    font.family: "sans-serif"
+                    color: "#9CA3AF"
+                }
+
+                /*
 
                 Column {
                     Row {
@@ -216,7 +253,7 @@ Page {
                             font.pixelSize: 14
                         }
                     }
-                }
+                }*/
             }
         }
 

@@ -238,6 +238,8 @@ std::optional<int> ServiceRecordModel::indexById(int recordId) const
         return std::nullopt;
     }
 
+    m_model->select();
+
     for (int row = 0; row < m_model->rowCount(); ++row)
     {
         QSqlRecord record = m_model->record(row);
@@ -252,8 +254,6 @@ std::optional<int> ServiceRecordModel::indexById(int recordId) const
 
 void ServiceRecordModel::removeByIndex(int index)
 {
-    const int rowCount = m_model->rowCount();
-
     if (index < 0 || index >= m_model->rowCount())
     {
         return;
@@ -270,6 +270,7 @@ void ServiceRecordModel::removeByIndex(int index)
     }
 
     beginRemoveRows(QModelIndex(), index, index);
+    m_model->select();
     endRemoveRows();
 }
 
