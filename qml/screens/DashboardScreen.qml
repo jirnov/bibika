@@ -1,6 +1,7 @@
 ﻿pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 import BibikaService
 
@@ -137,6 +138,54 @@ Page {
                 anchors.fill: parent
                 anchors.margins: 10
 
+                Image {
+                    source: "qrc:/icons/edit.svg"
+                    sourceSize.width: 32
+                    sourceSize.height: 32
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: 20
+
+                    MouseArea {
+                        width: 60
+                        height: 60
+                        anchors.centerIn: parent
+                        onClicked: root.openEditRecordDialog(delegateRoot.model.recordId)
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "transparent"
+                            border.color: "red"
+                            border.width: 2
+                            visible: false
+                        }
+                    }
+                }
+
+                Image {
+                    source: "qrc:/icons/trash.svg"
+                    sourceSize.width: 32
+                    sourceSize.height: 32
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: 20
+
+                    MouseArea {
+                        width: 60
+                        height: 60
+                        anchors.centerIn: parent
+                        onClicked: root.openRemoveRecordDialog(delegateRoot.model.recordId)
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: "transparent"
+                            border.color: "red"
+                            border.width: 2
+                            visible: false
+                        }
+                    }
+                }
+
                 Column {
                     Row {
                         spacing: 5
@@ -165,22 +214,6 @@ Page {
                         Label {
                             text: "Пробег: " + delegateRoot.model.mileage
                             font.pixelSize: 14
-                        }
-                    }
-
-                    Button {
-                        text: "Редактировать"
-
-                        onClicked: {
-                            root.openEditRecordDialog(delegateRoot.model.recordId);
-                        }
-                    }
-
-                    Button {
-                        text: "Удалить"
-
-                        onClicked: {
-                            root.openRemoveRecordDialog(delegateRoot.model.recordId);
                         }
                     }
                 }

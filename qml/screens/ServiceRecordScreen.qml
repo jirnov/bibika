@@ -7,6 +7,7 @@ import BibikaService
 
 Page {
     id: root
+
     width: parent ? parent.width : AppSettings.width
     height: parent ? parent.height : AppSettings.height
 

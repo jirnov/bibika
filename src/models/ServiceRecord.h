@@ -9,6 +9,7 @@
 class ServiceRecord : public QObject {
     Q_OBJECT
     QML_ELEMENT
+
     Q_PROPERTY(EventType eventType READ eventType WRITE setEventType NOTIFY eventTypeChanged FINAL)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged FINAL)
     Q_PROPERTY(QString notes READ notes WRITE setNotes NOTIFY notesChanged FINAL)

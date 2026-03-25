@@ -86,9 +86,8 @@ qt_add_resources(appBibikaService "data"
 qt_add_resources(appBibikaService "icons"
     BASE "res"
     FILES
-        res/icons/calendar.svg
-        res/icons/chart.svg
-        res/icons/history.svg
+        res/icons/trash.svg
+        res/icons/edit.svg
 )
 
 qt_add_resources(appBibikaService "lang"
