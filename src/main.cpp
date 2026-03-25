@@ -37,6 +37,9 @@ int runApp(int argc, char* argv[])
     app.setOrganizationDomain("ru.blog2k.bibikaservice");
     app.setOrganizationName("Personal");
 
+    ServiceRecordModel serviceRecordModel;
+    ServiceRecordProxy serviceRecordProxy(&serviceRecordModel);
+
     QQmlApplicationEngine engine;
 
     QObject::connect(
@@ -47,9 +50,6 @@ int runApp(int argc, char* argv[])
            QCoreApplication::exit(-1);
        },
        Qt::QueuedConnection);
-
-    ServiceRecordModel serviceRecordModel;
-    ServiceRecordProxy serviceRecordProxy(&serviceRecordModel, nullptr);
 
     engine.rootContext()->setContextProperty("serviceRecordModel", &serviceRecordModel);
     engine.rootContext()->setContextProperty("serviceRecordProxy", &serviceRecordProxy);
