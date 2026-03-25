@@ -15,6 +15,7 @@ class ServiceRecord : public QObject {
     Q_PROPERTY(int price READ price WRITE setPrice NOTIFY priceChanged FINAL)
     Q_PROPERTY(int mileage READ mileage WRITE setMileage NOTIFY mileageChanged FINAL)
     Q_PROPERTY(QDate serviceDate READ serviceDate WRITE setServiceDate NOTIFY serviceDateChanged FINAL)
+    Q_PROPERTY(int parentRecordId READ parentRecordId WRITE setParentRecordId FINAL)
 
     Q_PROPERTY(int repeatAfterDistance READ repeatAfterDistance WRITE setRepeatAfterDistance NOTIFY
                   repeatAfterDistanceChanged FINAL)
@@ -74,6 +75,9 @@ public:
 
     bool isRepeatMonthsValid() const;
 
+    int parentRecordId() const;
+    void setParentRecordId(int newParentRecordId);
+
 signals:
     void nameChanged();
     void notesChanged();
@@ -107,6 +111,7 @@ private:
     int m_repeatAfterMonths{0};
     bool m_hasRepeatAfterMonths{false};
     EventType m_eventType{EventType::Maintenance};
+    int m_parentRecordId{0};
 };
 
 #endif // SERVICERECORD_H

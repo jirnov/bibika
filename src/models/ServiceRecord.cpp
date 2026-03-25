@@ -226,3 +226,13 @@ bool ServiceRecord::isRepeatMonthsValid() const
     }
     return true;
 }
+
+int ServiceRecord::parentRecordId() const
+{
+    return m_parentRecordId;
+}
+
+void ServiceRecord::setParentRecordId(int newParentRecordId)
+{
+    m_parentRecordId = newParentRecordId;
+}

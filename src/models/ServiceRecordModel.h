@@ -20,6 +20,7 @@ public:
         PriceRole,
         MileageRole,
         ServiceDateRole,
+        ParentRecordIdRole,
         RepeatAfterDistanceRole,
         HasRepeatAfterDistanceRole,
         RepeatAfterMonthsRole,

@@ -69,6 +69,8 @@ QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
             return record.value("mileage");
         case ServiceDateRole:
             return record.value("service_date").toString();
+        case ParentRecordIdRole:
+            return record.value("parent_record_id").toInt();
         case RepeatAfterDistanceRole:
             return record.value("repeat_after_distance");
         case HasRepeatAfterDistanceRole:
@@ -92,6 +94,7 @@ QHash<int, QByteArray> ServiceRecordModel::roleNames() const
     roles[PriceRole] = "price";
     roles[MileageRole] = "mileage";
     roles[ServiceDateRole] = "serviceDate";
+    roles[ParentRecordIdRole] = "parentRecordId";
     roles[RepeatAfterDistanceRole] = "repeatAfterDistance";
     roles[HasRepeatAfterDistanceRole] = "hasRepeatAfterDistance";
     roles[RepeatAfterMonthsRole] = "repeatAfterMonths";
@@ -196,6 +199,7 @@ bool ServiceRecordModel::updateRecordById(int recordId, ServiceRecord* sr)
     record.setValue("price", sr->price());
     record.setValue("mileage", sr->mileage());
     record.setValue("service_date", sr->serviceDate().toString(Qt::ISODate));
+    record.setValue("parent_record_id", sr->parentRecordId());
     record.setValue("repeat_after_distance", sr->repeatAfterDistance());
     record.setValue("has_repeat_after_distance", sr->hasRepeatAfterDistance());
     record.setValue("repeat_after_months", sr->repeatAfterMonths());
@@ -310,6 +314,7 @@ void ServiceRecordModel::createTableIfNotExists(const QSqlDatabase& db)
        "price REAL, "
        "mileage INTEGER, "
        "service_date TEXT, "
+       "parent_record_id INTEGER DEFAULT 0, "
        "repeat_after_distance INTEGER, "
        "has_repeat_after_distance INTEGER DEFAULT 0, "
        "repeat_after_months INTEGER, "
