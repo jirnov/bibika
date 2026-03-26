@@ -1,0 +1,20 @@
+﻿# Указываем, что правила для Java
+Language: Java
+
+# Стиль на основе Google Java Style
+BasedOnStyle: Google
+
+# Отступ 4 пробела
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# Максимальная длина строки (0 = без ограничений)
+ColumnLimit: 100
+
+# Расстановка пробелов
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+
+# Скобки
+BreakBeforeBraces: Attach

@@ -77,6 +77,18 @@ qt6_add_executable(appBibikaService
     src/main.cpp
 )
 
+if(ANDROID)
+    LIST(APPEND COMMON_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/android/jni/NotificationHelper.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/android/jni/NotificationHelper.cpp)
+
+    LIST(APPEND INCLUDE_DIRS
+        ${CMAKE_CURRENT_SOURCE_DIR}/android/jni)
+
+    set_property(TARGET appBibikaService APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
+endif()
+
+
 qt_add_resources(appBibikaService "data"
     BASE "res"
     FILES
@@ -98,10 +110,6 @@ qt_add_resources(appBibikaService "lang"
 
 set_source_files_properties(qml/style/Style.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 set_source_files_properties(qml/AppSettings.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
-
-if(ANDROID)
-    set_property(TARGET appBibikaService APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/android)
-endif()
 
 qt6_add_qml_module(appBibikaService
     URI BibikaService

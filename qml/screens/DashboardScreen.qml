@@ -23,11 +23,10 @@ Page {
     Component.onCompleted: {
         serviceRecordModel.clear();
 
-        // Запись 1: Замена масла
         var record1 = ServiceRecordBuilder.createEmpty(root);
-        record1.name = "Замена масла и фильтров";
+        record1.name = "Замена масла и фильтров и коробки передач";
         record1.price = 500000;
-        record1.notes = "Масло 5W-30, фильтр Mann";
+        record1.notes = "Масло 5W-30, фильтр Mann и очень длинная заметка, например стих";
         record1.mileage = 0;
         record1.serviceDate = new Date(2026, 2, 1);  // Март 2026 (месяцы с 0)
         record1.eventType = ServiceRecord.Maintenance;
@@ -37,7 +36,6 @@ Page {
         record1.repeatAfterMonths = 12;
         serviceRecordModel.append(record1);
 
-        // Запись 2: Замена лобового стекла
         var record2 = ServiceRecordBuilder.createEmpty(root);
         record2.name = "Замена стартера";
         record2.price = 20000;
@@ -47,7 +45,6 @@ Page {
         record2.eventType = ServiceRecord.Repair;
         serviceRecordModel.append(record2);
 
-        // Запись 3: Покупка омывайки
         var record3 = ServiceRecordBuilder.createEmpty(root);
         record3.name = "Мойка и химчистка";
         record3.price = 200;
@@ -57,17 +54,14 @@ Page {
         record3.eventType = ServiceRecord.Service;
         serviceRecordModel.append(record3);
 
-        // Запись 4: Капитальный ремонт двигателя
         var record4 = ServiceRecordBuilder.createEmpty(root);
         record4.name = "Замена масла";
         record4.price = 500000;
         record4.mileage = 10000;
         record4.notes = "Масло Mobil 1 5W-30";
-        // Без даты - будет текущая или пустая
         record4.eventType = ServiceRecord.Repair;
         serviceRecordModel.append(record4);
 
-        // Запись 5: Замена масла в коробке
         var record5 = ServiceRecordBuilder.createEmpty(root);
         record5.name = "Замена АКБ";
         record5.price = 15000;
@@ -85,31 +79,33 @@ Page {
             GradientStop {
                 position: 0.0
                 color: "#F8FAFC"
-            }  // Светлый сверху
+            }
             GradientStop {
                 position: 1.0
                 color: "#F1F5F9"
-            }  // Чуть темнее снизу
+            }
         }
     }
 
     Item {
         id: topPanel
         width: parent.width
-        height: 180  // Фиксированная высота
+        height: 180
 
         Rectangle {
             x: -1
             y: 0
             width: parent.width + 2
-            height: 80
+            height: 60
             color: "transparent"
             border.color: "#E5E7EB"
         }
 
         Text {
             x: 28
-            y: 130
+            y: 90
+            width: parent.width - 10
+            elide: Text.ElideRight
             text: root._carName
             font.pixelSize: 30
             font.bold: true
@@ -194,21 +190,57 @@ Page {
                     }
                 }
 
-                Label {
+                Row {
                     anchors.top: parent.top
                     anchors.left: parent.left
                     anchors.margins: 20
-                    text: delegateRoot.model.name
-                    font.pixelSize: 16
-                    font.bold: true
+                    width: parent.width
+                    spacing: 10
+
+                    Rectangle {
+                        y: 2
+                        width: 16
+                        height: width
+                        radius: width / 2
+                        color: {
+                            console.log(delegateRoot.model.eventType);
+                            switch (delegateRoot.model.eventType) {
+                            case "Maintenance":
+                                return "#3B82F6";
+                            case "Repair":
+                                return "#EF4444";
+                            case "Service":
+                                return "#10B981";
+                            default:
+                                return "red";
+                            }
+                        }
+                    }
+
+                    Label {
+                        width: parent.width - 100
+                        text: delegateRoot.model.name
+                        elide: Text.ElideRight
+                        font.pointSize: 16
+                        font.bold: true
+                        font.family: "sans-serif"
+                    }
+                }
+
+                Label {
+                    x: 20
+                    y: 65
+                    text: Qt.formatDate(delegateRoot.model.serviceDate, "dd.MM.yyyy")
+                    font.pointSize: 14
                     font.family: "sans-serif"
+                    color: "#6B7280"
                 }
 
                 Label {
                     x: 20
                     y: 95
                     text: delegateRoot.model.mileage + "км"
-                    font.pixelSize: 14
+                    font.pointSize: 14
                     font.family: "sans-serif"
                     color: "#6B7280"
                 }
@@ -217,49 +249,18 @@ Page {
                     x: 20
                     y: 125
                     text: delegateRoot.model.notes
-                    font.pixelSize: 12
+                    width: parent.width - 70
+                    elide: Text.ElideRight
+                    font.pointSize: 12
                     font.family: "sans-serif"
                     color: "#9CA3AF"
                 }
-
-                /*
-
-                Column {
-                    Row {
-                        spacing: 5
-                        Label {
-                            text: "Название: " + delegateRoot.model.name
-                            color: "grey"
-                            font.pixelSize: 14
-                        }
-
-                        Label {
-                            text: "Тип: " + delegateRoot.model.eventType
-                        }
-                    }
-                    Row {
-                        spacing: 5
-                        Label {
-                            text: "Заметка: " + (delegateRoot.model.notes ? delegateRoot.model.notes : "(нет)")
-                            font.pixelSize: 14
-                        }
-
-                        Label {
-                            text: "Цена: " + delegateRoot.model.price
-                            font.pixelSize: 14
-                        }
-
-                        Label {
-                            text: "Пробег: " + delegateRoot.model.mileage
-                            font.pixelSize: 14
-                        }
-                    }
-                }*/
             }
         }
 
         ScrollBar.vertical: ScrollBar {
             policy: ScrollBar.AsNeeded
+            width: 5
         }
     }
 
