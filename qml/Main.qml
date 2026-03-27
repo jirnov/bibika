@@ -95,7 +95,7 @@ ApplicationWindow {
             }
 
             onOpenRemoveRecordDialog: function (recordId) {
-                serviceRecordModel.removeById(recordId);
+                serviceRecordModel.remove(recordId);
             }
         }
     }
@@ -111,7 +111,7 @@ ApplicationWindow {
         id: serviceRecordScreen
         ServiceRecordScreen {
             onRecordUpdated: function (recordId, serviceRecord) {
-                serviceRecordModel.updateRecordById(recordId, serviceRecord);
+                serviceRecordModel.update(recordId, serviceRecord);
                 stackView.pop();
                 console.log("Обновлённая запись" + ServiceRecordBuilder.toJSON(serviceRecord));
             }

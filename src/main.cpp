@@ -6,9 +6,42 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QSqlError>
+#include <QStandardPaths>
 #include <QTranslator>
 #include <ServiceRecordModel.h>
 #include <ServiceRecordProxy.h>
+#include <ServiceRecordRepository.h>
+
+static QSqlDatabase openDatabase()
+{
+    const QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)
+                           + "/bibika_service.sqlite";
+    const QString connectionName = "service_records_connection";
+
+    QSqlDatabase db;
+
+    if (QSqlDatabase::contains(connectionName))
+    {
+        db = QSqlDatabase::database(connectionName);
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        if (!db.isValid())
+        {
+            qWarning() << "Cannot add database" << db.lastError().text();
+        }
+        db.setDatabaseName(dbPath);
+    }
+
+    if (!db.open())
+    {
+        qWarning() << "Cannot open database" << db.lastError().text();
+    }
+
+    return db;
+}
 
 static QTranslator* createTranslator(QObject* parent)
 {
@@ -37,7 +70,8 @@ int runApp(int argc, char* argv[])
     app.setOrganizationDomain("ru.blog2k.bibikaservice");
     app.setOrganizationName("Personal");
 
-    ServiceRecordModel serviceRecordModel;
+    auto repo = std::make_unique<ServiceRecordRepository>(openDatabase(), nullptr);
+    ServiceRecordModel serviceRecordModel(std::move(repo), nullptr);
     ServiceRecordProxy serviceRecordProxy(&serviceRecordModel);
 
     QQmlApplicationEngine engine;

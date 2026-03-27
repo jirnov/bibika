@@ -9,8 +9,6 @@ class TestServiceRecordModel : public QObject {
     Q_OBJECT
 
 private slots:
-    void initTestCase();
-
     void init();
     void cleanup();
 
@@ -18,8 +16,7 @@ private slots:
     void testUpdateRecord();
 
 private:
-    QSqlDatabase m_db;
-    ServiceRecordModel* m_model{nullptr};
+    ServiceRecordModel* m_model;
 };
 
 #endif // TESTSERVICERECORDMODEL_H

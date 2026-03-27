@@ -1,8 +1,8 @@
-#ifndef SERVICERECORDMODEL_H
-#define SERVICERECORDMODEL_H
+#pragma once
 
 #include <QAbstractListModel>
-#include <QSqlTableModel>
+#include <ServiceRecordRepository.h>
+#include <memory>
 
 class ServiceRecord;
 
@@ -27,7 +27,8 @@ public:
         HasRepeatAfterMonthsRole
     };
 
-    ServiceRecordModel(const QSqlDatabase& db = QSqlDatabase(), QObject* parent = nullptr);
+    explicit ServiceRecordModel(QObject* parent = nullptr);
+    ServiceRecordModel(std::unique_ptr<ServiceRecordRepository> &&repo, QObject *parent);
 
 public:
     // QAbstractListModel
@@ -37,24 +38,12 @@ public:
 
     Q_INVOKABLE int append(ServiceRecord* record);
     Q_INVOKABLE bool clear();
-    Q_INVOKABLE void removeById(int recordId);
-    Q_INVOKABLE ServiceRecord* getById(int recordId, QObject* parent) const;
+    Q_INVOKABLE void remove(int recordId);
+    Q_INVOKABLE ServiceRecord* find(int recordId, QObject* parent) const;
     Q_INVOKABLE int count() const;
 
-    Q_INVOKABLE bool updateRecordById(int recordId, ServiceRecord* updateRecord);
-
-    ServiceRecord* getByIndex(int index, QObject* parent) const;
+    Q_INVOKABLE bool update(int recordId, ServiceRecord* updateRecord);
 
 private:
-    void removeByIndex(int index);
-    std::optional<int> indexById(int recordId) const;
-
-    QSqlDatabase openDatabase();
-    void createTableIfNotExists(const QSqlDatabase& db);
-    QSqlRecord sqlRecordFromServiceRecord(ServiceRecord* record) const;
-    ServiceRecord* serviceRecordFromSqlRecord(const QSqlRecord& record, QObject* parent) const;
-
-    QSqlTableModel* m_model = nullptr;
+    std::unique_ptr<ServiceRecordRepository> m_repo;
 };
-
-#endif // SERVICERECORDMODEL_H

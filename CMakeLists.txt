@@ -42,7 +42,10 @@ set(COMMON_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordModel.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordProxy.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordProxy.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordProxy.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordRepository.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/models/ServiceRecordRepository.cpp
+)
 
 set(LIBRARIES
     Qt6::Quick

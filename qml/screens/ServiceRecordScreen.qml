@@ -23,7 +23,7 @@ Page {
 
     Component.onCompleted: {
         if (recordId !== 0) {
-            _editCopy = serviceRecordModel.getById(recordId, root);
+            _editCopy = serviceRecordModel.find(recordId, root);
             let msg = `Редактирование записи: ${_editCopy.name} на пробеге ${Qt.locale().toString(_editCopy.mileage)} километров, ${Qt.formatDateTime(_editCopy.serviceDate, "dd.MM.yyyy")}, ценой ${_editCopy.price}`;
             console.log(msg);
         } else {
