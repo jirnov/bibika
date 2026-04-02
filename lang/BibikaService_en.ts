@@ -4,12 +4,12 @@
 <context>
     <name>CarInfo</name>
     <message>
-        <location filename="../src/models/CarInfo.cpp" line="117"/>
+        <location filename="../src/models/CarInfo.cpp" line="116"/>
         <source>Пожалуйста, укажите марку (обязательное поле)</source>
         <translation>Please fill in the car brand (required field)</translation>
     </message>
     <message>
-        <location filename="../src/models/CarInfo.cpp" line="126"/>
+        <location filename="../src/models/CarInfo.cpp" line="125"/>
         <source>Пожалуйста, укажите модель (обязательное поле)</source>
         <translation>Please fill in the car model (required field)</translation>
     </message>
@@ -21,37 +21,37 @@
 <context>
     <name>ServiceRecordScreen</name>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="74"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="75"/>
         <source>Сохранить</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="114"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="115"/>
         <source>Ремонт</source>
         <translation>Repair</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="136"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="137"/>
         <source>Плановое ТО</source>
         <translation>Maintenance</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="158"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="159"/>
         <source>Услуга</source>
         <translation>Service</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="417"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="418"/>
         <source>километров</source>
         <translation>kilometers</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="425"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="426"/>
         <source>или (что наступит раньше)</source>
         <translation>or whichever comes first</translation>
     </message>
     <message>
-        <location filename="../qml/screens/ServiceRecordScreen.qml" line="452"/>
+        <location filename="../qml/screens/ServiceRecordScreen.qml" line="453"/>
         <source>месяцев</source>
         <translation>months</translation>
     </message>

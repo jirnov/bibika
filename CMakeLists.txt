@@ -73,6 +73,7 @@ set(QML_FILES
 
 qt_add_translations(appBibikaService
     RESOURCE_PREFIX /lang
+    I18N_SOURCE_LANGUAGE ru
     TS_FILE_DIR lang
 )
 

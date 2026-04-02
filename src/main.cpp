@@ -13,7 +13,9 @@
 #include <ServiceRecordProxy.h>
 #include <ServiceRecordRepository.h>
 
-static QSqlDatabase openDatabase()
+namespace {
+
+QSqlDatabase openDatabase()
 {
     const QString dbPath = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation)
                            + "/bibika_service.sqlite";
@@ -43,29 +45,28 @@ static QSqlDatabase openDatabase()
     return db;
 }
 
-static QTranslator* createTranslator(QObject* parent)
+void loadTranslations(QCoreApplication* app)
 {
-    QTranslator* translator = new QTranslator(parent);
-    if (translator->load(QLocale(QLocale::system().name()), "BibikaService", "_", ":/lang"))
+    const auto systemLocale = QLocale::system();
+
+    if (systemLocale.language() == QLocale::English)
     {
-        return translator;
+        QTranslator* translator = new QTranslator(app);
+        if (translator->load(":/lang/BibikaService_en.qm"))
+        {
+            qDebug() << "Load english tranlations successfully";
+            app->installTranslator(translator);
+        }
+        return;
     }
-    return nullptr;
+    qDebug() << "Русский язык по умолчанию";
 }
 
 int runApp(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    if (auto translator = createTranslator(&app))
-    {
-        app.installTranslator(translator);
-        qDebug() << "=== Translation loaded successfully ===";
-    }
-    else
-    {
-        qWarning() << "!!! Failed to load translation !!!";
-    }
+    loadTranslations(&app);
 
     app.setOrganizationDomain("ru.blog2k.bibikaservice");
     app.setOrganizationName("Personal");
@@ -100,6 +101,7 @@ int runApp(int argc, char* argv[])
 
     return app.exec();
 }
+} // namespace
 
 int main(int argc, char* argv[])
 {
