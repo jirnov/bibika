@@ -49,37 +49,22 @@ QVariant ServiceRecordModel::data(const QModelIndex& index, int role) const
         return {};
     }
 
-    const auto record = m_repo->getByIndex(index.row());
+    static const QHash<int, QString> roles = {
+       {RecordIdRole, "record_id"},
+       {EventTypeRole, "event_type"},
+       {NameRole, "name"},
+       {NotesRole, "notes"},
+       {PriceRole, "price"},
+       {MileageRole, "mileage"},
+       {ServiceDateRole, "service_date"},
+       {ParentRecordIdRole, "parent_record_id"},
+       {RepeatAfterDistanceRole, "repeat_after_distance"},
+       {HasRepeatAfterDistanceRole, "has_repeat_after_distance"},
+       {RepeatAfterMonthsRole, "repeat_after_months"},
+       {HasRepeatAfterMonthsRole, "has_repeat_after_months"},
+    };
 
-    switch (role)
-    {
-        case RecordIdRole:
-            return record["record_id"];
-        case EventTypeRole:
-            return record["event_type"];
-        case NameRole:
-            return record["name"];
-        case NotesRole:
-            return record["notes"];
-        case PriceRole:
-            return record["price"];
-        case MileageRole:
-            return record["mileage"];
-        case ServiceDateRole:
-            return record["service_date"].toString();
-        case ParentRecordIdRole:
-            return record["parent_record_id"].toInt();
-        case RepeatAfterDistanceRole:
-            return record["repeat_after_distance"];
-        case HasRepeatAfterDistanceRole:
-            return record["has_repeat_after_distance"].toBool();
-        case RepeatAfterMonthsRole:
-            return record["repeat_after_months"];
-        case HasRepeatAfterMonthsRole:
-            return record["has_repeat_after_months"].toBool();
-        default:
-            return {};
-    }
+    return m_repo->data(index.row(), roles.value(role));
 }
 
 QHash<int, QByteArray> ServiceRecordModel::roleNames() const

@@ -14,7 +14,7 @@ public:
 
     ServiceRecord* find(int id, QObject *parent) const;
 
-    QVariantHash getByIndex(int index) const;
+    QVariant data(int index, QAnyStringView fieldName) const;
 
     std::optional<int> append(const ServiceRecord &newRecord);
     bool update(int id, const ServiceRecord &record);

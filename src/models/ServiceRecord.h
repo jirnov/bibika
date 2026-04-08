@@ -4,7 +4,6 @@
 #include <QDate>
 #include <QObject>
 #include <QQmlEngine>
-#include <qqmlintegration.h>
 
 class ServiceRecord : public QObject {
     Q_OBJECT

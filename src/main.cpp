@@ -1,7 +1,4 @@
-#include <QDirIterator>
-#include <QFontDatabase>
 #include <QGuiApplication>
-#include <QIcon>
 #include <QLoggingCategory>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>

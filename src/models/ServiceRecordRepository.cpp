@@ -37,28 +37,26 @@ ServiceRecord* ServiceRecordRepository::find(int id, QObject* parent) const
         return {};
     }
 
-    if (auto index = indexById(id); index.has_value())
+    QSqlQuery query(m_model->database());
+    query.prepare(QString("SELECT * FROM %1 WHERE record_id = ?").arg(tableName));
+    query.addBindValue(id);
+
+    if (query.exec() && query.next())
     {
-        QSqlRecord record = m_model->record(index.value());
-        return fromSqlRecord(record, parent);
+        return fromSqlRecord(query.record(), parent);
     }
     return {};
 }
-QVariantHash ServiceRecordRepository::getByIndex(int index) const
+
+QVariant ServiceRecordRepository::data(int index, QAnyStringView fieldName) const
 {
     if (!m_model)
     {
         return {};
     }
 
-    QVariantHash fields;
-
-    auto record = m_model->record(index);
-    for (int i = 0; i < record.count(); ++i)
-    {
-        fields[record.fieldName(i)] = record.value(i);
-    }
-    return fields;
+    const auto record = m_model->record(index);
+    return record.value(fieldName);
 }
 
 std::optional<int> ServiceRecordRepository::append(const ServiceRecord& newRecord)
